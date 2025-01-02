@@ -1,17 +1,14 @@
 package entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import utils.Validation;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: KhachHang
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
+@Entity
 public class KhachHang implements Serializable {
     private final String maKH;
     private String tenKH;
@@ -31,10 +28,6 @@ public class KhachHang implements Serializable {
     }
 
     public KhachHang(String maKH, String tenKH, String CCCD, String sdt, String email, LocalDate ngaySinh, String doiTuong) {
-        // Kiểm tra tên khách hàng không được rỗng
-//        if (!Validation.maKH(maKH)) {
-//            throw new IllegalArgumentException("Mã khách hàng không hợp lệ");
-//        }
 
         this.maKH = maKH;
         setTenKH(tenKH);
@@ -55,6 +48,7 @@ public class KhachHang implements Serializable {
         this.doiTuong = doiTuong;
     }
 
+    @Id
     public String getMaKH() {
         return maKH;
     }

@@ -23,6 +23,15 @@ public class LoadingGUI {
         SPLASH_SCREEN = new JWindow();
     }
 
+    public static void main(String[] args) {
+        show();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        close();
+    }
     public static void show() {
         JPanel pnlMain = new JPanel();
         pnlMain.setLayout(new BorderLayout());

@@ -2,19 +2,17 @@ import connectDB.ConnectDB;
 import gui.FrmDangNhap;
 import gui.FrmTrangChinh;
 import gui.LoadingGUI;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import java.sql.SQLException;
 
-/**
-    * @Dự án: tau-viet-express
-    * @Class: TestApp
-    * @Tạo vào ngày: 10/6/2024
-    * @Tác giả: Huy
-*/
 public class TestApp {
+
     public static void main(String[] args) {
         // Kết nối cơ sở dữ liệu
+        
+        System.out.println("Hello");
         try {
             ConnectDB.connect();
         } catch (SQLException e) {
