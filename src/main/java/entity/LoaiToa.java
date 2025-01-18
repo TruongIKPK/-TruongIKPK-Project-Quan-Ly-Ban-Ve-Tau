@@ -2,15 +2,17 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Objects;
+import jakarta.persistence.*;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: LoaiToa
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
+@Entity
+@Table(name = "LoaiToa")
 public class LoaiToa implements Serializable {
+
+    @Id
+    @Column(name = "maLT")
     private final String maLT;
+
+    @Column(name = "tenLT", nullable = false)
     private String tenLT;
 
     public LoaiToa() {

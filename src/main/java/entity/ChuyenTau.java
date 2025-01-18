@@ -2,18 +2,40 @@ package entity;
 
 import utils.Validation;
 
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
+@Table(name = "chuyen_tau")
 public class ChuyenTau implements Serializable {
+    @Id
+    @Column(name = "ma_chuyen", nullable = false, unique = true)
     private final String maChuyen;
+
+    @Column(name = "mac_tau", nullable = false)
     private String macTau;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ma_tau", referencedColumnName = "ma_tau", nullable = false)
     private Tau tau;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ma_ga_di", referencedColumnName = "ma_ga", nullable = false)
     private Ga gaDi;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ma_ga_den", referencedColumnName = "ma_ga", nullable = false)
     private Ga gaDen;
+
+    @Column(name = "ngay_gio_di", nullable = false)
     private LocalDateTime ngayGioDi;
+
+    @Column(name = "ngay_gio_den", nullable = false)
     private LocalDateTime ngayGioDen;
+
+    @Column(name = "trang_thai", nullable = false)
     private String trangThai;
 
     public ChuyenTau() {
@@ -26,41 +48,36 @@ public class ChuyenTau implements Serializable {
     }
 
     public ChuyenTau(String maChuyen, String macTau, Tau tau, Ga gaDi, Ga gaDen,
-                     LocalDateTime ngayGioVe, LocalDateTime ngayGioDen, String trangThai) {
-        // Kiểm tra mã chuyến tàu
-//        if (!Validation.maChuyen(maChuyen)) {
-//            throw new IllegalArgumentException("Mã chuyến tàu không hợp lệ");
-//        }
-
+                     LocalDateTime ngayGioDi, LocalDateTime ngayGioDen, String trangThai) {
         this.maChuyen = maChuyen;
         setMacTau(macTau);
         setTau(tau);
         setGaDi(gaDi);
         setGaDen(gaDen);
-        setNgayGioDi(ngayGioVe);
+        setNgayGioDi(ngayGioDi);
         setNgayGioDen(ngayGioDen);
         setTrangThai(trangThai);
     }
 
-    public ChuyenTau(String macTau, Tau tau, Ga gaDi, Ga gaDen, LocalDateTime ngayGioVe,
+    public ChuyenTau(String macTau, Tau tau, Ga gaDi, Ga gaDen, LocalDateTime ngayGioDi,
                      LocalDateTime ngayGioDen, String trangThai) {
         this.maChuyen = "";
         setMacTau(macTau);
         setTau(tau);
         setGaDi(gaDi);
         setGaDen(gaDen);
-        setNgayGioDi(ngayGioVe);
+        setNgayGioDi(ngayGioDi);
         setNgayGioDen(ngayGioDen);
         setTrangThai(trangThai);
     }
 
-    public ChuyenTau(Tau tau, Ga gaDi, Ga gaDen, LocalDateTime ngayGioVe,
+    public ChuyenTau(Tau tau, Ga gaDi, Ga gaDen, LocalDateTime ngayGioDi,
                      LocalDateTime ngayGioDen, String trangThai) {
         this.maChuyen = "";
         setTau(tau);
         setGaDi(gaDi);
         setGaDen(gaDen);
-        setNgayGioDi(ngayGioVe);
+        setNgayGioDi(ngayGioDi);
         setNgayGioDen(ngayGioDen);
         setTrangThai(trangThai);
     }
@@ -74,11 +91,9 @@ public class ChuyenTau implements Serializable {
     }
 
     public void setMacTau(String macTau) {
-        // Kiểm tra mã tàu
         if (macTau.trim().isEmpty()) {
             throw new IllegalArgumentException("Mác tàu không hợp lệ");
         }
-
         this.macTau = macTau;
     }
 
@@ -87,11 +102,9 @@ public class ChuyenTau implements Serializable {
     }
 
     public void setTau(Tau tau) {
-        // Kiểm tra tàu
         if (tau == null) {
             throw new IllegalArgumentException("Tàu không hợp lệ");
         }
-
         this.tau = tau;
     }
 
@@ -100,11 +113,9 @@ public class ChuyenTau implements Serializable {
     }
 
     public void setGaDi(Ga gaDi) {
-        // Kiểm tra ga đi
         if (gaDi == null) {
             throw new IllegalArgumentException("Ga đi không hợp lệ");
         }
-
         this.gaDi = gaDi;
     }
 
@@ -113,11 +124,9 @@ public class ChuyenTau implements Serializable {
     }
 
     public void setGaDen(Ga gaDen) {
-        // Kiểm tra ga đến
         if (gaDen == null) {
             throw new IllegalArgumentException("Ga đến không hợp lệ");
         }
-
         this.gaDen = gaDen;
     }
 
@@ -126,11 +135,6 @@ public class ChuyenTau implements Serializable {
     }
 
     public void setNgayGioDi(LocalDateTime ngayGioDi) {
-        // Kiểm tra ngày giờ khởi hành không được sau ngày hiện tại
-//        if (ngayGioDi.isAfter(LocalDateTime.now())) {
-//            throw new IllegalArgumentException("Ngày giờ khởi hành không hợp lệ");
-//        }
-
         this.ngayGioDi = ngayGioDi;
     }
 
@@ -139,11 +143,9 @@ public class ChuyenTau implements Serializable {
     }
 
     public void setNgayGioDen(LocalDateTime ngayGioDen) {
-        // Kiểm tra ngày giờ đến không được sau ngày giờ khởi hành
         if (ngayGioDen.isBefore(ngayGioDi)) {
             throw new IllegalArgumentException("Ngày giờ đến không hợp lệ");
         }
-
         this.ngayGioDen = ngayGioDen;
     }
 
@@ -165,7 +167,7 @@ public class ChuyenTau implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(maChuyen);
+        return Objects.hash(maChuyen);
     }
 
     @Override

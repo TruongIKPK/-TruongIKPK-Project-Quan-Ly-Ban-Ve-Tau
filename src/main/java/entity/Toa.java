@@ -1,23 +1,34 @@
 package entity;
 
+import jakarta.persistence.*;
 import utils.Validation;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: Toa
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
+@Entity
+@Table(name = "toa")
 public class Toa implements Serializable {
+    @Id
+    @Column(name = "ma_toa", nullable = false)
     private final String maToa;
+
+    @ManyToOne
+    @JoinColumn(name = "tau_id")
     private Tau tau;
+
+    @ManyToOne
+    @JoinColumn(name = "loai_toa_id")
     private LoaiToa loaiToa;
+
+    @Column(name = "so_luong_cho")
     private int soLuongCho;
+
+    @OneToMany(mappedBy = "toa", cascade = CascadeType.ALL)
     private ArrayList<ChoNgoi> danhSachChoNgoi;
+
+    @Transient
     private int soThuTu;
 
     public Toa() {

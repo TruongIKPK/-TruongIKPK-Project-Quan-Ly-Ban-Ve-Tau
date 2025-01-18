@@ -1,17 +1,28 @@
 package entity;
 
+import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: Ga
- * @Tạo vào ngày: 10/17/2024
- * @Tác giả: Huy
- */
+@Entity
+@Table(name = "ga")
 public class Ga implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ma_ga", nullable = false, unique = true)
     private final int maGa;
+
+    @Column(name = "ten_ga")
     private String tenGa;
+
+    // Mối quan hệ một-nhiều với ChuyenTau (chuyến tàu đi và đến)
+    @OneToMany(mappedBy = "gaDi", fetch = FetchType.LAZY)
+    private List<ChuyenTau> chuyenTauDi = new ArrayList<>();
+
+    @OneToMany(mappedBy = "gaDen", fetch = FetchType.LAZY)
+    private List<ChuyenTau> chuyenTauDen = new ArrayList<>();
 
     public Ga() {
         super();
@@ -39,23 +50,39 @@ public class Ga implements Serializable {
         this.tenGa = tenGa;
     }
 
+    public List<ChuyenTau> getChuyenTauDi() {
+        return chuyenTauDi;
+    }
+
+    public void setChuyenTauDi(List<ChuyenTau> chuyenTauDi) {
+        this.chuyenTauDi = chuyenTauDi;
+    }
+
+    public List<ChuyenTau> getChuyenTauDen() {
+        return chuyenTauDen;
+    }
+
+    public void setChuyenTauDen(List<ChuyenTau> chuyenTauDen) {
+        this.chuyenTauDen = chuyenTauDen;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ga ga = (Ga) o;
-        return Objects.equals(maGa, ga.maGa);
+        return maGa == ga.maGa;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(maGa);
+        return Objects.hash(maGa);
     }
 
     @Override
     public String toString() {
         return "Ga{" +
-                "maGa='" + maGa + '\'' +
+                "maGa=" + maGa +
                 ", tenGa='" + tenGa + '\'' +
                 '}';
     }
