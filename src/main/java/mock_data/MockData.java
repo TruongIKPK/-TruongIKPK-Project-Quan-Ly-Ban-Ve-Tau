@@ -11,12 +11,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: MockData
- * @Tạo vào ngày: 10/8/2024
- * @Tác giả: Huy
- */
 public class MockData {
     // Mock dữ liệu ca làm
     public static ArrayList<CaLam> getDsCaLam() {

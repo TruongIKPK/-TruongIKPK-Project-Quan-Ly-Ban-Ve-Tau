@@ -1,22 +1,47 @@
 package entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import utils.Validation;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class KhachHang implements Serializable {
-    private final String maKH;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "varchar(20)")
+    private String maKH;
+
+    @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String tenKH;
+
+    @Column(columnDefinition = "char(12)", unique = true, nullable = true)
     private String CCCD;
+
+    @Column(columnDefinition = "char(10)", nullable = false, unique = true)
     private String sdt;
+
+    @Column(columnDefinition = "varchar(100)", nullable = true)
     private String email;
+
+    @Column(columnDefinition = "date", nullable = true)
     private LocalDate ngaySinh;
+
+    @Column(columnDefinition = "nvarchar(30)", nullable = false)
     private String doiTuong;
+
+    @OneToMany(mappedBy = "khachHang")
+    private Set<HoaDon> hoaDons;
+
+    @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Ve> veList;
+
+    public void setMaKH(String maKH) {
+        this.maKH = maKH;
+    }
 
     public KhachHang() {
         super();
@@ -28,7 +53,6 @@ public class KhachHang implements Serializable {
     }
 
     public KhachHang(String maKH, String tenKH, String CCCD, String sdt, String email, LocalDate ngaySinh, String doiTuong) {
-
         this.maKH = maKH;
         setTenKH(tenKH);
         setCCCD(CCCD);
@@ -48,7 +72,6 @@ public class KhachHang implements Serializable {
         this.doiTuong = doiTuong;
     }
 
-    @Id
     public String getMaKH() {
         return maKH;
     }
@@ -75,7 +98,6 @@ public class KhachHang implements Serializable {
 //        if (CCCD!= null && !Validation.CCCD(CCCD)) {
 //            throw new IllegalArgumentException("CCCD không hợp lệ");
 //        }
-
         this.CCCD = CCCD;
     }
 
@@ -88,7 +110,9 @@ public class KhachHang implements Serializable {
         if (!Validation.sdt(sdt)) {
             throw new IllegalArgumentException("Số điện thoại không hợp lệ");
         }
-
+        if (!sdt.matches("0\\d{9}")) {
+            throw new IllegalArgumentException("Số điện thoại không hợp lệ");
+        }
         this.sdt = sdt;
     }
 
@@ -97,10 +121,9 @@ public class KhachHang implements Serializable {
     }
 
     public void setEmail(String email) {
-//        // Kiểm tra email hợp lệ
-//        if (email != null && !Validation.email(email)) {
-//            throw new IllegalArgumentException("Email không hợp lệ");
-//        }
+        if (email != null && !email.matches(".+@.+\\..+")) {
+            throw new IllegalArgumentException("Email không hợp lệ");
+        }
 
         this.email = email;
     }

@@ -1,5 +1,6 @@
 package entity;
 
+import jakarta.persistence.*;
 import utils.Validation;
 
 import java.io.Serializable;
@@ -9,18 +10,30 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: HoaDon
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
 public class HoaDon implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "varchar(20)")
     private final String maHD;
+
+    @Column(columnDefinition = "datetime", nullable = true)
     private LocalDateTime ngayGioLapHD;
-    private NhanVien nhanVien;
-    private KhachHang khachHang;
+
+    @Column(nullable = true)
     private int soLuong;
+
+    @ManyToOne
+    @JoinColumn(name = "maNV", nullable = false)
+    @Column(columnDefinition = "VARCHAR(11)")
+    private NhanVien nhanVien;
+
+    @ManyToOne
+    @JoinColumn(name = "maKH", nullable = false)
+    @Column(columnDefinition = "VARCHAR(20)")
+    private KhachHang khachHang;
+
+    @Transient
     private ArrayList<Ve> danhSachVe;
 
     public HoaDon() {
@@ -108,9 +121,9 @@ public class HoaDon implements Serializable {
 
     public void setSoLuong(int soLuong) {
         // Kiểm tra số lượng phải lớn hơn 0
-//        if (soLuong <= 0) {
-//            throw new IllegalArgumentException("Số lượng phải lớn hơn 0");
-//        }
+        if (soLuong <= 0) {
+            throw new IllegalArgumentException("Số lượng phải lớn hơn 0");
+        }
 
         this.soLuong = soLuong;
     }

@@ -7,12 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: NhanVien
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
+
 public class NhanVien implements Serializable {
     private final String maNV;
     private String tenNV;
@@ -41,7 +36,6 @@ public class NhanVien implements Serializable {
 //        if (!Validation.maNV(maNV)) {
 //            throw new IllegalArgumentException("Mã nhân viên không hợp lệ");
 //        }
-
         this.maNV = maNV;
         setTenNV(tenNV);
         setGioiTinh(gioiTinh);

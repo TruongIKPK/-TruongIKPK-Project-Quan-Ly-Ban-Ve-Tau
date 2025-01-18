@@ -5,12 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: ConnectDB2
- * @Tạo vào ngày: 10/6/2024
- * @Tác giả: Huy
- */
+
 public class ConnectDB {
     private static String url = "jdbc:sqlserver://localhost:1433;databaseName=QuanLyBanVeTauHoa;encrypt=false;";
     private static String user = "sa";

@@ -1,29 +1,56 @@
 package entity;
 
 import enums.ETrangThaiVe;
+import jakarta.persistence.*;
 import utils.Validation;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: Ve
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
+
 public class Ve implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "varchar(20)")
     private final String maVe;
-    private HoaDon hoaDon;
-    private LoaiVe loaiVe;
+    @Column(columnDefinition = "datetime")
     private LocalDateTime ngayGioXuatVe;
-    private ChoNgoi choNgoi;
-    private ChuyenTau chuyenTau;
-    private KhachHang khachHang;
+    @Column(columnDefinition = "float", nullable = true)
     private double thue;
-    private KhuyenMai khuyenMai;
+    @Column(columnDefinition = "nvarchar(20)")
     private String trangThai;
+
+    @ManyToOne
+    @Column(columnDefinition = "varchar(20)")
+    @JoinColumn(name = "maHD", nullable = false)
+    private HoaDon hoaDon;
+
+    @ManyToOne
+    @Column(columnDefinition = "varchar(20)")
+    @JoinColumn(name = "maLoaiVe", nullable = false)
+    private LoaiVe loaiVe;
+
+    @ManyToOne
+    @Column(columnDefinition = "varchar(20)")
+    @JoinColumn(name = "maKhuyenMai", nullable = true)
+    private KhuyenMai khuyenMai;
+
+    @ManyToOne
+    @Column(columnDefinition = "varchar(20)")
+    @JoinColumn(name = "maChoNgoi", nullable = false)
+    private ChoNgoi choNgoi;
+
+    @ManyToOne
+    @Column(columnDefinition = "varchar(20)")
+    @JoinColumn(name = "maChuyenTau", nullable = false)
+    private ChuyenTau chuyenTau;
+
+    @ManyToOne
+    @Column(columnDefinition = "varchar(20)")
+    @JoinColumn(name = "maKhachHang", nullable = false)
+    private KhachHang khachHang;
 
     public Ve() {
         super();
