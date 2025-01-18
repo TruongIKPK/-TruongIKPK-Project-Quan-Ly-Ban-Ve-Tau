@@ -1,19 +1,33 @@
 package entity;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
+
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: LoaiCho
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
+@Entity
+@Table(name = "LoaiCho")
+@Check(constraints = "giaCho > 0")
 public class LoaiCho implements Serializable {
+
+    @Id
+    @Column(columnDefinition = "varchar(10)", unique = true, nullable = false)
     private final String maLC;
+
+    @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String tenLC;
+
+    @Column(columnDefinition = "nvarchar(200)", nullable = false)
     private String moTa;
+
+    @Column(columnDefinition = "FLOAT", nullable = false)
     private double giaCho;
+
+    @OneToMany(mappedBy = "loaiCho", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private Set<ChoNgoi> choNgois;
+
 
     public LoaiCho() {
         super();

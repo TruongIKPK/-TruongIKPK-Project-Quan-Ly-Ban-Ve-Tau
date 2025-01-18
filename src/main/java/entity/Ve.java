@@ -29,17 +29,17 @@ public class Ve implements Serializable {
 
     @ManyToOne
     @Column(columnDefinition = "varchar(20)")
-    @JoinColumn(name = "maLoaiVe", nullable = false)
+    @JoinColumn(name = "maLoai", nullable = false)
     private LoaiVe loaiVe;
 
     @ManyToOne
     @Column(columnDefinition = "varchar(20)")
-    @JoinColumn(name = "maKhuyenMai", nullable = true)
+    @JoinColumn(name = "maKM", nullable = true)
     private KhuyenMai khuyenMai;
 
-    @ManyToOne
+    @OneToOne
     @Column(columnDefinition = "varchar(20)")
-    @JoinColumn(name = "maChoNgoi", nullable = false)
+    @JoinColumn(name = "maCho", nullable = false)
     private ChoNgoi choNgoi;
 
     @ManyToOne
