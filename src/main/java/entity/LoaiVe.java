@@ -1,19 +1,28 @@
 package entity;
 
+import jakarta.persistence.*;
 import utils.Validation;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: LoaiVe
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
+@Entity
+@Table(name = "LoaiVe")
+
 public class LoaiVe implements Serializable {
+
+    @Id
+    @Column(columnDefinition = "varchar(10)", unique = true, nullable = false)
     private final String maLV;
+
+    @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String tenLV;
+
+    @OneToMany(mappedBy = "loaiVe", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private Set<Ve> ves;
 
     public LoaiVe() {
         super();

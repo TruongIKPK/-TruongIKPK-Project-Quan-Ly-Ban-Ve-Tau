@@ -1,21 +1,35 @@
 package entity;
 
 import enums.ETrangThaiChoNgoi;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
 import utils.Validation;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: ChoNgoi
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
+@Entity
+@Table(name = "ChoNgoi")
+@Check(constraints = "trangThai IN (N'Còn trống', N'Đã đặt')")
 public class ChoNgoi implements Serializable {
+
+    @Id
+    @Column(columnDefinition = "varchar(20)", unique = true, nullable = false)
     private final String maCho;
+
+    @ManyToOne
+    @JoinColumn(name = "maLC", nullable = false)
+    @Column(columnDefinition = "varchar(10)", nullable = false)
     private LoaiCho loaiCho;
+
+    @ManyToOne
+    @JoinColumn(name = "maToa", nullable = false)
+    @Column(columnDefinition = "varchar(20)", nullable = false)
     private Toa toa;
+
+    @OneToOne(mappedBy = "choNgoi")
+    private Set<Ve> ves;
 
     public ChoNgoi() {
         super();

@@ -13,7 +13,7 @@ import java.util.Objects;
 public class HoaDon implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   // @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "varchar(20)")
     private final String maHD;
 

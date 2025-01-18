@@ -7,8 +7,8 @@
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1/quan_ly_ban_ve_tau_hoa" />
-            <property name="jakarta.persistence.jdbc.user" value="truong_root" />
-            <property name="jakarta.persistence.jdbc.password" value="1234" />
+            <property name="jakarta.persistence.jdbc.user" value="sa" />
+            <property name="jakarta.persistence.jdbc.password" value="123" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
             <property name="hibernate.show_sql" value="true" />
         </properties>

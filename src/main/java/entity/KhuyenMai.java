@@ -1,24 +1,45 @@
 package entity;
 
+import com.sun.istack.NotNull;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
 import utils.Validation;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Set;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: KhuyenMai
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
+@Entity
+@Table(name = "KhuyenMai")
+@Check(constraints = "phanTramKM >= 0 AND phanTramKM <= 1")
+@Check(constraints = "ngayApDung >= CURRENT_DATE")
+@Check(constraints = "ngayKetThuc > ngayApDung")
+
 public class KhuyenMai implements Serializable {
+
+    @Id
+    @Column(columnDefinition = "varchar(15)", unique = true, nullable = false)
     private final String maKM;
+
+    @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate ngayBD;
+
+    @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate ngayKT;
+
+    @Column(columnDefinition = "nvarchar(30)")
     private String doiTuong;
+
+    @Column(columnDefinition = "FLOAT")
     private double phanTramKM;
+
+    @Column(columnDefinition = "BIT")
     private boolean daGuiThongBao;
+
+    @OneToMany(mappedBy = "khuyenMai", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Ve> ves;
 
     public KhuyenMai() {
         super();
@@ -44,11 +65,6 @@ public class KhuyenMai implements Serializable {
         setDoiTuong(doiTuong);
         setPhanTramKM(phanTramKM);
     }
-
-
-
-
-
 
     public KhuyenMai(LocalDate ngayBD, LocalDate ngayKT, String doiTuong, double phanTramKM) {
         this.maKM = "";
