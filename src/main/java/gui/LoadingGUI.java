@@ -6,12 +6,7 @@ import gui.custom.CImage;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: Loading
- * @Tạo vào ngày: 10/15/2024
- * @Tác giả: Huy
- */
+
 public class LoadingGUI {
     private int COUNT;
 
