@@ -6,12 +6,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: ChuyenTau
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
 public class ChuyenTau implements Serializable {
     private final String maChuyen;
     private String macTau;

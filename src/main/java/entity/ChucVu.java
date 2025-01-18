@@ -1,16 +1,16 @@
 package entity;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: ChucVu
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
 public class ChucVu implements Serializable {
+
+    @Id
     private final String maCV;
+
     private String tenCV;
 
     public ChucVu() {

@@ -12,9 +12,9 @@ import java.sql.SQLException;
  * @Tác giả: Huy
  */
 public class ConnectDB {
-    private static String url = "jdbc:sqlserver://localhost:1433;databaseName=QuanLyBanVeTauHoa;";
+    private static String url = "jdbc:sqlserver://localhost:1433;databaseName=QuanLyBanVeTauHoa;encrypt=false;";
     private static String user = "sa";
-    private static String password = "sapassword";
+    private static String password = "123";
     public static Connection connect = null;
     private static final ConnectDB instance = new ConnectDB();
 
