@@ -1,27 +1,82 @@
 package entity;
 
 import enums.ETrangThaiNhanVien;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
 import utils.Validation;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
-
+@Entity
+@Table(name = "NhanVien")
+@Check(constraints = "LEFT(maNV, 2) IN ('NV', 'QL') AND " +
+        "LEN(SUBSTRING(maNV, 3, 6)) = 6 AND " +
+        "SUBSTRING(maNV, 3, 6) NOT LIKE '%[^0-9]%' AND " +
+        "LEN(RIGHT(maNV, 3)) = 3 AND " +
+        "ISNUMERIC(RIGHT(maNV, 3)) = 1")
+@Check(constraints = "gioiTinh IN (N'Nam', N'Nữ')")
+@Check(constraints = "DATEDIFF(YEAR, ngaySinh, GETDATE()) >= 18")
+@Check(constraints = "LEN(CCCD) = 12")
+@Check(constraints = "sdt LIKE '0%'")
+@Check(constraints = "trangThai IN (N'Làm việc', N'Nghỉ làm')")
 public class NhanVien implements Serializable {
-    private final String maNV;
+    //new
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "varchar(11)")
+    private String maNV;
+
+    @Column(columnDefinition = "nvarchar(100)", nullable = false)
     private String tenNV;
+
+    @Column(columnDefinition = "varchar(355)", nullable = true)
+    private String duongDanAnh;
+
+    @Column(columnDefinition = "nvarchar(3)", nullable = false)
     private String gioiTinh;
+
+    @Column(columnDefinition = "date", nullable = false)
     private LocalDate ngaySinh;
-    private String sdt;
-    private String email;
-    private String diaChi;
-    private String CCCD;
+
+    @Column(columnDefinition = "date", nullable = false)
     private LocalDate ngayVaoLam;
-    private ChucVu chucVu;
-    private TaiKhoan taiKhoan;
+
+    @Column(columnDefinition = "varchar(12)", nullable = false, unique = true)
+    private String CCCD;
+
+    @Column(columnDefinition = "varchar(12)", nullable = false, unique = true)
+    private String sdt;
+
+    @Column(columnDefinition = "varchar(255)", nullable = false, unique = true)
+    private String email;
+
+    @Column(columnDefinition = "nvarchar(255)", nullable = false)
+    private String diaChi;
+
+    @Column(columnDefinition = "nvarchar(20)", nullable = false)
     private String trangThai;
+
+    @ManyToOne
+    @JoinColumn(name = "maChucVu", nullable = false)
+    @Column(columnDefinition = "varchar(2)")
+    private ChucVu chucVu;
+
+    @ManyToOne
+    @JoinColumn(name = "macaLam", nullable = false)
+    @Column(columnDefinition = "varchar(3)")
     private CaLam caLam;
+//
+    @OneToMany(mappedBy = "nhanVien")
+    private Set<HoaDon> hoaDons;
+
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "maTaiKhoan")
+    private TaiKhoan taiKhoan;
+
+    //end
 
     public NhanVien() {
         super();

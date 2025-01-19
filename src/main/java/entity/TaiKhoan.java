@@ -1,24 +1,33 @@
 package entity;
 
 import enums.ETrangThaiTaiKhoan;
-import org.mindrot.jbcrypt.BCrypt;
-import utils.Regex;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
+import org.hibernate.annotations.ColumnDefault;
 import utils.Validation;
 
-import javax.swing.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: TaiKhoan
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
+@Entity
+@Table(name = "TaiKhoan")
+@Check(constraints = "trangThai IN (N'Kích hoạt', N'Bị khóa')")
 public class TaiKhoan implements Serializable {
-    private final String maTK;
-    private String matKhauHash;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "varchar(11)")
+    private String maTK;
+
+    @Column(columnDefinition = "varchar(60)", nullable = false)
+    @ColumnDefault("'$2a$10$hx.v7Xiy7I8Rpql8ONmMF.WZY3d6pfQmfpp2EgeXJajNJdUa9KVSa'")
+    private String matKhau;
+
+    @Column(columnDefinition = "nvarchar(20)", nullable = false)
     private String trangThai;
+
+    @OneToOne(mappedBy = "taiKhoan")
+    private NhanVien nhanVien;
 
     public TaiKhoan() {
         super();
@@ -29,14 +38,14 @@ public class TaiKhoan implements Serializable {
         this.maTK = maTK;
     }
 
-    // dung khi read from db
-    public TaiKhoan(String maTK, String matKhauHash, String trangThai) {
+    // khi đọc từ DB
+    public TaiKhoan(String maTK, String matKhau, String trangThai) {
         this.maTK = maTK;
-        this.matKhauHash = matKhauHash;
-        setTrangThai(ETrangThaiTaiKhoan.KICH_HOAT.getTrangThai());
+        this.matKhau = matKhau;
+        setTrangThai(trangThai != null ? trangThai : ETrangThaiTaiKhoan.KICH_HOAT.getTrangThai());
     }
 
-    // khi tao doi tuong
+    // khi tạo đối tượng mới
     public TaiKhoan(String matKhau, String trangThai) {
         this.maTK = "";
         setMatKhau(matKhau);
@@ -48,19 +57,15 @@ public class TaiKhoan implements Serializable {
     }
 
     public String getMatKhauHash() {
-        return matKhauHash;
+        return matKhau;
     }
 
     public void setMatKhau(String matKhau) {
         if (!Validation.password(matKhau)) {
             throw new IllegalArgumentException("Mật khẩu không hợp lệ!");
         }
-    //neu hop le thi ma hoa
-        this.matKhauHash = BCrypt.hashpw(matKhau, BCrypt.gensalt());
+        this.matKhau = matKhau;
     }
-  
-
-
 
     public String getTrangThai() {
         return trangThai;
@@ -87,7 +92,7 @@ public class TaiKhoan implements Serializable {
     public String toString() {
         return "TaiKhoan{" +
                 "maTK='" + maTK + '\'' +
-                ", matKhau='" + matKhauHash + '\'' +
+                ", matKhau='" + matKhau + '\'' +
                 ", trangThai='" + trangThai + '\'' +
                 '}';
     }

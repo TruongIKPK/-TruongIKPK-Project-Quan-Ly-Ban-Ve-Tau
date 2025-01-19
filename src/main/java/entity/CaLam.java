@@ -1,20 +1,36 @@
 package entity;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
+
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Objects;
+import java.util.Set;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: CaLam2
- * @Tạo vào ngày: 10/6/2024
- * @Tác giả: Huy
- */
+@Entity
+@Table(name = "CaLam")
+@Check(constraints = "maCL IN ('CA1', 'CA2')")
 public class CaLam implements Serializable {
-    private final String maCL;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "varchar(3)")
+    private String maCL;
+
+
+    @Column(columnDefinition = "nvarchar(20)", nullable = false)
     private String tenCL;
+
+    @Column(columnDefinition = "time(7)", nullable = false)
     private LocalTime gioBD;
+
+    @Column(columnDefinition = "time(7)", nullable = false)
     private LocalTime gioKetThuc;
+
+    @OneToMany(mappedBy = "caLam")
+    private Set<NhanVien> nhanViens;
+
 
     public CaLam() {
         super();

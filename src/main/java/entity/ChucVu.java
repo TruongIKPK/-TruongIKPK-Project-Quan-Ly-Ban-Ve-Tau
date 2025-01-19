@@ -1,17 +1,27 @@
 package entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
+@Entity
+@Table(name = "ChucVu")
+@Check(constraints = "maCV IN ('QL', 'NV')")
 public class ChucVu implements Serializable {
 
     @Id
-    private final String maCV;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "varchar(2)")
+    private String maCV;
 
+    @Column(columnDefinition = "nvarchar(20)", nullable = false)
     private String tenCV;
+
+    @OneToMany(mappedBy = "chucVu")
+    private Set<NhanVien> nhanViens;
 
     public ChucVu() {
         super();
