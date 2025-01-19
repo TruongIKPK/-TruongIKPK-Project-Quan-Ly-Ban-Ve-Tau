@@ -13,7 +13,6 @@ import java.util.Set;
 public class ChucVu implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "varchar(2)")
     private String maCV;
 

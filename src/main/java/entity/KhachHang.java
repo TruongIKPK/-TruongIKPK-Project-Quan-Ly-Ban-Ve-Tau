@@ -1,6 +1,7 @@
 package entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
 import utils.Validation;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -8,10 +9,13 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Check(constraints = "sdt LIKE '0%' AND LEN(sdt) = 10")
+@Check(constraints = "email LIKE '%@%.%' OR email IS NULL")
+@Check(constraints = "ngaySinh < GETDATE()")
 public class KhachHang implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "varchar(20)")
     private String maKH;
 
@@ -110,9 +114,6 @@ public class KhachHang implements Serializable {
         if (!Validation.sdt(sdt)) {
             throw new IllegalArgumentException("Số điện thoại không hợp lệ");
         }
-        if (!sdt.matches("0\\d{9}")) {
-            throw new IllegalArgumentException("Số điện thoại không hợp lệ");
-        }
         this.sdt = sdt;
     }
 
@@ -121,10 +122,6 @@ public class KhachHang implements Serializable {
     }
 
     public void setEmail(String email) {
-        if (email != null && !email.matches(".+@.+\\..+")) {
-            throw new IllegalArgumentException("Email không hợp lệ");
-        }
-
         this.email = email;
     }
 

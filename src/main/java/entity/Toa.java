@@ -8,10 +8,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Toa")
 public class Toa implements Serializable {
     @Id
-    @Column(name = "maToa", nullable = false)
+    @Column(columnDefinition = "varchar(20)")
     private final String maToa;
 
     @ManyToOne
@@ -22,10 +21,9 @@ public class Toa implements Serializable {
     @JoinColumn(name = "loaiToa")
     private LoaiToa loaiToa;
 
-    @Column(name = "soLuongCho")
     private int soLuongCho;
 
-    @OneToMany(mappedBy = "Toa", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "toa")
     private ArrayList<ChoNgoi> danhSachChoNgoi;
 
     @Transient

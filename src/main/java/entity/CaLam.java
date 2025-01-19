@@ -14,7 +14,6 @@ import java.util.Set;
 public class CaLam implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "varchar(3)")
     private String maCL;
 

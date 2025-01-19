@@ -1,55 +1,49 @@
 package entity;
 
-import enums.ETrangThaiVe;
 import jakarta.persistence.*;
-import utils.Validation;
-
+import org.hibernate.annotations.Check;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Set;
 
-
+@Entity
+@Check(constraints = "trangThai IN ('Đã bán', 'Đã đổi', 'Đã trả', 'Vé được đổi', 'Vé được trả')")
 public class Ve implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "varchar(20)")
     private final String maVe;
+
     @Column(columnDefinition = "datetime")
     private LocalDateTime ngayGioXuatVe;
+
     @Column(columnDefinition = "float", nullable = true)
-    private double thue;
+    private double thue = 0.1;
+
     @Column(columnDefinition = "nvarchar(20)")
     private String trangThai;
 
     @ManyToOne
-    @Column(columnDefinition = "varchar(20)")
-    @JoinColumn(name = "maHD", nullable = false)
+    @JoinColumn(name = "maHD", nullable = false,columnDefinition = "varchar(20)")
     private HoaDon hoaDon;
 
     @ManyToOne
-    @Column(columnDefinition = "varchar(20)")
-    @JoinColumn(name = "maLoai", nullable = false)
+    @JoinColumn(name = "maLV", nullable = false, columnDefinition = "varchar(10)")
     private LoaiVe loaiVe;
 
     @ManyToOne
-    @Column(columnDefinition = "varchar(20)")
-    @JoinColumn(name = "maKM", nullable = true)
+    @JoinColumn(name = "maKM", nullable = true, columnDefinition = "varchar(15)")
     private KhuyenMai khuyenMai;
 
     @OneToOne
-    @Column(columnDefinition = "varchar(20)")
-    @JoinColumn(name = "maCho", nullable = false)
+    @JoinColumn(name = "maCho", nullable = false,columnDefinition = "varchar(20)")
     private ChoNgoi choNgoi;
 
     @ManyToOne
-    @Column(columnDefinition = "varchar(20)")
-    @JoinColumn(name = "maChuyenTau", nullable = false)
+    @JoinColumn(name = "maChuyen", nullable = false,columnDefinition = "varchar(20)")
     private ChuyenTau chuyenTau;
 
     @ManyToOne
-    @Column(columnDefinition = "varchar(20)")
-    @JoinColumn(name = "maKhachHang", nullable = false)
+    @JoinColumn(name = "maKH", nullable = false,columnDefinition = "varchar(20)")
     private KhachHang khachHang;
 
     public Ve() {

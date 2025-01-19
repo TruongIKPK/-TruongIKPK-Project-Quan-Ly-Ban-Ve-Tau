@@ -25,7 +25,6 @@ import java.util.Set;
 public class NhanVien implements Serializable {
     //new
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "varchar(11)")
     private String maNV;
 
@@ -60,13 +59,11 @@ public class NhanVien implements Serializable {
     private String trangThai;
 
     @ManyToOne
-    @JoinColumn(name = "maChucVu", nullable = false)
-    @Column(columnDefinition = "varchar(2)")
+    @JoinColumn(name = "maChucVu", nullable = false,columnDefinition = "varchar(2)")
     private ChucVu chucVu;
 
     @ManyToOne
-    @JoinColumn(name = "macaLam", nullable = false)
-    @Column(columnDefinition = "varchar(3)")
+    @JoinColumn(name = "macaLam", nullable = false,columnDefinition = "varchar(3)")
     private CaLam caLam;
 //
     @OneToMany(mappedBy = "nhanVien")

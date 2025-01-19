@@ -1,6 +1,7 @@
 package entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
 import utils.Validation;
 
 import java.io.Serializable;
@@ -9,28 +10,26 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
-
+@Entity
+@Check(constraints = "soLuong > 0")
 public class HoaDon implements Serializable {
 
     @Id
-   // @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "varchar(20)")
     private final String maHD;
 
     @Column(columnDefinition = "datetime", nullable = true)
-    private LocalDateTime ngayGioLapHD;
+    private LocalDateTime ngayGioLapHD = LocalDateTime.now();
 
     @Column(nullable = true)
     private int soLuong;
 
     @ManyToOne
-    @JoinColumn(name = "maNV", nullable = false)
-    @Column(columnDefinition = "VARCHAR(11)")
+    @JoinColumn(name = "maNV", nullable = false, columnDefinition = "VARCHAR(11)")
     private NhanVien nhanVien;
 
     @ManyToOne
-    @JoinColumn(name = "maKH", nullable = false)
-    @Column(columnDefinition = "VARCHAR(20)")
+    @JoinColumn(name = "maKH", nullable = false,columnDefinition = "VARCHAR(20)")
     private KhachHang khachHang;
 
     @Transient

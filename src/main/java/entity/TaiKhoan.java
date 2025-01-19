@@ -15,7 +15,6 @@ import java.util.Objects;
 public class TaiKhoan implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "varchar(11)")
     private String maTK;
 

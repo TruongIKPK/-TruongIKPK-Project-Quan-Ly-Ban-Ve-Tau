@@ -6,12 +6,13 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "ChuyenTau")
 public class ChuyenTau implements Serializable {
     @Id
-    @Column(name = "maChuyen", nullable = false, unique = true)
+    @Column(name = "maChuyen", nullable = false, unique = true, columnDefinition = "varchar(20)")
     private final String maChuyen;
 
     @Column(name = "macTau", nullable = false)
@@ -37,6 +38,9 @@ public class ChuyenTau implements Serializable {
 
     @Column(name = "trangThai", nullable = false)
     private String trangThai;
+
+    @OneToMany(mappedBy = "chuyenTau", fetch = FetchType.LAZY)
+    private Set<Ve> danhSachVe;
 
     public ChuyenTau() {
         super();

@@ -10,26 +10,22 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "ChoNgoi")
-@Check(constraints = "trangThai IN (N'Còn trống', N'Đã đặt')")
 public class ChoNgoi implements Serializable {
 
     @Id
-    @Column(columnDefinition = "varchar(20)", unique = true, nullable = false)
+    @Column(columnDefinition = "varchar(20)")
     private final String maCho;
 
     @ManyToOne
-    @JoinColumn(name = "maLC", nullable = false)
-    @Column(columnDefinition = "varchar(10)", nullable = false)
+    @JoinColumn(name = "maLC", nullable = false,columnDefinition = "varchar(10)")
     private LoaiCho loaiCho;
 
     @ManyToOne
-    @JoinColumn(name = "maToa", nullable = false)
-    @Column(columnDefinition = "varchar(20)", nullable = false)
+    @JoinColumn(name = "maToa", nullable = false,columnDefinition = "varchar(20)")
     private Toa toa;
 
     @OneToOne(mappedBy = "choNgoi")
-    private Set<Ve> ves;
+    private Ve ve;
 
     public ChoNgoi() {
         super();

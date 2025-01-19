@@ -22,7 +22,7 @@ public class Tau implements Serializable {
     @Column(name = "trangThai", nullable = false)
     private String trangThai;
 
-    @OneToMany(mappedBy = "Tau", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tau", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ArrayList<Toa> danhSachToa;
 
     public Tau() {

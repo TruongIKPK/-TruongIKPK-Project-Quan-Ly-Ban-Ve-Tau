@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "KhuyenMai")
 @Check(constraints = "phanTramKM >= 0 AND phanTramKM <= 1")
-@Check(constraints = "ngayApDung >= CURRENT_DATE")
+@Check(constraints = "ngayApDung >= GETDATE()")
 @Check(constraints = "ngayKetThuc > ngayApDung")
 
 public class KhuyenMai implements Serializable {
@@ -23,10 +23,10 @@ public class KhuyenMai implements Serializable {
     @Column(columnDefinition = "varchar(15)", unique = true, nullable = false)
     private final String maKM;
 
-    @Column(columnDefinition = "DATE", nullable = false)
+    @Column(name = "ngayApDung", columnDefinition = "DATE", nullable = false)
     private LocalDate ngayBD;
 
-    @Column(columnDefinition = "DATE", nullable = false)
+    @Column(name = "ngayKetThuc",columnDefinition = "DATE", nullable = false)
     private LocalDate ngayKT;
 
     @Column(columnDefinition = "nvarchar(30)")
@@ -38,7 +38,7 @@ public class KhuyenMai implements Serializable {
     @Column(columnDefinition = "BIT")
     private boolean daGuiThongBao;
 
-    @OneToMany(mappedBy = "khuyenMai", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "khuyenMai")
     private Set<Ve> ves;
 
     public KhuyenMai() {

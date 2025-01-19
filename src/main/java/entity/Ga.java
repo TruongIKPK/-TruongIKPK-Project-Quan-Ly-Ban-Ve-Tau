@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "Ga")
@@ -19,10 +20,10 @@ public class Ga implements Serializable {
 
     // Mối quan hệ một-nhiều với ChuyenTau (chuyến tàu đi và đến)
     @OneToMany(mappedBy = "gaDi", fetch = FetchType.LAZY)
-    private List<ChuyenTau> chuyenTauDi = new ArrayList<>();
+    private Set<ChuyenTau> chuyenTauDi;
 
     @OneToMany(mappedBy = "gaDen", fetch = FetchType.LAZY)
-    private List<ChuyenTau> chuyenTauDen = new ArrayList<>();
+    private Set<ChuyenTau> chuyenTauDen;
 
     public Ga() {
         super();
@@ -48,22 +49,6 @@ public class Ga implements Serializable {
 
     public void setTenGa(String tenGa) {
         this.tenGa = tenGa;
-    }
-
-    public List<ChuyenTau> getChuyenTauDi() {
-        return chuyenTauDi;
-    }
-
-    public void setChuyenTauDi(List<ChuyenTau> chuyenTauDi) {
-        this.chuyenTauDi = chuyenTauDi;
-    }
-
-    public List<ChuyenTau> getChuyenTauDen() {
-        return chuyenTauDen;
-    }
-
-    public void setChuyenTauDen(List<ChuyenTau> chuyenTauDen) {
-        this.chuyenTauDen = chuyenTauDen;
     }
 
     @Override
