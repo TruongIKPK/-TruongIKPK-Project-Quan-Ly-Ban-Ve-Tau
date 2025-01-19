@@ -8,24 +8,24 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @Entity
-@Table(name = "toa")
+@Table(name = "Toa")
 public class Toa implements Serializable {
     @Id
-    @Column(name = "ma_toa", nullable = false)
+    @Column(name = "maToa", nullable = false)
     private final String maToa;
 
     @ManyToOne
-    @JoinColumn(name = "tau_id")
+    @JoinColumn(name = "tau")
     private Tau tau;
 
     @ManyToOne
-    @JoinColumn(name = "loai_toa_id")
+    @JoinColumn(name = "loaiToa")
     private LoaiToa loaiToa;
 
-    @Column(name = "so_luong_cho")
+    @Column(name = "soLuongCho")
     private int soLuongCho;
 
-    @OneToMany(mappedBy = "toa", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "Toa", cascade = CascadeType.ALL)
     private ArrayList<ChoNgoi> danhSachChoNgoi;
 
     @Transient

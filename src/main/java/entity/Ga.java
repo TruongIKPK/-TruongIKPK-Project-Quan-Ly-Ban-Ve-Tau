@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ga")
+@Table(name = "Ga")
 public class Ga implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ma_ga", nullable = false, unique = true)
+    @Column(name = "maGa", nullable = false, unique = true)
     private final int maGa;
 
-    @Column(name = "ten_ga")
+    @Column(name = "tenGa")
     private String tenGa;
 
     // Mối quan hệ một-nhiều với ChuyenTau (chuyến tàu đi và đến)

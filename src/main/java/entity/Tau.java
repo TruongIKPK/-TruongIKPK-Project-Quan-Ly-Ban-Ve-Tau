@@ -10,19 +10,19 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "tau")
+@Table(name = "Tau")
 public class Tau implements Serializable {
     @Id
-    @Column(name = "ma_tau", nullable = false, unique = true)
+    @Column(name = "maTau", nullable = false, unique = true)
     private final String maTau;
 
-    @Column(name = "ten_tau", nullable = false)
+    @Column(name = "tenTau", nullable = false)
     private String tenTau;
 
-    @Column(name = "trang_thai", nullable = false)
+    @Column(name = "trangThai", nullable = false)
     private String trangThai;
 
-    @OneToMany(mappedBy = "tau", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "Tau", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ArrayList<Toa> danhSachToa;
 
     public Tau() {

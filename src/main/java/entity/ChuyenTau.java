@@ -8,34 +8,34 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "chuyen_tau")
+@Table(name = "ChuyenTau")
 public class ChuyenTau implements Serializable {
     @Id
-    @Column(name = "ma_chuyen", nullable = false, unique = true)
+    @Column(name = "maChuyen", nullable = false, unique = true)
     private final String maChuyen;
 
-    @Column(name = "mac_tau", nullable = false)
+    @Column(name = "macTau", nullable = false)
     private String macTau;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ma_tau", referencedColumnName = "ma_tau", nullable = false)
+    @JoinColumn(name = "maTau", referencedColumnName = "maTau", nullable = false)
     private Tau tau;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ma_ga_di", referencedColumnName = "ma_ga", nullable = false)
+    @JoinColumn(name = "gaDi", referencedColumnName = "maGa", nullable = false)
     private Ga gaDi;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ma_ga_den", referencedColumnName = "ma_ga", nullable = false)
+    @JoinColumn(name = "gaDen", referencedColumnName = "maGa", nullable = false)
     private Ga gaDen;
 
-    @Column(name = "ngay_gio_di", nullable = false)
+    @Column(name = "ngayGioDi", nullable = false)
     private LocalDateTime ngayGioDi;
 
-    @Column(name = "ngay_gio_den", nullable = false)
+    @Column(name = "ngayGioDen", nullable = false)
     private LocalDateTime ngayGioDen;
 
-    @Column(name = "trang_thai", nullable = false)
+    @Column(name = "trangThai", nullable = false)
     private String trangThai;
 
     public ChuyenTau() {
