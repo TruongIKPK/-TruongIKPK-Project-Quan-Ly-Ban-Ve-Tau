@@ -21,49 +21,114 @@ import java.util.List;
 public class DAOTau {
     private static ArrayList<Tau> dsTau;
 
+
+    private static EntityManager em;
+
+    public DAOTau(EntityManager entityManager) {
+        this.em = entityManager;
+    }
+
+//    // Thêm tàu
+//    public static boolean themTau(Tau tau) {
+//        String sql = "INSERT INTO Tau(maTau, tenTau, trangThai) VALUES(?, ?, ?)";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, tau.getMaTau());
+//            stmt.setString(2, tau.getTenTau());
+//            stmt.setString(3, tau.getTrangThai());
+//            return stmt.executeUpdate() > 0;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
+
     // Thêm tàu
     public static boolean themTau(Tau tau) {
-        String sql = "INSERT INTO Tau(maTau, tenTau, trangThai) VALUES(?, ?, ?)";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, tau.getMaTau());
-            stmt.setString(2, tau.getTenTau());
-            stmt.setString(3, tau.getTrangThai());
-            return stmt.executeUpdate() > 0;
+        try {
+            em.getTransaction().begin();
+            em.persist(tau);
+            em.getTransaction().commit();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
         }
         return false;
     }
+//    // Câp nhật trạng thái tàu
+//    public static boolean capNhatTrangThaiTau(String maTau, String trangThai) {
+//        String sql = "UPDATE Tau SET trangThai = ? WHERE maTau = ?";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, trangThai);
+//            stmt.setString(2, maTau);
+//            return stmt.executeUpdate() > 0;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
+
 
     // Câp nhật trạng thái tàu
     public static boolean capNhatTrangThaiTau(String maTau, String trangThai) {
-        String sql = "UPDATE Tau SET trangThai = ? WHERE maTau = ?";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, trangThai);
-            stmt.setString(2, maTau);
-            return stmt.executeUpdate() > 0;
+        try {
+            em.getTransaction().begin();
+            String jpql = "UPDATE Tau t SET t.trangThai = :trangThai WHERE t.maTau = :maTau";
+            int updatedCount = em.createQuery(jpql)
+                    .setParameter("trangThai", trangThai)
+                    .setParameter("maTau", maTau)
+                    .executeUpdate();
+            em.getTransaction().commit();
+            return updatedCount > 0;
         } catch (Exception e) {
             e.printStackTrace();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
         }
         return false;
     }
+
+//    // Cập nhật tàu
+//    public static boolean capNhatTau(Tau tau) {
+//        String sql = "UPDATE Tau SET tenTau = ?, trangThai = ? WHERE maTau = ?";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, tau.getTenTau());
+//            stmt.setString(2, tau.getTrangThai());
+//            stmt.setString(3, tau.getMaTau());
+//            return stmt.executeUpdate() > 0;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return false;
+//    }
 
     // Cập nhật tàu
     public static boolean capNhatTau(Tau tau) {
-        String sql = "UPDATE Tau SET tenTau = ?, trangThai = ? WHERE maTau = ?";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, tau.getTenTau());
-            stmt.setString(2, tau.getTrangThai());
-            stmt.setString(3, tau.getMaTau());
-            return stmt.executeUpdate() > 0;
+        try {
+            em.getTransaction().begin();
+            String jpql = "UPDATE Tau t SET t.tenTau = :tenTau, t.trangThai = :trangThai WHERE t.maTau = :maTau";
+            int updatedCount = em.createQuery(jpql)
+                    .setParameter("tenTau", tau.getTenTau())
+                    .setParameter("trangThai", tau.getTrangThai())
+                    .setParameter("maTau", tau.getMaTau())
+                    .executeUpdate();
+            em.getTransaction().commit();
+            return updatedCount > 0;
         } catch (Exception e) {
             e.printStackTrace();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
         }
-
         return false;
     }
 
-    // Get danh sach tàu
+//
+//     //Get danh sach tàu
 //    public static ArrayList<Tau> getDSTau() {
 //        if (dsTau != null) {
 //            // Nếu tàu đã được khởi tạo thì trả về danh sách tàu
@@ -91,18 +156,16 @@ public class DAOTau {
 //
 //        return dsTau;
 //    }
-    private static EntityManager em;
+//
 
-    public DAOTau(EntityManager entityManager) {
-        this.em = entityManager;
-    }
+    //Get danh sach tàu
     public static ArrayList<Tau> getDSTau() {
         if (dsTau != null) {
-            // Nếu danh sách tàu đã được khởi tạo thì trả về danh sách tàu
+            // Nếu tàu đã được khởi tạo thì trả về danh sách tàu
             return dsTau;
         }
 
-        dsTau = new ArrayList<>(); // Nếu chưa khởi tạo thì tạo mới
+        dsTau = new ArrayList<>(); // Nếu tàu chưa được khởi tạo thì khởi tạo mới
         try {
             // Truy vấn JPQL lấy danh sách tàu
             String jpql = "SELECT t FROM Tau t";
@@ -129,15 +192,29 @@ public class DAOTau {
     }
 
 
+//    // Get tàu theo mã
+//    public static Tau getTauTheoMa(String maTau) {
+//        ArrayList<Tau> dsTau = getDSTau();
+//        for (Tau tau : dsTau) {
+//            if (tau.getMaTau().equals(maTau)) {
+//                return tau;
+//            }
+//        }
+//
+//        return null;
+//    }
+//}
+
     // Get tàu theo mã
     public static Tau getTauTheoMa(String maTau) {
-        ArrayList<Tau> dsTau = getDSTau();
-        for (Tau tau : dsTau) {
-            if (tau.getMaTau().equals(maTau)) {
-                return tau;
-            }
+        try {
+            String jpql = "SELECT t FROM Tau t WHERE t.maTau = :maTau";
+            TypedQuery<Tau> query = em.createQuery(jpql, Tau.class);
+            query.setParameter("maTau", maTau);
+            return query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
         return null;
     }
 }
