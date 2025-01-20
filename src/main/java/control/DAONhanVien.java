@@ -7,8 +7,10 @@ import entity.NhanVien;
 import entity.TaiKhoan;
 import enums.ETrangThaiNhanVien;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import service.NhanVienService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,28 +43,52 @@ public class DAONhanVien {
     // ham them nhan vien khong can ma nhan vien
     //-- NhanVien
     //INSERT INTO NhanVien (tenNV, gioiTinh, ngaySinh, ngayVaoLam, CCCD, sdt, email, diaChi, trangThai, macaLam, maTaiKhoan, maChucVu) VALUES
-    public static boolean themNhanVien(NhanVien nv) {
-//        String sql = "INSERT INTO NhanVien (tenNV, gioiTinh, ngaySinh, ngayVaoLam, CCCD, sdt, email, diaChi, trangThai, macaLam, maTaiKhoan, maChucVu) VALUES()"
-        String sql = "INSERT INTO NhanVien (tenNV, gioiTinh, ngaySinh, ngayVaoLam, CCCD, sdt, email, diaChi, trangThai, macaLam, maTaiKhoan, maChucVu) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, nv.getTenNV());
-            stmt.setString(2, nv.getGioiTinh());
-            stmt.setDate(3, java.sql.Date.valueOf(nv.getNgaySinh()));
-            stmt.setString(4, nv.getNgayVaoLam().toString());
-            stmt.setString(5, nv.getCCCD());
-            stmt.setString(6, nv.getSdt());
-            stmt.setString(7, nv.getEmail());
-            stmt.setString(8, nv.getDiaChi());
-            stmt.setString(9, nv.getTrangThai());
-            stmt.setString(10, nv.getCaLam().getMaCL());
-            stmt.setString(11, nv.getTaiKhoan().getMaTK());
-            stmt.setString(12, nv.getChucVu().getMaCV());
-            return stmt.executeUpdate() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+//    public static boolean themNhanVien(NhanVien nv) {
+////        String sql = "INSERT INTO NhanVien (tenNV, gioiTinh, ngaySinh, ngayVaoLam, CCCD, sdt, email, diaChi, trangThai, macaLam, maTaiKhoan, maChucVu) VALUES()"
+//        String sql = "INSERT INTO NhanVien (tenNV, gioiTinh, ngaySinh, ngayVaoLam, CCCD, sdt, email, diaChi, trangThai, macaLam, maTaiKhoan, maChucVu) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, nv.getTenNV());
+//            stmt.setString(2, nv.getGioiTinh());
+//            stmt.setDate(3, java.sql.Date.valueOf(nv.getNgaySinh()));
+//            stmt.setString(4, nv.getNgayVaoLam().toString());
+//            stmt.setString(5, nv.getCCCD());
+//            stmt.setString(6, nv.getSdt());
+//            stmt.setString(7, nv.getEmail());
+//            stmt.setString(8, nv.getDiaChi());
+//            stmt.setString(9, nv.getTrangThai());
+//            stmt.setString(10, nv.getCaLam().getMaCL());
+//            stmt.setString(11, nv.getTaiKhoan().getMaTK());
+//            stmt.setString(12, nv.getChucVu().getMaCV());
+//            return stmt.executeUpdate() > 0;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
+    private static EntityManager em;
+
+    public DAONhanVien(EntityManager entityManager) {
+        this.em = entityManager;
     }
+
+    public boolean themNhanVien(NhanVien nv) {
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            // Tự sinh mã khách hàng
+            NhanVienService nhanVienService = new NhanVienService(em);
+            nhanVienService.persistNhanVien(nv);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     // 1. Lấy  nhân viên theo mã nhân viên
 //    public static NhanVien getNhanVien(String maNV) {
@@ -95,11 +121,7 @@ public class DAONhanVien {
 //        return null;
 //    }
 
-    private static EntityManager em;
 
-    public DAONhanVien(EntityManager entityManager) {
-        this.em = entityManager;
-    }
 
 
     public static NhanVien getNhanVien(String maNV) {
