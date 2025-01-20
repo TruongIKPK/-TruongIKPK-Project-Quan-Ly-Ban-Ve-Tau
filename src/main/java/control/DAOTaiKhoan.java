@@ -3,6 +3,9 @@ package control;
 import connectDB.ConnectDB;
 import entity.TaiKhoan;
 import enums.ETrangThaiTaiKhoan;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
@@ -12,12 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-/**
- * @Dự án: tau-viet-express
- * @Class: DAOTaiKhoan
- * @Tạo vào ngày: 10/15/2024
- * @Tác giả: Thai
- */
+
 public class DAOTaiKhoan {
     /*Bảng Tài Khoản
 Tên cột	Kiểu dữ liệu	Ràng buộc
@@ -37,6 +35,36 @@ trangThai	NVARCHAR(20)	DEFAULT 'Kích hoạt', IN ('Kích hoạt', 'Bị khóa')
 //        }
 //        return false;
 //    }
+    private static EntityManager em;
+
+    public DAOTaiKhoan(EntityManager entityManager) {
+        this.em = entityManager;
+    }
+
+
+
+    public static TaiKhoan login(String maTK, String matKhau) {
+        String jpql = "SELECT tk FROM TaiKhoan tk WHERE tk.maTK = :maTK AND tk.trangThai = :trangThai";
+        TypedQuery<TaiKhoan> query = em.createQuery(jpql, TaiKhoan.class);
+        query.setParameter("maTK", maTK);
+        query.setParameter("trangThai", ETrangThaiTaiKhoan.KICH_HOAT.getTrangThai());
+
+        try {
+            TaiKhoan tk = query.getSingleResult();
+            System.out.println("Mật khẩu DB: " + tk.getMatKhauHash());
+
+            if (BCrypt.checkpw(matKhau, tk.getMatKhauHash())) {
+                return tk;
+            } else {
+                System.out.println("Mật khẩu không đúng!");
+            }
+        } catch (NoResultException e) {
+            System.out.println("Không tìm thấy tài khoản!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     //chuyen trang thai tai khoan
     public static boolean chuyenTrangThaiTaiKhoan(String maTK, String trangThai) {
@@ -98,32 +126,32 @@ trangThai	NVARCHAR(20)	DEFAULT 'Kích hoạt', IN ('Kích hoạt', 'Bị khóa')
     }
 
     //login check tk mat khau va trang thai lam viec khong cho dang nhap neu trang thai bi khoa
-    public static TaiKhoan login(String maTK, String matKhau) {
-        String sql = "SELECT * FROM TaiKhoan WHERE maTK = ? AND trangThai = ?";
-        try (
-                PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
-        ) {
-            stmt.setString(1, maTK);
-            stmt.setString(2, ETrangThaiTaiKhoan.KICH_HOAT.getTrangThai());
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String matKhauHash = rs.getString("matKhau");
-                // Kiểm tra mật khẩu
-                if (BCrypt.checkpw(matKhau, matKhauHash)) {
-                    // Nếu đúng mật khẩu, trả về đối tượng TaiKhoan
-                    return new TaiKhoan(
-                            rs.getString("maTK"),
-                            rs.getString("matKhau"),
-                            rs.getString("trangThai")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null; // Trả về null nếu không đăng nhập được
-    }
+//    public static TaiKhoan login(String maTK, String matKhau) {
+//        String sql = "SELECT * FROM TaiKhoan WHERE maTK = ? AND trangThai = ?";
+//        try (
+//                PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
+//        ) {
+//            stmt.setString(1, maTK);
+//            stmt.setString(2, ETrangThaiTaiKhoan.KICH_HOAT.getTrangThai());
+//            ResultSet rs = stmt.executeQuery();
+//
+//            if (rs.next()) {
+//                String matKhauHash = rs.getString("matKhau");
+//                // Kiểm tra mật khẩu
+//                if (BCrypt.checkpw(matKhau, matKhauHash)) {
+//                    // Nếu đúng mật khẩu, trả về đối tượng TaiKhoan
+//                    return new TaiKhoan(
+//                            rs.getString("maTK"),
+//                            rs.getString("matKhau"),
+//                            rs.getString("trangThai")
+//                    );
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return null; // Trả về null nếu không đăng nhập được
+//    }
 
 
 

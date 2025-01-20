@@ -31,7 +31,7 @@ public class DAOChucVu {
         return dsChucVu;
     }
 
-    // Get ChucVu by maCV
+//     Get ChucVu by maCV
     public static ChucVu getChucVuTheoMa(String maCV) {
         ChucVu cv = null;
         String sql = "SELECT * FROM ChucVu WHERE MaCV = ?";

@@ -173,7 +173,6 @@ public class FrmDangNhap extends JFrame {
                 protected Void doInBackground() throws Exception {
                     String maTK = cmbMaTK.getSelectedItem().toString();
                     String matKhau = new String(txtPass.getPassword());
-
                     TaiKhoan tk = DAOTaiKhoan.login(maTK, matKhau);
                     if (tk != null) {
                         NhanVien nv = DAONhanVien.getNhanVien(tk.getMaTK());

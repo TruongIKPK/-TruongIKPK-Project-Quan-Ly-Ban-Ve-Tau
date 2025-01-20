@@ -9,6 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
+
 /**
  * @Dự án: tau-viet-express
  * @Class: DAOGa
@@ -17,25 +21,48 @@ import java.util.ArrayList;
  */
 public class DAOGa {
     // Get danh sách ga
+//    public static ArrayList<Ga> getDsGa() {
+//        System.out.println("DAO: Get danh sách ga");
+//        ArrayList<Ga> dsGa = new ArrayList<>();
+//        try {
+//            Connection connection = ConnectDB.getConnection();
+//            String sql = "SELECT * FROM Ga";
+//            ResultSet rs = connection.createStatement().executeQuery(sql);
+//            while (rs.next()) {
+//                int maGa = rs.getInt("maGa");
+//                String tenGa = rs.getString("tenGa");
+//                Ga ga = new Ga(maGa, tenGa);
+//                dsGa.add(ga);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return dsGa;
+//    }
+    private static EntityManager em;
+
+    public DAOGa(EntityManager entityManager) {
+        this.em = entityManager;
+    }
     public static ArrayList<Ga> getDsGa() {
         System.out.println("DAO: Get danh sách ga");
         ArrayList<Ga> dsGa = new ArrayList<>();
         try {
-            Connection connection = ConnectDB.getConnection();
-            String sql = "SELECT * FROM Ga";
-            ResultSet rs = connection.createStatement().executeQuery(sql);
-            while (rs.next()) {
-                int maGa = rs.getInt("maGa");
-                String tenGa = rs.getString("tenGa");
-                Ga ga = new Ga(maGa, tenGa);
-                dsGa.add(ga);
-            }
-        } catch (SQLException e) {
+            // Tạo truy vấn JPQL để lấy tất cả Ga từ cơ sở dữ liệu
+            String jpql = "SELECT g FROM Ga g"; // Truy vấn JPQL
+            TypedQuery<Ga> query = em.createQuery(jpql, Ga.class);
+
+            // Thực thi truy vấn và lấy kết quả
+            dsGa = new ArrayList<>(query.getResultList()); // Danh sách Ga trả về từ truy vấn
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return dsGa;
     }
+
 
     // Get Ga theo mã ga
     public static Ga getGaTheoMaGa(int maGa) {

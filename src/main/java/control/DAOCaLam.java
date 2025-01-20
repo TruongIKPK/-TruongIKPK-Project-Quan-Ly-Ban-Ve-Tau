@@ -10,12 +10,7 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: DAOCaLam
- * @Tạo vào ngày: 10/15/2024
- * @Tác giả: Thai
- */
+
 public class DAOCaLam {
     /*
     * maCL	VARCHAR(3)	PRIMARY KEY, IN ('CA1', 'CA2')

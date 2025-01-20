@@ -3,11 +3,14 @@ package control;
 import connectDB.ConnectDB;
 import entity.Tau;
 import entity.Toa;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Dự án: tau-viet-express
@@ -61,33 +64,70 @@ public class DAOTau {
     }
 
     // Get danh sach tàu
+//    public static ArrayList<Tau> getDSTau() {
+//        if (dsTau != null) {
+//            // Nếu tàu đã được khởi tạo thì trả về danh sách tàu
+//            return dsTau;
+//        }
+//
+//        dsTau = new ArrayList<>(); // Nếu tàu chưa được khởi tạo thì khởi tạo mới
+//        String sql = "SELECT * FROM Tau";
+//
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
+//             ResultSet rs = stmt.executeQuery()) {
+//
+//            while (rs.next()) {
+//                String maTau = rs.getString("maTau");
+//                String tenTau = rs.getString("tenTau");
+//                String trangThai = rs.getString("trangThai");
+//                ArrayList<Toa> dsToa = DAOToa.getToaTheoTau(maTau);
+//                Tau tau = new Tau(maTau, tenTau, trangThai, dsToa);
+//                dsTau.add(tau);
+//            }
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        return dsTau;
+//    }
+    private static EntityManager em;
+
+    public DAOTau(EntityManager entityManager) {
+        this.em = entityManager;
+    }
     public static ArrayList<Tau> getDSTau() {
         if (dsTau != null) {
-            // Nếu tàu đã được khởi tạo thì trả về danh sách tàu
+            // Nếu danh sách tàu đã được khởi tạo thì trả về danh sách tàu
             return dsTau;
         }
 
-        dsTau = new ArrayList<>(); // Nếu tàu chưa được khởi tạo thì khởi tạo mới
-        String sql = "SELECT * FROM Tau";
+        dsTau = new ArrayList<>(); // Nếu chưa khởi tạo thì tạo mới
+        try {
+            // Truy vấn JPQL lấy danh sách tàu
+            String jpql = "SELECT t FROM Tau t";
+            TypedQuery<Tau> query = em.createQuery(jpql, Tau.class);
 
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+            // Lấy danh sách tàu từ cơ sở dữ liệu
+            List<Tau> tauList = query.getResultList();
 
-            while (rs.next()) {
-                String maTau = rs.getString("maTau");
-                String tenTau = rs.getString("tenTau");
-                String trangThai = rs.getString("trangThai");
+            // Duyệt qua từng tàu và lấy thêm thông tin về các toa
+            for (Tau tau : tauList) {
+                String maTau = tau.getMaTau();
                 ArrayList<Toa> dsToa = DAOToa.getToaTheoTau(maTau);
-                Tau tau = new Tau(maTau, tenTau, trangThai, dsToa);
-                dsTau.add(tau);
+                tau.setDanhSachToa(dsToa);
             }
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            // Thêm tất cả tàu vào danh sách dsTau
+            dsTau.addAll(tauList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return dsTau;
     }
+
 
     // Get tàu theo mã
     public static Tau getTauTheoMa(String maTau) {

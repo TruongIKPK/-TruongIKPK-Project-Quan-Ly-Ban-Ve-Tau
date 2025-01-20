@@ -6,6 +6,9 @@ import entity.ChucVu;
 import entity.NhanVien;
 import entity.TaiKhoan;
 import enums.ETrangThaiNhanVien;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -62,32 +65,58 @@ public class DAONhanVien {
     }
 
     // 1. Lấy  nhân viên theo mã nhân viên
+//    public static NhanVien getNhanVien(String maNV) {
+//        String sql = "SELECT * FROM NhanVien WHERE maNV = ?";
+//        try (
+//                PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
+//        ) {
+//            stmt.setString(1, maNV);
+//            ResultSet rs = stmt.executeQuery();
+//            if (rs.next()) {
+//                String tenNV = rs.getString("tenNV");
+//                String gioiTinh = rs.getString("gioiTinh");
+//                LocalDate ngaySinh = rs.getDate("ngaySinh").toLocalDate();
+//                String ngayVaoLam = rs.getString("ngayVaoLam");
+//                String CCCD = rs.getString("CCCD");
+//                String sdt = rs.getString("sdt");
+//                String email = rs.getString("email");
+//                String diaChi = rs.getString("diaChi");
+//                String trangThai = rs.getString("trangThai");
+//                String macaLam = rs.getString("macaLam");
+//                String maTaiKhoan = rs.getString("maTaiKhoan");
+//                String maChucVu = rs.getString("maChucVu");
+//                NhanVien nv = new NhanVien(maNV, tenNV, gioiTinh, ngaySinh, sdt, email, diaChi, CCCD, LocalDate.parse(ngayVaoLam), DAOChucVu.getChucVuTheoMa(maChucVu), DAOTaiKhoan.getTaiKhoanTheoMa(maTaiKhoan), trangThai, DAOCaLam.getCaLamTheoMa(macaLam));
+//                return nv;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//
+//        }
+//        return null;
+//    }
+
+    private static EntityManager em;
+
+    public DAONhanVien(EntityManager entityManager) {
+        this.em = entityManager;
+    }
+
+
     public static NhanVien getNhanVien(String maNV) {
-        String sql = "SELECT * FROM NhanVien WHERE maNV = ?";
-        try (
-                PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
-        ) {
-            stmt.setString(1, maNV);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                String tenNV = rs.getString("tenNV");
-                String gioiTinh = rs.getString("gioiTinh");
-                LocalDate ngaySinh = rs.getDate("ngaySinh").toLocalDate();
-                String ngayVaoLam = rs.getString("ngayVaoLam");
-                String CCCD = rs.getString("CCCD");
-                String sdt = rs.getString("sdt");
-                String email = rs.getString("email");
-                String diaChi = rs.getString("diaChi");
-                String trangThai = rs.getString("trangThai");
-                String macaLam = rs.getString("macaLam");
-                String maTaiKhoan = rs.getString("maTaiKhoan");
-                String maChucVu = rs.getString("maChucVu");
-                NhanVien nv = new NhanVien(maNV, tenNV, gioiTinh, ngaySinh, sdt, email, diaChi, CCCD, LocalDate.parse(ngayVaoLam), DAOChucVu.getChucVuTheoMa(maChucVu), DAOTaiKhoan.getTaiKhoanTheoMa(maTaiKhoan), trangThai, DAOCaLam.getCaLamTheoMa(macaLam));
-                return nv;
-            }
+        String jpql = "SELECT nv FROM NhanVien nv WHERE nv.maNV = :maNV";
+        try {
+            // Tạo một đối tượng query với JPQL
+            TypedQuery<NhanVien> query = em.createQuery(jpql, NhanVien.class);
+            query.setParameter("maNV", maNV);
+
+            // Thực hiện truy vấn và lấy kết quả
+            NhanVien nv = query.getSingleResult(); // getSingleResult sẽ trả về 1 kết quả duy nhất nếu có
+
+            return nv;
+        } catch (NoResultException e) {
+            System.out.println("Không tìm thấy nhân viên với mã " + maNV);
         } catch (Exception e) {
             e.printStackTrace();
-
         }
         return null;
     }
@@ -329,18 +358,35 @@ public class DAONhanVien {
         return null;
     }
     // lay duongDanAnh cua anh nhan vien
+//    public static String getDuongDanAnh(String maNV) {
+//        String sql = "SELECT duongDanAnh FROM NhanVien WHERE maNV = ?";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, maNV);
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                if (rs.next()) {
+//                    return rs.getString("duongDanAnh");
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
     public static String getDuongDanAnh(String maNV) {
-        String sql = "SELECT duongDanAnh FROM NhanVien WHERE maNV = ?";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, maNV);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("duongDanAnh");
-                }
-            }
+        String jpql = "SELECT nv.duongDanAnh FROM NhanVien nv WHERE nv.maNV = :maNV";
+        try {
+            // Tạo query với JPQL và ánh xạ kiểu dữ liệu trả về là String
+            TypedQuery<String> query = em.createQuery(jpql, String.class);
+            query.setParameter("maNV", maNV);
+
+            // Lấy kết quả đầu tiên (duongDanAnh)
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            System.out.println("Không tìm thấy đường dẫn ảnh cho nhân viên với mã " + maNV);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+
 }
