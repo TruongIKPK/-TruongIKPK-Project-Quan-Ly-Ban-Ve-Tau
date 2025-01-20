@@ -2,6 +2,7 @@ package entity;
 
 import enums.ETrangThaiNhanVien;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import org.hibernate.annotations.Check;
 import utils.Validation;
 
@@ -11,16 +12,8 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "NhanVien")
-@Check(constraints = "LEFT(maNV, 2) IN ('NV', 'QL') AND " +
-        "LEN(SUBSTRING(maNV, 3, 6)) = 6 AND " +
-        "SUBSTRING(maNV, 3, 6) NOT LIKE '%[^0-9]%' AND " +
-        "LEN(RIGHT(maNV, 3)) = 3 AND " +
-        "ISNUMERIC(RIGHT(maNV, 3)) = 1")
+
 @Check(constraints = "gioiTinh IN (N'Nam', N'Nữ')")
-@Check(constraints = "DATEDIFF(YEAR, ngaySinh, GETDATE()) >= 18")
-@Check(constraints = "LEN(CCCD) = 12")
-@Check(constraints = "sdt LIKE '0%'")
 @Check(constraints = "trangThai IN (N'Làm việc', N'Nghỉ làm')")
 public class NhanVien implements Serializable {
     //new
@@ -70,7 +63,7 @@ public class NhanVien implements Serializable {
     private Set<HoaDon> hoaDons;
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JoinColumn(name = "maTaiKhoan")
+    @JoinColumn(name = "maTaiKhoan", nullable = false)
     private TaiKhoan taiKhoan;
 
     //end
@@ -103,6 +96,25 @@ public class NhanVien implements Serializable {
         setCaLam(caLam);
     }
 
+    public void setMaNV(String maNV) {
+        this.maNV = maNV;
+    }
+
+    public NhanVien(String maNV, String tenNV, String gioiTinh, LocalDate ngaySinh, LocalDate ngayVaoLam, String CCCD, String sdt, String email, String diaChi, String trangThai, CaLam caLam, ChucVu chucVu, String duongDanAnh ) {
+        this.maNV = maNV;
+        setTenNV(tenNV);
+        setGioiTinh(gioiTinh);
+        setNgaySinh(ngaySinh);
+        setSdt(sdt);
+        setEmail(email);
+        setDiaChi(diaChi);
+        setCCCD(CCCD);
+        setNgayVaoLam(ngayVaoLam);
+        setChucVu(chucVu);
+        setTrangThai(trangThai);
+        setCaLam(caLam);
+        setDuongDanAnh(duongDanAnh);
+    }
     public NhanVien(String tenNV, String gioiTinh, LocalDate ngaySinh, String sdt, String email, String diaChi, String CCCD, LocalDate ngayVaoLam, ChucVu chucVu, TaiKhoan taiKhoan, String trangThai, CaLam caLam) {
         this.maNV = "";
         setTenNV(tenNV);
@@ -117,6 +129,14 @@ public class NhanVien implements Serializable {
         setTaiKhoan(taiKhoan);
         setTrangThai(trangThai);
         setCaLam(caLam);
+    }
+
+    public String getDuongDanAnh() {
+        return duongDanAnh;
+    }
+
+    public void setDuongDanAnh(String duongDanAnh) {
+        this.duongDanAnh = duongDanAnh;
     }
 
     public String getMaNV() {
@@ -166,6 +186,7 @@ public class NhanVien implements Serializable {
         return sdt;
     }
 
+    @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải bắt đầu bằng 0 và có 10 chữ số")
     public void setSdt(String sdt) {
         // Số điện thoại không được để trống và đúng định dạng
         if (sdt.trim().isEmpty() || !Validation.sdt(sdt)) {
@@ -200,6 +221,7 @@ public class NhanVien implements Serializable {
         return CCCD;
     }
 
+    @Pattern(regexp = "^[0-9]{12}$", message = "CCCD phải có 12 chữ số")
     public void setCCCD(String CCCD) {
         if (!Validation.CCCD(CCCD)) {
             throw new IllegalArgumentException("CCCD không hợp lệ");

@@ -13,7 +13,7 @@ import java.util.Set;
 public class ChuyenTau implements Serializable {
     @Id
     @Column(name = "maChuyen", nullable = false, unique = true, columnDefinition = "varchar(20)")
-    private final String maChuyen;
+    private String maChuyen;
 
     @Column(name = "macTau", nullable = false)
     private String macTau;
@@ -84,6 +84,13 @@ public class ChuyenTau implements Serializable {
         setNgayGioDi(ngayGioDi);
         setNgayGioDen(ngayGioDen);
         setTrangThai(trangThai);
+    }
+
+    public void setMaChuyen(String maChuyen) {
+        if (!Validation.maChuyen(maChuyen)) {
+            throw new IllegalArgumentException("Mã chuyến không hợp lệ");
+        }
+        this.maChuyen = maChuyen;
     }
 
     public String getMaChuyen() {

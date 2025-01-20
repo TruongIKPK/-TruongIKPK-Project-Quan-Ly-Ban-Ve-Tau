@@ -2,6 +2,8 @@ package entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
+import jakarta.validation.constraints.*;
+
 import utils.Validation;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -9,9 +11,9 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Check(constraints = "sdt LIKE '0%' AND LEN(sdt) = 10")
-@Check(constraints = "email LIKE '%@%.%' OR email IS NULL")
-@Check(constraints = "ngaySinh < GETDATE()")
+//@Check(constraints = "sdt LIKE '0%' AND LEN(sdt) = 10")
+//@Check(constraints = "email LIKE '%@%.%' OR email IS NULL")
+//@Check(constraints = "ngaySinh < GETDATE()")
 public class KhachHang implements Serializable {
 
     @Id
@@ -19,21 +21,28 @@ public class KhachHang implements Serializable {
     @Column(columnDefinition = "varchar(20)")
     private String maKH;
 
+    @NotBlank(message = "Tên khách hàng không được để trống")
     @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String tenKH;
 
+    @Pattern(regexp = "\\d{12}", message = "CCCD phải có đúng 12 chữ số")
     @Column(columnDefinition = "char(12)", unique = true, nullable = true)
     private String CCCD;
 
+    @NotBlank(message = "Số điện thoại không được để trống")
+    @Pattern(regexp = "0\\d{9}", message = "Số điện thoại phải bắt đầu bằng 0 và có 10 chữ số")
     @Column(columnDefinition = "char(10)", nullable = false, unique = true)
     private String sdt;
 
+    @Email(message = "Email không hợp lệ")
     @Column(columnDefinition = "varchar(100)", nullable = true)
     private String email;
 
+    @Past(message = "Ngày sinh phải trước ngày hiện tại")
     @Column(columnDefinition = "date", nullable = true)
     private LocalDate ngaySinh;
 
+    @NotBlank(message = "Đối tượng không được để trống")
     @Column(columnDefinition = "nvarchar(30)", nullable = false)
     private String doiTuong;
 
@@ -108,7 +117,7 @@ public class KhachHang implements Serializable {
     public String getSdt() {
         return sdt;
     }
-
+    @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại phải bắt đầu bằng 0 và có 10 chữ số")
     public void setSdt(String sdt) {
         // Kiểm tra số điện thoại không được rỗng, phải bắt đầu bằng 0 và có 10 chữ số
         if (!Validation.sdt(sdt)) {

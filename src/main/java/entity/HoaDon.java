@@ -11,7 +11,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
 @Entity
-@Check(constraints = "soLuong > 0")
 public class HoaDon implements Serializable {
 
     @Id
@@ -119,11 +118,9 @@ public class HoaDon implements Serializable {
     }
 
     public void setSoLuong(int soLuong) {
-        // Kiểm tra số lượng phải lớn hơn 0
         if (soLuong <= 0) {
             throw new IllegalArgumentException("Số lượng phải lớn hơn 0");
         }
-
         this.soLuong = soLuong;
     }
 

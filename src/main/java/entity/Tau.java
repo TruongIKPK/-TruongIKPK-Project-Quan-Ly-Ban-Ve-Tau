@@ -10,7 +10,6 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "Tau")
 public class Tau implements Serializable {
     @Id
     @Column(name = "maTau", nullable = false, unique = true)
@@ -39,6 +38,12 @@ public class Tau implements Serializable {
         setTenTau(tenTau);
         setTrangThai(trangThai);
         this.danhSachToa = danhSachToa;
+    }
+
+    public Tau(String maTau, String tenTau, String trangThai) {
+        this.maTau = maTau;
+        setTenTau(tenTau);
+        setTrangThai(trangThai);
     }
 
     public Tau(String tenTau, String trangThai, ArrayList<Toa> danhSachToa) {

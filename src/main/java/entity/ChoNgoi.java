@@ -14,7 +14,7 @@ public class ChoNgoi implements Serializable {
 
     @Id
     @Column(columnDefinition = "varchar(20)")
-    private final String maCho;
+    private String maCho;
 
     @ManyToOne
     @JoinColumn(name = "maLC", nullable = false,columnDefinition = "varchar(10)")
@@ -51,6 +51,10 @@ public class ChoNgoi implements Serializable {
         this.maCho = "";
         setLoaiCho(loaiCho);
         setToa(toa);
+    }
+
+    public void setMaCho(String maCho) {
+        this.maCho = maCho;
     }
 
     public String getMaCho() {
@@ -111,5 +115,9 @@ public class ChoNgoi implements Serializable {
                 ", loaiCho=" + loaiCho +
                 ", toa=" + toa +
                 '}';
+    }
+
+    public Ve getVe() {
+        return ve;
     }
 }

@@ -8,8 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "LoaiCho")
-@Check(constraints = "giaCho > 0")
+//@Check(constraints = "giaCho > 0")
 public class LoaiCho implements Serializable {
 
     @Id

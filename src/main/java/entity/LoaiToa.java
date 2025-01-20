@@ -5,7 +5,6 @@ import java.util.Objects;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "LoaiToa")
 public class LoaiToa implements Serializable {
 
     @Id

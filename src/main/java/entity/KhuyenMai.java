@@ -13,15 +13,15 @@ import java.util.Set;
 
 @Entity
 @Table(name = "KhuyenMai")
-@Check(constraints = "phanTramKM >= 0 AND phanTramKM <= 1")
-@Check(constraints = "ngayApDung >= GETDATE()")
-@Check(constraints = "ngayKetThuc > ngayApDung")
+//@Check(constraints = "phanTramKM >= 0 AND phanTramKM <= 1")
+//@Check(constraints = "ngayApDung >= GETDATE()")
+//@Check(constraints = "ngayKetThuc > ngayApDung")
 
 public class KhuyenMai implements Serializable {
 
     @Id
     @Column(columnDefinition = "varchar(15)", unique = true, nullable = false)
-    private final String maKM;
+    private String maKM;
 
     @Column(name = "ngayApDung", columnDefinition = "DATE", nullable = false)
     private LocalDate ngayBD;
@@ -73,6 +73,9 @@ public class KhuyenMai implements Serializable {
         setDoiTuong(doiTuong);
         setPhanTramKM(phanTramKM);
     }
+    public void setMaKM(String maKM) {
+        this.maKM = maKM;
+    }
 
     public String getMaKM() {
         return maKM;
@@ -110,9 +113,9 @@ public class KhuyenMai implements Serializable {
 
     public void setNgayBD(LocalDate ngayBD) {
         // Kiểm tra ngày bắt đầu phải sau hoặc bằng ngày hiện tại
-//        if (ngayBD.isBefore(LocalDate.now())) {
-//            throw new IllegalArgumentException("Ngày bắt đầu không hợp lệ");
-//        }
+        if (ngayBD.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Ngày bắt đầu không hợp lệ");
+        }
 
         this.ngayBD = ngayBD;
     }

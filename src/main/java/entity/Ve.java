@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Ve implements Serializable {
     @Id
     @Column(columnDefinition = "varchar(20)")
-    private final String maVe;
+    private String maVe;
 
     @Column(columnDefinition = "datetime")
     private LocalDateTime ngayGioXuatVe;
@@ -84,7 +84,9 @@ public class Ve implements Serializable {
         setKhuyenMai(khuyenMai);
         setTrangThai(trangThai);
     }
-
+    public void setMaVe(String maVe) {
+        this.maVe = maVe;
+    }
     public String getMaVe() {
         return maVe;
     }

@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "Ga")
 public class Ga implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

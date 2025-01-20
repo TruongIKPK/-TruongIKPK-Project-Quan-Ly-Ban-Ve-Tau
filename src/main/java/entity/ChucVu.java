@@ -8,8 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "ChucVu")
-@Check(constraints = "maCV IN ('QL', 'NV')")
 public class ChucVu implements Serializable {
 
     @Id
@@ -28,16 +26,19 @@ public class ChucVu implements Serializable {
     }
 
     public ChucVu(String maCV) {
-        this.maCV = maCV;
+        setMaCV(maCV);
     }
 
     public ChucVu(String maCV, String tenCV) {
-//        if (maCV.trim().isEmpty()) {
-//            throw new IllegalArgumentException("Mã chức vụ không hợp lệ");
-//        }
-
-        this.maCV = maCV;
+        setMaCV(maCV);
         setTenCV(tenCV);
+    }
+
+    public void setMaCV(String maCV) {
+        if (!"QL".equals(maCV) && !"NV".equals(maCV)) {
+            throw new IllegalArgumentException("maCV phải là 'QL' hoặc 'NV'");
+        }
+        this.maCV = maCV;
     }
 
     public String getMaCV() {

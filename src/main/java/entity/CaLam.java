@@ -9,27 +9,22 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "CaLam")
-@Check(constraints = "maCL IN ('CA1', 'CA2')")
 public class CaLam implements Serializable {
-
     @Id
     @Column(columnDefinition = "varchar(3)")
     private String maCL;
 
-
     @Column(columnDefinition = "nvarchar(20)", nullable = false)
     private String tenCL;
 
-    @Column(columnDefinition = "time(7)", nullable = false)
+    @Column(columnDefinition = "time(6)", nullable = false)
     private LocalTime gioBD;
 
-    @Column(columnDefinition = "time(7)", nullable = false)
+    @Column(columnDefinition = "time(6)", nullable = false)
     private LocalTime gioKetThuc;
 
     @OneToMany(mappedBy = "caLam")
     private Set<NhanVien> nhanViens;
-
 
     public CaLam() {
         super();
@@ -37,14 +32,21 @@ public class CaLam implements Serializable {
     }
 
     public CaLam(String maCL) {
-        this.maCL = maCL;
+        setMaCL(maCL);
     }
 
     public CaLam(String maCL, String tenCL, LocalTime gioBD, LocalTime gioKetThuc) {
-        this.maCL = maCL;
+        setMaCL(maCL);
         this.tenCL = tenCL;
         this.gioBD = gioBD;
         this.gioKetThuc = gioKetThuc;
+    }
+
+    public void setMaCL(String maCL) {
+        if (!"CA1".equals(maCL) && !"CA2".equals(maCL)) {
+            throw new IllegalArgumentException("maCL phải là 'CA1' hoặc 'CA2'");
+        }
+        this.maCL = maCL;
     }
 
     public String getMaCL() {

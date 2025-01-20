@@ -10,8 +10,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "LoaiVe")
-
 public class LoaiVe implements Serializable {
 
     @Id

@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Toa implements Serializable {
     @Id
     @Column(columnDefinition = "varchar(20)")
-    private final String maToa;
+    private String maToa;
 
     @ManyToOne
     @JoinColumn(name = "tau")
@@ -44,6 +44,17 @@ public class Toa implements Serializable {
         this.loaiToa = loaiToa;
         this.soLuongCho = soLuongCho;
         this.danhSachChoNgoi = danhSachChoNgoi;
+    }
+
+    public Toa(int soLuongCho, Tau tau, LoaiToa loaiToa) {
+        this.soLuongCho = soLuongCho;
+        this.tau = tau;
+        this.loaiToa = loaiToa;
+        maToa = "";
+    }
+
+    public void setMaToa(String maToa) {
+        this.maToa = maToa;
     }
 
     public String getMaToa() {

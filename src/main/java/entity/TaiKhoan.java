@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "TaiKhoan")
 @Check(constraints = "trangThai IN (N'Kích hoạt', N'Bị khóa')")
 public class TaiKhoan implements Serializable {
 
@@ -49,6 +48,10 @@ public class TaiKhoan implements Serializable {
         this.maTK = "";
         setMatKhau(matKhau);
         setTrangThai(trangThai);
+    }
+
+   public void setMaTK(String maTK) {
+        this.maTK = maTK;
     }
 
     public String getMaTK() {
