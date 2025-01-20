@@ -1320,7 +1320,7 @@ public class DAOVe {
 //        return "N/A"; // Trả về 'N/A' nếu không tìm thấy dữ liệu
 //    }
 
-    public String getSlowestSalesTimeLastWeek() {
+    public static String getSlowestSalesTimeLastWeek() {
         try {
             LocalDate now = LocalDate.now();
             LocalDate startOfLastWeek = now.with(TemporalAdjusters.previous(DayOfWeek.MONDAY)).minusWeeks(1);
