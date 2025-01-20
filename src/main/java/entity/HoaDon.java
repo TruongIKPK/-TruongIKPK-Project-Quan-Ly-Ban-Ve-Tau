@@ -15,7 +15,7 @@ public class HoaDon implements Serializable {
 
     @Id
     @Column(columnDefinition = "varchar(20)")
-    private final String maHD;
+    private String maHD;
 
     @Column(columnDefinition = "datetime", nullable = true)
     private LocalDateTime ngayGioLapHD = LocalDateTime.now();
@@ -64,6 +64,14 @@ public class HoaDon implements Serializable {
         setKhachHang(khachHang);
         setSoLuong(soLuong);
         this.danhSachVe = danhSachVe;
+    }
+    public void setMaHD(String maHD) {
+        // Kiểm tra mã hóa đơn
+        if (!Validation.maHD(maHD)) {
+            throw new IllegalArgumentException("Mã hóa đơn không hợp lệ");
+        }
+
+        this.maHD = maHD;
     }
 
     public String getMaHD() {

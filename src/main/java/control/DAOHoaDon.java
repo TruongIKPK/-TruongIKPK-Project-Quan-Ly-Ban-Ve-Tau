@@ -5,6 +5,8 @@ import entity.HoaDon;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.Ve;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,12 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: DAOHoaDon
- * @Tạo vào ngày: 10/15/2024
- * @Tác giả: Thai
- */
 public class DAOHoaDon {
     /*CREATE TABLE HoaDon
 (
@@ -30,6 +26,8 @@ public class DAOHoaDon {
     */
     // ham them hoa don 4 thuoc tinh
     //INSERT INTO HoaDon(maNhanVien, maKhachHang, soLuong)
+
+
     public static boolean themHoaDon(HoaDon hd) {
         String sql = "INSERT INTO HoaDon(maNhanVien, maKhachHang, soLuong) VALUES(?, ?, ?)";
         try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
