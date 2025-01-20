@@ -5,6 +5,7 @@ import entity.TaiKhoan;
 import enums.ETrangThaiTaiKhoan;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -65,65 +66,148 @@ trangThai	NVARCHAR(20)	DEFAULT 'Kích hoạt', IN ('Kích hoạt', 'Bị khóa')
         }
         return null;
     }
-
     //chuyen trang thai tai khoan
     public static boolean chuyenTrangThaiTaiKhoan(String maTK, String trangThai) {
-        String sql = "UPDATE TaiKhoan SET trangThai = ? WHERE maTK = ?";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, trangThai);
-            stmt.setString(2, maTK);
-            return stmt.executeUpdate() > 0;
+        String jpql = "UPDATE TaiKhoan tk SET tk.trangThai = :trangThai WHERE tk.maTK = :maTK";
+        try {
+            // Tạo query với JPQL
+            Query query = em.createQuery(jpql);
+            query.setParameter("trangThai", trangThai);
+            query.setParameter("maTK", maTK);
+
+            // Thực hiện truy vấn và kiểm tra số lượng bản ghi bị ảnh hưởng
+            int result = query.executeUpdate();
+
+            // Nếu có bản ghi nào bị ảnh hưởng, trả về true
+            return result > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
-
-    // get ds tai khoan
+    //get ds tai khoan
     public static ArrayList<TaiKhoan> getDSTaiKhoan() {
-        //code
-        ArrayList<TaiKhoan> dsTaiKhoan = new ArrayList<>();
-        String sql = "SELECT * FROM TaiKhoan";
+        String jpql = "SELECT tk FROM TaiKhoan tk";
+        TypedQuery<TaiKhoan> query = em.createQuery(jpql, TaiKhoan.class);
+        return new ArrayList<>(query.getResultList());
+    }
+    //get tai khoan theo maTK
+    public static TaiKhoan getTaiKhoanTheoMa(String maTK) {
+        String jpql = "SELECT tk FROM TaiKhoan tk WHERE tk.maTK = :maTK";
+        TypedQuery<TaiKhoan> query = em.createQuery(jpql, TaiKhoan.class);
+        query.setParameter("maTK", maTK);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            System.out.println("Không tìm thấy tài khoản!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    //sua tai khoan
+    public static TaiKhoan suaTaiKhoan(TaiKhoan tk) {
+        String jpql = "UPDATE TaiKhoan tk SET tk.matKhau = :matKhau, tk.trangThai = :trangThai WHERE tk.maTK = :maTK";
+        try {
+            // Tạo query với JPQL
+            Query query = em.createQuery(jpql);
+            query.setParameter("matKhau", tk.getMatKhauHash());
+            query.setParameter("trangThai", tk.getTrangThai());
+            query.setParameter("maTK", tk.getMaTK());
 
-        try (
-                PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
-            //code
-            while (rs.next()) {
-                String maTK = rs.getString("maTK");
-                String matKhau = rs.getString("matKhau");
-                String trangThai = rs.getString("trangThai");
+            // Thực hiện truy vấn và kiểm tra số lượng bản ghi bị ảnh hưởng
+            int result = query.executeUpdate();
 
-                // Tạo đối tượng TaiKhoan và thêm vào danh sách
-                TaiKhoan tk = new TaiKhoan(maTK, matKhau, trangThai);
-                dsTaiKhoan.add(tk);
+            // Nếu có bản ghi nào bị ảnh hưởng, trả về true
+            if (result > 0) {
+                return tk;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return dsTaiKhoan;
+        return null;
     }
+//reset token
+//    public static boolean saveResetToken(String maTK, String resetToken) {
+//        String jpql = "UPDATE TaiKhoan tk SET tk.resetToken = :resetToken WHERE tk.maTK = :maTK";
+//        try {
+//            // Tạo query với JPQL
+//            Query query = em.createQuery(jpql);
+//            query.setParameter("resetToken", resetToken);
+//            query.setParameter("maTK", maTK);
+//
+//            // Thực hiện truy vấn và kiểm tra số lượng bản ghi bị ảnh hưởng
+//            int result = query.executeUpdate();
+//
+//            // Nếu có bản ghi nào bị ảnh hưởng, trả về true
+//            return result > 0;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
+
+
+
+
+    //chuyen trang thai tai khoan
+//    public static boolean chuyenTrangThaiTaiKhoan(String maTK, String trangThai) {
+//        String sql = "UPDATE TaiKhoan SET trangThai = ? WHERE maTK = ?";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, trangThai);
+//            stmt.setString(2, maTK);
+//            return stmt.executeUpdate() > 0;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
+
+    // get ds tai khoan
+//    public static ArrayList<TaiKhoan> getDSTaiKhoan() {
+//        //code
+//        ArrayList<TaiKhoan> dsTaiKhoan = new ArrayList<>();
+//        String sql = "SELECT * FROM TaiKhoan";
+//
+//        try (
+//                PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
+//                ResultSet rs = stmt.executeQuery()) {
+//            //code
+//            while (rs.next()) {
+//                String maTK = rs.getString("maTK");
+//                String matKhau = rs.getString("matKhau");
+//                String trangThai = rs.getString("trangThai");
+//
+//                // Tạo đối tượng TaiKhoan và thêm vào danh sách
+//                TaiKhoan tk = new TaiKhoan(maTK, matKhau, trangThai);
+//                dsTaiKhoan.add(tk);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return dsTaiKhoan;
+//    }
 
 
     // get tai khoan theo maTK
-    public static TaiKhoan getTaiKhoanTheoMa(String maTK) {
-        TaiKhoan tk = null;
-        String sql = "SELECT * FROM TaiKhoan WHERE maTK = ?";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, maTK);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    String ma = rs.getString("maTK");
-                    String matKhau = rs.getString("matKhau");
-                    String trangThai = rs.getString("trangThai");
-                    tk = new TaiKhoan(ma, matKhau, trangThai);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return tk;
-    }
+//    public static TaiKhoan getTaiKhoanTheoMa(String maTK) {
+//        TaiKhoan tk = null;
+//        String sql = "SELECT * FROM TaiKhoan WHERE maTK = ?";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, maTK);
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                if (rs.next()) {
+//                    String ma = rs.getString("maTK");
+//                    String matKhau = rs.getString("matKhau");
+//                    String trangThai = rs.getString("trangThai");
+//                    tk = new TaiKhoan(ma, matKhau, trangThai);
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return tk;
+//    }
 
     //login check tk mat khau va trang thai lam viec khong cho dang nhap neu trang thai bi khoa
 //    public static TaiKhoan login(String maTK, String matKhau) {
@@ -158,31 +242,31 @@ trangThai	NVARCHAR(20)	DEFAULT 'Kích hoạt', IN ('Kích hoạt', 'Bị khóa')
 
 
     // sua tai khoan
-    public static TaiKhoan suaTaiKhoan(TaiKhoan tk) {
-        String sql = "UPDATE TaiKhoan SET matKhau = ?, trangThai = ? WHERE maTK = ?";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, tk.getMatKhauHash());
-            stmt.setString(2, tk.getTrangThai());
-            stmt.setString(3, tk.getMaTK());
-            if (stmt.executeUpdate() > 0) {
-                return tk;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    public static boolean saveResetToken(String maTK, String resetToken) {
-        String sql = "UPDATE TaiKhoan SET resetToken = ? WHERE maTK = ?";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, resetToken);
-            stmt.setString(2, maTK);
-            return stmt.executeUpdate() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+//    public static TaiKhoan suaTaiKhoan(TaiKhoan tk) {
+//        String sql = "UPDATE TaiKhoan SET matKhau = ?, trangThai = ? WHERE maTK = ?";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, tk.getMatKhauHash());
+//            stmt.setString(2, tk.getTrangThai());
+//            stmt.setString(3, tk.getMaTK());
+//            if (stmt.executeUpdate() > 0) {
+//                return tk;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//    public static boolean saveResetToken(String maTK, String resetToken) {
+//        String sql = "UPDATE TaiKhoan SET resetToken = ? WHERE maTK = ?";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, resetToken);
+//            stmt.setString(2, maTK);
+//            return stmt.executeUpdate() > 0;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
 
 }
 

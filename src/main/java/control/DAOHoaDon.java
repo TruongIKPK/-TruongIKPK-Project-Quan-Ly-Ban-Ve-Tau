@@ -5,8 +5,12 @@ import entity.HoaDon;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.Ve;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import service.HoaDonService;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +18,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DAOHoaDon {
     /*CREATE TABLE HoaDon
@@ -27,191 +32,284 @@ public class DAOHoaDon {
     // ham them hoa don 4 thuoc tinh
     //INSERT INTO HoaDon(maNhanVien, maKhachHang, soLuong)
 
+//    public static boolean themHoaDon(HoaDon hd) {
+//        String sql = "INSERT INTO HoaDon(maNhanVien, maKhachHang, soLuong) VALUES(?, ?, ?)";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, hd.getNhanVien().getMaNV());
+//            stmt.setString(2, hd.getKhachHang().getMaKH());
+//            stmt.setInt(3, hd.getSoLuong());
+//            return stmt.executeUpdate() > 0;
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
+
+    private static EntityManager em;
+
+    public DAOHoaDon(EntityManager em) {
+        this.em = em;
+    }
 
     public static boolean themHoaDon(HoaDon hd) {
-        String sql = "INSERT INTO HoaDon(maNhanVien, maKhachHang, soLuong) VALUES(?, ?, ?)";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, hd.getNhanVien().getMaNV());
-            stmt.setString(2, hd.getKhachHang().getMaKH());
-            stmt.setInt(3, hd.getSoLuong());
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+                HoaDonService hoaDonService = new HoaDonService(em);
+                hoaDonService.persistHoaDon(hd);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
-
 
     // doc hoa don theo ma nhan vien
-    public static ArrayList<HoaDon> docHoaDonTheoNhanVien(String maNV) {
-        String sql = "SELECT * FROM HoaDon WHERE maNhanVien = ?";
-        ArrayList<HoaDon> dsHoaDon = new ArrayList<>();
+//    public static ArrayList<HoaDon> docHoaDonTheoNhanVien(String maNV) {
+//        String sql = "SELECT * FROM HoaDon WHERE maNhanVien = ?";
+//        ArrayList<HoaDon> dsHoaDon = new ArrayList<>();
+//
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//
+//            stmt.setString(1, maNV);
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                while (rs.next()) {
+//                    String maHD = rs.getString("maHD");
+//                    LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
+//                    String maKhachHang = rs.getString("maKhachHang");
+//                    int soLuong = rs.getInt("soLuong");
+//                    ArrayList<Ve> dsVe = DAOVe.layDSVeTheoMaHD(maHD);
+//                    NhanVien nv = DAONhanVien.getNhanVien(maNV);
+//                    KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKhachHang);
+//                    HoaDon hd = new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
+//                    dsHoaDon.add(hd);
+//                }
+//
+//                return dsHoaDon;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return dsHoaDon; // Trả về danh sách trống nếu có lỗi xảy ra
+//    }
 
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-
-            stmt.setString(1, maNV);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    String maHD = rs.getString("maHD");
-                    LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
-                    String maKhachHang = rs.getString("maKhachHang");
-                    int soLuong = rs.getInt("soLuong");
-                    ArrayList<Ve> dsVe = DAOVe.layDSVeTheoMaHD(maHD);
-                    NhanVien nv = DAONhanVien.getNhanVien(maNV);
-                    KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKhachHang);
-                    HoaDon hd = new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
-                    dsHoaDon.add(hd);
-                }
-
-                return dsHoaDon;
-            }
+    public ArrayList<HoaDon> docHoaDonTheoNhanVien(String maNV) {
+        try {
+            TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd WHERE hd.nhanVien.maNV = :maNV", HoaDon.class);
+            query.setParameter("maNV", maNV);
+            List<HoaDon> resultList = query.getResultList();
+            return new ArrayList<>(resultList); // Chuyển đổi List thành ArrayList
         } catch (Exception e) {
             e.printStackTrace();
+            return new ArrayList<>(); // Trả về danh sách trống nếu có lỗi xảy ra
         }
-
-        return dsHoaDon; // Trả về danh sách trống nếu có lỗi xảy ra
     }
 
-
     // read danh sach hoa don theo ma khach hang
+//    public static ArrayList<HoaDon> docHoaDonTheoKhachHang(String maKH) {
+//        ArrayList<HoaDon> dsHoaDon = new ArrayList<>();
+//        String sql = "SELECT * FROM HoaDon WHERE maKhachHang = ?";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, maKH);
+//
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                while (rs.next()) {
+//                    String maHD = rs.getString("maHD");
+//                    LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
+//                    String maNhanVien = rs.getString("maNhanVien");
+//                    int soLuong = rs.getInt("soLuong");
+//                    ArrayList<Ve> dsVe = DAOVe.layDSVeTheoMaHD(maHD);
+//                    NhanVien nv = DAONhanVien.getNhanVien(maNhanVien);
+//                    KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKH);
+//                    HoaDon hd = new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
+//                    dsHoaDon.add(hd);
+//                }
+//            }
+//            return dsHoaDon;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return dsHoaDon;
+//    }
+
     public static ArrayList<HoaDon> docHoaDonTheoKhachHang(String maKH) {
-        ArrayList<HoaDon> dsHoaDon = new ArrayList<>();
-        String sql = "SELECT * FROM HoaDon WHERE maKhachHang = ?";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, maKH);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    String maHD = rs.getString("maHD");
-                    LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
-                    String maNhanVien = rs.getString("maNhanVien");
-                    int soLuong = rs.getInt("soLuong");
-                    ArrayList<Ve> dsVe = DAOVe.layDSVeTheoMaHD(maHD);
-                    NhanVien nv = DAONhanVien.getNhanVien(maNhanVien);
-                    KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKH);
-                    HoaDon hd = new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
-                    dsHoaDon.add(hd);
-                }
-            }
-            return dsHoaDon;
-
+        try {
+            TypedQuery<HoaDon> query = em.createQuery(
+                    "SELECT hd FROM HoaDon hd WHERE hd.khachHang.maKH = :maKH", HoaDon.class);
+            query.setParameter("maKH", maKH);
+            List<HoaDon> resultList = query.getResultList();
+            return new ArrayList<>(resultList); // Chuyển đổi List thành ArrayList
         } catch (Exception e) {
             e.printStackTrace();
+            return new ArrayList<>(); // Trả về danh sách trống nếu có lỗi xảy ra
         }
-        return dsHoaDon;
     }
 
     // doc danh sach hoa don theo ngay
-    public static ArrayList<HoaDon> docHoaDonTheoNgay(LocalDate ngay) {
-        ArrayList<HoaDon> dsHoaDon = new ArrayList<>();
-        String sql = "SELECT * FROM HoaDon WHERE CONVERT(DATE, ngayGioLapHD) = ?";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setDate(1, java.sql.Date.valueOf(ngay));
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    String maHD = rs.getString("maHD");
-                    LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
-                    String maNhanVien = rs.getString("maNhanVien");
-                    NhanVien nv = DAONhanVien.getNhanVien(maNhanVien);
-                    String maKhachHang = rs.getString("maKhachHang");
-                    KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKhachHang);
-                    int soLuong = rs.getInt("soLuong");
-                    ArrayList<Ve> dsVe = DAOVe.layDSVeTheoMaHD(maHD);
-                    HoaDon hd = new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
-                    dsHoaDon.add(hd);
-                }
-                return dsHoaDon;
-            }
+//    public static ArrayList<HoaDon> docHoaDonTheoNgay(LocalDate ngay) {
+//        ArrayList<HoaDon> dsHoaDon = new ArrayList<>();
+//        String sql = "SELECT * FROM HoaDon WHERE CONVERT(DATE, ngayGioLapHD) = ?";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setDate(1, java.sql.Date.valueOf(ngay));
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                while (rs.next()) {
+//                    String maHD = rs.getString("maHD");
+//                    LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
+//                    String maNhanVien = rs.getString("maNhanVien");
+//                    NhanVien nv = DAONhanVien.getNhanVien(maNhanVien);
+//                    String maKhachHang = rs.getString("maKhachHang");
+//                    KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKhachHang);
+//                    int soLuong = rs.getInt("soLuong");
+//                    ArrayList<Ve> dsVe = DAOVe.layDSVeTheoMaHD(maHD);
+//                    HoaDon hd = new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
+//                    dsHoaDon.add(hd);
+//                }
+//                return dsHoaDon;
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
+    public static ArrayList<HoaDon> docHoaDonTheoNgay(LocalDate ngay) {
+        try {
+            TypedQuery<HoaDon> query = em.createQuery(
+                    "SELECT hd FROM HoaDon hd WHERE hd.ngayGioLapHD = :ngay", HoaDon.class);
+            query.setParameter("ngay", ngay);
+            List<HoaDon> resultList = query.getResultList();
+            return new ArrayList<>(resultList); // Chuyển đổi List thành ArrayList
         } catch (Exception e) {
             e.printStackTrace();
+            return new ArrayList<>(); // Trả về danh sách trống nếu có lỗi xảy ra
         }
-        return null;
     }
 
     // lay toan bo ds hoa don trong csdl
-    public static ArrayList<HoaDon> layDanhSachHoaDon() {
-        ArrayList<HoaDon> dsHoaDon = new ArrayList<>();
-        String sql = "SELECT * FROM HoaDon";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                String maHD = rs.getString("maHD");
-                LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
-                String maNhanVien = rs.getString("maNhanVien");
-                NhanVien nv = DAONhanVien.getNhanVien(maNhanVien);
-                String maKhachHang = rs.getString("maKhachHang");
-                KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKhachHang);
-                int soLuong = rs.getInt("soLuong");
-                ArrayList<Ve> dsVe = DAOVe.layDSVeTheoMaHD(maHD);
-                HoaDon hd = new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
-                dsHoaDon.add(hd);
+//    public static ArrayList<HoaDon> layDanhSachHoaDon() {
+//        ArrayList<HoaDon> dsHoaDon = new ArrayList<>();
+//        String sql = "SELECT * FROM HoaDon";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
+//             ResultSet rs = stmt.executeQuery()) {
+//            while (rs.next()) {
+//                String maHD = rs.getString("maHD");
+//                LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
+//                String maNhanVien = rs.getString("maNhanVien");
+//                NhanVien nv = DAONhanVien.getNhanVien(maNhanVien);
+//                String maKhachHang = rs.getString("maKhachHang");
+//                KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKhachHang);
+//                int soLuong = rs.getInt("soLuong");
+//                ArrayList<Ve> dsVe = DAOVe.layDSVeTheoMaHD(maHD);
+//                HoaDon hd = new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
+//                dsHoaDon.add(hd);
+//
+//                System.out.println("HOA DON: " + hd);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return dsHoaDon;
+//    }
 
-                System.out.println("HOA DON: " + hd);
-            }
+    public static ArrayList<HoaDon> layDanhSachHoaDon() {
+        try {
+            TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd", HoaDon.class);
+            List<HoaDon> resultList = query.getResultList();
+            return new ArrayList<>(resultList); // Chuyển đổi List thành ArrayList
         } catch (Exception e) {
             e.printStackTrace();
+            return new ArrayList<>(); // Trả về danh sách trống nếu có lỗi xảy ra
         }
-        return dsHoaDon;
     }
 
     // Lấy hóa đơn cuối cùng được tạo
-    public static HoaDon getHoaDonCuoiCung() {
-        String sql = "SELECT TOP 1 * FROM HoaDon ORDER BY ngayGioLapHD DESC";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                String maHD = rs.getString("maHD");
+//    public static HoaDon getHoaDonCuoiCung() {
+//        String sql = "SELECT TOP 1 * FROM HoaDon ORDER BY ngayGioLapHD DESC";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql);
+//             ResultSet rs = stmt.executeQuery()) {
+//            if (rs.next()) {
+//                String maHD = rs.getString("maHD");
+//
+//                System.out.println("Mã hóa đơn: " + maHD);
+//                LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
+//                String maNhanVien = rs.getString("maNhanVien");
+//                NhanVien nv = DAONhanVien.getNhanVien(maNhanVien);
+//                String maKhachHang = rs.getString("maKhachHang");
+//                KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKhachHang);
+//                int soLuong = rs.getInt("soLuong");
+//                ArrayList<Ve> dsVe = DAOVe.layDSVeTheoMaHD(maHD);
+//                System.out.println("lay ds ve theo ma hd: " + dsVe);
+//                dsVe.forEach(System.out::println);
+//                return new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return null;
+//    }
 
-                System.out.println("Mã hóa đơn: " + maHD);
-                LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
-                String maNhanVien = rs.getString("maNhanVien");
-                NhanVien nv = DAONhanVien.getNhanVien(maNhanVien);
-                String maKhachHang = rs.getString("maKhachHang");
-                KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKhachHang);
-                int soLuong = rs.getInt("soLuong");
-                ArrayList<Ve> dsVe = DAOVe.layDSVeTheoMaHD(maHD);
-                System.out.println("lay ds ve theo ma hd: " + dsVe);
-                dsVe.forEach(System.out::println);
-                return new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
-            }
+    public static HoaDon getHoaDonCuoiCung() {
+        try {
+            TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd ORDER BY hd.ngayGioLapHD DESC", HoaDon.class);
+            query.setMaxResults(1);
+            List<HoaDon> resultList = query.getResultList();
+            return resultList.get(0); // Trả về hóa đơn cuối cùng được tạo
         } catch (Exception e) {
             e.printStackTrace();
+            return null; // Trả về null nếu có lỗi xảy ra
         }
-
-        return null;
     }
 
     //    get hóa đơn theo mã hóa đơn
-    public static HoaDon getHoaDon(String maHD) {
-        String sql = "SELECT * FROM HoaDon WHERE maHD = ?";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, maHD);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
-                    String maNhanVien = rs.getString("maNhanVien");
-                    NhanVien nv = DAONhanVien.getNhanVien(maNhanVien);
-                    String maKhachHang = rs.getString("maKhachHang");
-                    KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKhachHang);
-                    int soLuong = rs.getInt("soLuong");
-                    ArrayList<Ve> dsVe = DAOVe.layDSVeDaBanTheoMaHD(maHD);
-                    return new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
+//    public static HoaDon getHoaDon(String maHD) {
+//        String sql = "SELECT * FROM HoaDon WHERE maHD = ?";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, maHD);
+//            try (ResultSet rs = stmt.executeQuery()) {
+//                if (rs.next()) {
+//                    LocalDateTime ngayGioLapHD = rs.getTimestamp("ngayGioLapHD").toLocalDateTime();
+//                    String maNhanVien = rs.getString("maNhanVien");
+//                    NhanVien nv = DAONhanVien.getNhanVien(maNhanVien);
+//                    String maKhachHang = rs.getString("maKhachHang");
+//                    KhachHang kh = DAOKhachHang.layKhachHangTheoMa(maKhachHang);
+//                    int soLuong = rs.getInt("soLuong");
+//                    ArrayList<Ve> dsVe = DAOVe.layDSVeDaBanTheoMaHD(maHD);
+//                    return new HoaDon(maHD, ngayGioLapHD, nv, kh, soLuong, dsVe);
+//
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//
+//    }
 
-                }
-            }
+    public static HoaDon getHoaDon(String maHD) {
+        try {
+            TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd WHERE hd.maHD = :maHD", HoaDon.class);
+            query.setParameter("maHD", maHD);
+            List<HoaDon> resultList = query.getResultList();
+            return resultList.get(0); // Trả về hóa đơn có mã tương ứng
         } catch (Exception e) {
             e.printStackTrace();
+            return null; // Trả về null nếu có lỗi xảy ra
         }
-        return null;
-
     }
 
-    public static void main(String[] args) throws SQLException {
-        //lay ds ve daban theo mahd
-        ConnectDB.connect();
-        System.out.println(DAOHoaDon.getHoaDon("HD241023000003").getDanhSachVe());
-    }
+//    public static void main(String[] args) throws SQLException {
+//        //lay ds ve daban theo mahd
+//        System.out.println(DAOHoaDon.getHoaDon("HD241023000003").getDanhSachVe());
+//    }
+
 
 
 }
