@@ -1,8 +1,5 @@
 import connectDB.ConnectDB;
-import control.DAOGa;
-import control.DAONhanVien;
-import control.DAOTaiKhoan;
-import control.DAOTau;
+import control.*;
 import gui.FrmDangNhap;
 import gui.FrmTrangChinh;
 import gui.LoadingGUI;
@@ -25,6 +22,7 @@ public class TestApp {
         DAONhanVien daoNhanVien = new DAONhanVien(em);
         DAOGa daoGa = new DAOGa(em);
         DAOTau daoTau = new DAOTau(em);
+        DAOCaLam daoCaLam = new DAOCaLam(em);
         System.out.println("Hello");
 //        try {
 //            ConnectDB.connect();
