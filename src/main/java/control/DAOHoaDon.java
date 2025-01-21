@@ -1,6 +1,7 @@
 package control;
 
 import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import entity.HoaDon;
 import entity.KhachHang;
 import entity.NhanVien;
@@ -45,24 +46,18 @@ public class DAOHoaDon {
 //        return false;
 //    }
 
-    private static EntityManager em;
-
-    public DAOHoaDon(EntityManager em) {
-        this.em = em;
-    }
+    private static EntityManager em = connectDB_1.getEntityManager();
 
     public static boolean themHoaDon(HoaDon hd) {
-        EntityTransaction transaction = em.getTransaction();
         try {
-            transaction.begin();
+
                 HoaDonService hoaDonService = new HoaDonService(em);
                 hoaDonService.persistHoaDon(hd);
-            transaction.commit();
+                System.out.println("Thêm hóa đơn thành công");
             return true;
+
         } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
+
             e.printStackTrace();
             return false;
         }
