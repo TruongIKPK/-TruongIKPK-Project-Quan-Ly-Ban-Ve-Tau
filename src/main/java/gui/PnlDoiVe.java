@@ -1211,7 +1211,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
 
         // Tạo danh sách toa từ danh sách toa của tàu đang chọn
         ArrayList<Toa> dsToa = new ArrayList<>(chuyenDangChon.getTau().getDanhSachToa());
-        ArrayList<Toa> dsToaCopy = chuyenDangChon.getTau().getDanhSachToa();
+        ArrayList<Toa> dsToaCopy = (ArrayList<Toa>) chuyenDangChon.getTau().getDanhSachToa();
 
         // Nếu danh sách toa rỗng, không làm gì và thoát ra
         if (dsToa.isEmpty()) return;

@@ -25,7 +25,8 @@ public class ChoNgoi implements Serializable {
     private Toa toa;
 
     @Enumerated(EnumType.STRING)
-    private boolean trangThai;
+    @Column(name = "trangThai", nullable = false)
+    private ETrangThaiChoNgoi trangThai;
 
     @OneToOne(mappedBy = "choNgoi")
     private Ve ve;
@@ -39,23 +40,29 @@ public class ChoNgoi implements Serializable {
         this.maCho = maCho;
     }
 
-    public ChoNgoi(String maCho, LoaiCho loaiCho, Toa toa, boolean trangThai) {
+    public ChoNgoi(String maCho, LoaiCho loaiCho, Toa toa) {
         // Kiểm tra mã chỗ
 //        if (!Validation.maCho(maCho)) {
 //            throw new IllegalArgumentException("Mã chỗ không hợp lệ");
 //        }
-
         this.maCho = maCho;
         setLoaiCho(loaiCho);
         setToa(toa);
-        this.trangThai = trangThai;
     }
 
-    public ChoNgoi(LoaiCho loaiCho, Toa toa, boolean trangThai) {
+    public ChoNgoi(LoaiCho loaiCho, Toa toa) {
         this.maCho = "";
         setLoaiCho(loaiCho);
         setToa(toa);
-        this.trangThai = trangThai;
+        this.trangThai = ETrangThaiChoNgoi.CON_TRONG;
+    }
+
+    public ChoNgoi(String maCho, LoaiCho loaiCho, Toa toa, Ve ve) {
+
+        this.maCho = maCho;
+        this.loaiCho = loaiCho;
+        this.toa = toa;
+        this.ve = ve;
     }
 
     public void setMaCho(String maCho) {
@@ -100,7 +107,7 @@ public class ChoNgoi implements Serializable {
         return Integer.parseInt(maCho.substring(maCho.length() - 2));
     }
 
-    public boolean isTrangThai() {
+    public ETrangThaiChoNgoi getTrangThai() {
         return trangThai;
     }
 

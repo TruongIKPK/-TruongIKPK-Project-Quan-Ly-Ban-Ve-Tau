@@ -56,11 +56,8 @@ public class DAOVe {
 //        }
 //        return false;
 //    }
-    private static EntityManager em;
+    private static EntityManager em = connectDB_1.getEntityManager();
 
-    public DAOVe (EntityManager em) {
-        this.em = em;
-    }
     public static boolean themVeCoKhuyenMai(Ve ve) {
         EntityTransaction transaction = em.getTransaction();
         try {
@@ -557,7 +554,11 @@ public class DAOVe {
         ArrayList<Ve> dsVe = new ArrayList<>();
         String sql = "SELECT v FROM Ve v WHERE v.chuyenTau.maChuyen = :maChuyen AND v.trangThai = :trangThai";
         try {
-            dsVe = (ArrayList<Ve>) em.createQuery(sql, Ve.class).setParameter("maChuyen", maChuyen).setParameter("trangThai", ETrangThaiVe.DA_BAN).getResultList();
+            TypedQuery<Ve> query = em.createQuery(sql, Ve.class);
+            query.setParameter("maChuyen", maChuyen);
+            query.setParameter("trangThai", ETrangThaiVe.DA_BAN.name()); // Sử dụng enum thay vì chuỗi
+            List<Ve> resultList = query.getResultList();
+            dsVe = new ArrayList<>(resultList);
         } catch (Exception e) {
             e.printStackTrace();
         }

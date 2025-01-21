@@ -1,24 +1,13 @@
 package control;
 
-import connectDB.ConnectDB;
-import entity.*;
-
-import java.sql.*;
 import java.util.ArrayList;
 
+import connectDB.connectDB_1;
 import entity.ChoNgoi;
-import enums.ETrangThaiChoNgoi;
-import enums.ETrangThaiVe;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import service.ChoNgoiService;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.util.List;
-
-import static control.DAOToa.em;
 
 public class DAOChoNgoi {
 //    private static ArrayList<ChoNgoi> dsChoNgoi;
@@ -50,9 +39,7 @@ public class DAOChoNgoi {
 
     private static ArrayList<ChoNgoi> dsChoNgoi;
 
-    private static EntityManager em;
-
-    public DAOChoNgoi(EntityManager em) {this.em = em;}
+    private static EntityManager em = connectDB_1.getEntityManager();
 
     public static ArrayList<ChoNgoi> getDanhSachChoNgoi() {
         if (dsChoNgoi != null) {
@@ -172,21 +159,15 @@ public class DAOChoNgoi {
 //        return false;
 //    }
 
-    public static boolean themChoNgoi(ChoNgoi choNgoi) {
-        EntityTransaction transaction = em.getTransaction();
-        try {
-            em.getTransaction().begin();
-            ChoNgoiService choNgoiService = new ChoNgoiService();
-            choNgoiService.persistChoNgoi(choNgoi);
-            em.getTransaction().commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            return false;
-        }
-    }
+//    public static boolean themChoNgoi(ChoNgoi choNgoi) {
+//        try {
+//            ChoNgoiService choNgoiService = new ChoNgoiService();
+//            choNgoiService.persistChoNgoi(choNgoi);
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 }
 

@@ -4,6 +4,7 @@
  */
 package gui;
 
+import connectDB.connectDB_1;
 import control.DAOChuyenTau;
 import control.DAOGa;
 import control.DAOTau;
@@ -20,6 +21,7 @@ import gui.custom.CButton;
 import gui.custom.CTable;
 import gui.custom.CTextField;
 import gui.custom.CImage;
+import jakarta.persistence.EntityManager;
 import org.jdatepicker.impl.JDatePickerImpl;
 import utils.FormatDate;
 
@@ -48,6 +50,8 @@ public class PnlChuyenTau extends JPanel {
      * Constructor chứa thông tin nhân viên
      * @param nhanVien Nhân viên
      */
+
+
     public PnlChuyenTau(NhanVien nhanVien) {
         this.nhanVien = nhanVien;
         setBackground(EColor.BG_COLOR.getColor());
@@ -74,6 +78,7 @@ public class PnlChuyenTau extends JPanel {
     /**
      * Hàm đọc dữ liệu từ cơ sở dữ liệu
      */
+
     public void readDataFromDB() {
         listGa = DAOGa.getDsGa();
         listTau = DAOTau.getDSTau();

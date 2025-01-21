@@ -1,6 +1,7 @@
 package control;
 
 import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import entity.Tau;
 import entity.Toa;
 import jakarta.persistence.EntityManager;
@@ -22,11 +23,7 @@ public class DAOTau {
     private static ArrayList<Tau> dsTau;
 
 
-    private static EntityManager em;
-
-    public DAOTau(EntityManager entityManager) {
-        this.em = entityManager;
-    }
+    private static EntityManager em = connectDB_1.getEntityManager();
 
 //    // Thêm tàu
 //    public static boolean themTau(Tau tau) {
@@ -164,7 +161,6 @@ public class DAOTau {
             // Nếu tàu đã được khởi tạo thì trả về danh sách tàu
             return dsTau;
         }
-
         dsTau = new ArrayList<>(); // Nếu tàu chưa được khởi tạo thì khởi tạo mới
         try {
             // Truy vấn JPQL lấy danh sách tàu
@@ -176,9 +172,7 @@ public class DAOTau {
 
             // Duyệt qua từng tàu và lấy thêm thông tin về các toa
             for (Tau tau : tauList) {
-                String maTau = tau.getMaTau();
-                ArrayList<Toa> dsToa = DAOToa.getToaTheoTau(maTau);
-                tau.setDanhSachToa(dsToa);
+                tau.getDanhSachToa().size(); // Initialize the collection
             }
 
             // Thêm tất cả tàu vào danh sách dsTau

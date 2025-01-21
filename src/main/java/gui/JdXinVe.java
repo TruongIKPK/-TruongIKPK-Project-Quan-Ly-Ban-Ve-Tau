@@ -779,7 +779,17 @@ public class JdXinVe extends CDialog implements MouseListener {
         listKhuyenMai.forEach(khuyenMai -> {
             cboDoiTuong.addItem(khuyenMai.getDoiTuong());
         });
-        cboDoiTuong.setSelectedIndex(0);
+
+        if (cboDoiTuong.getItemCount() > 0) {
+            try {
+                cboDoiTuong.setSelectedIndex(0); // Chỉ số hợp lệ
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace(); // Xử lý ngoại lệ nếu có
+            }
+        } else {
+            System.out.println("ComboBox không có mục nào để chọn.");
+        }
+
         cboDoiTuong.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

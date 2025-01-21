@@ -1,6 +1,7 @@
 package control;
 
 import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import entity.Ga;
 
 import java.sql.Connection;
@@ -61,13 +62,7 @@ public class DAOGa {
     }
 
 
-    private static EntityManager em;
-
-    public DAOGa(EntityManager entityManager) {
-        this.em = entityManager;
-    }
-
-
+    private static EntityManager em = connectDB_1.getEntityManager();
 
 
     // Get Ga theo mã ga

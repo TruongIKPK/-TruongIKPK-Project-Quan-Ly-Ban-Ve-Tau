@@ -1,6 +1,7 @@
 package control;
 
 import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import entity.ChucVu;
 import entity.KhuyenMai;
 import entity.Ve;
@@ -14,6 +15,7 @@ import service.VeService;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Dự án: tau-viet-express
@@ -44,11 +46,7 @@ public class DAOKhuyenMai {
 //        return false;
 //    }
 
-    private static EntityManager em;
-
-    public DAOKhuyenMai(EntityManager em) {
-        this.em = em;
-    }
+    private static EntityManager em = connectDB_1.getEntityManager();
 
     public static boolean themKhuyenMai(KhuyenMai km) {
         EntityTransaction transaction = em.getTransaction();
@@ -83,17 +81,27 @@ public class DAOKhuyenMai {
 //        return dsDoiTuong;
 //    }
 
-    public static ArrayList<KhuyenMai> getDSDoiTuongKhuyenMai() {
-        ArrayList<KhuyenMai> dsDoiTuong = new ArrayList<>();
+//    public static ArrayList<String> getDSDoiTuongKhuyenMai() {
+//        ArrayList<String> dsDoiTuong = new ArrayList<>();
+//        String jpql = "SELECT DISTINCT km.doiTuong FROM KhuyenMai km";
+//
+//        try {
+//            dsDoiTuong = (ArrayList<String>) em.createQuery(jpql, KhuyenMai.class)
+//                    .getResultList();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return dsDoiTuong;
+//    }
+
+    public static ArrayList<String> getDSDoiTuongKhuyenMai() {
         String jpql = "SELECT DISTINCT km.doiTuong FROM KhuyenMai km";
 
-        try {
-            dsDoiTuong = (ArrayList<KhuyenMai>) em.createQuery(jpql, KhuyenMai.class)
-                    .getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return dsDoiTuong;
+        TypedQuery<String> query = em.createQuery(jpql, String.class);
+
+        List<String> dsDoiTuong = query.getResultList();
+
+        return new ArrayList<>(dsDoiTuong);
     }
 
     // sua doi tuong khuyen mai tra ve doi tuong khuyen mai
@@ -221,8 +229,8 @@ public class DAOKhuyenMai {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        ArrayList<KhuyenMai> dsDoiTuong = getDSDoiTuongKhuyenMai();
-        for (KhuyenMai doiTuong : dsDoiTuong) {
+        ArrayList<String> dsDoiTuong = getDSDoiTuongKhuyenMai();
+        for (String doiTuong : dsDoiTuong) {
             System.out.println(doiTuong);
         }
     }

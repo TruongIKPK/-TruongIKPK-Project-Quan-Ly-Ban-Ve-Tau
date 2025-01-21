@@ -1,6 +1,7 @@
 package control;
 
 import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import entity.CaLam;
 import entity.ChucVu;
 import entity.NhanVien;
@@ -36,6 +37,8 @@ public class DAONhanVien {
     maTaiKhoan VARCHAR(11)             NOT NULL,
     maChucVu   VARCHAR(2)              NOT NULL,*/
     // ham them nhan vien khong can ma nhan vien
+
+
     //-- NhanVien
     //INSERT INTO NhanVien (tenNV, gioiTinh, ngaySinh, ngayVaoLam, CCCD, sdt, email, diaChi, trangThai, macaLam, maTaiKhoan, maChucVu) VALUES
 //    public static boolean themNhanVien(NhanVien nv) {
@@ -60,25 +63,14 @@ public class DAONhanVien {
 //        }
 //        return false;
 //    }
-    private static EntityManager em;
-
-    public DAONhanVien(EntityManager entityManager) {
-        this.em = entityManager;
-    }
+    private static EntityManager em = connectDB_1.getEntityManager();
 
     public static boolean themNhanVien(NhanVien nv) {
-        EntityTransaction transaction = em.getTransaction();
         try {
-            transaction.begin();
-            // Tự sinh mã khách hàng
             NhanVienService nhanVienService = new NhanVienService(em);
             nhanVienService.persistNhanVien(nv);
-            transaction.commit();
             return true;
         } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
             e.printStackTrace();
             return false;
         }

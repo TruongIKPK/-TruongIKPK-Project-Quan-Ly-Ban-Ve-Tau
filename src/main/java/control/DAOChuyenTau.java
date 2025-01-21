@@ -1,6 +1,7 @@
 package control;
 
 import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import entity.ChuyenTau;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -70,12 +71,7 @@ public class DAOChuyenTau {
 //        return null;
 //    }
 
-    private static EntityManager em;
-
-    public DAOChuyenTau(EntityManager em) {
-        this.em = em;
-    }
-
+    private static EntityManager em = connectDB_1.getEntityManager();
 
     public static ChuyenTau themChuyenTau(ChuyenTau chuyenTau) {
 //        EntityManager em = ConnectDB.getEntityManager(); // Giả sử bạn đã cấu hình EntityManager

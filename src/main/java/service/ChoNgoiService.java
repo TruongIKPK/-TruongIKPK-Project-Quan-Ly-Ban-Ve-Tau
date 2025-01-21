@@ -1,5 +1,6 @@
 package service;
 
+import connectDB.connectDB_1;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -8,7 +9,12 @@ import entity.ChoNgoi;
 public class ChoNgoiService {
 
     @PersistenceContext
+//    public EntityManager em = connectDB_1.getEntityManager();
     public EntityManager em;
+
+    public ChoNgoiService(EntityManager em) {
+        this.em = em;
+    }
 
     @Transactional
     public void persistChoNgoi(ChoNgoi choNgoi) {
