@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -23,6 +24,9 @@ public class Tau implements Serializable {
 
     @OneToMany(mappedBy = "tau", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ArrayList<Toa> danhSachToa;
+
+    @OneToMany(mappedBy = "tau", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ChuyenTau> danhSachChuyenTau;
 
     public Tau() {
         super();
