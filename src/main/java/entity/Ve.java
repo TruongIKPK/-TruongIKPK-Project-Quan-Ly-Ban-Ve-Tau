@@ -1,5 +1,6 @@
 package entity;
 
+import enums.ETrangThaiVe;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
 import java.io.Serializable;
@@ -19,7 +20,7 @@ public class Ve implements Serializable {
     @Column(columnDefinition = "float", nullable = true)
     private double thue = 0.1;
 
-    @Column(columnDefinition = "nvarchar(20)")
+    @Column(name = "trangThai", nullable = false)
     private String trangThai;
 
     @ManyToOne
@@ -193,7 +194,6 @@ public class Ve implements Serializable {
         if (trangThai == null) {
             throw new IllegalArgumentException("Trạng thái không hợp lệ");
         }
-
         this.trangThai = trangThai;
     }
 

@@ -1,6 +1,7 @@
 package control;
 
 import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import entity.LoaiToa;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -34,11 +35,7 @@ public class DAOLoaiToa {
 //        }
 //        return false;
 //    }
-    private static EntityManager em;
-
-    public DAOLoaiToa(EntityManager em) {
-        this.em = em;
-    }
+    private static EntityManager em = connectDB_1.getEntityManager();
     // Thêm loại toa
     public static boolean themLoaiToa(LoaiToa loaiToa) {
         try {

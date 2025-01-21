@@ -1,19 +1,18 @@
 package control;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import connectDB.ConnectDB;
 import entity.ChoNgoi;
 import entity.LoaiToa;
 import entity.Tau;
 import entity.Toa;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import service.ChuyenTauService;
 import service.ToaService;
 
 /**
@@ -48,6 +47,7 @@ public class DAOToa {
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
+
 //
 //        return danhSachToa;
 //    }
@@ -55,11 +55,29 @@ public class DAOToa {
      * Lấy danh sách tất cả các toa.
      * @return danh sách các toa.
      */
-    private static EntityManager em;
+
+    @PersistenceContext
+    private static EntityManager em1;
+
+    private ToaService toaService;
 
     public DAOToa(EntityManager em) {
-        this.em = em;
+        this.em1 = em;
     }
+
+    /**
+
+//    public static boolean themToa(Toa toa) {
+//        try {
+//            ToaService toaService = new ToaService();
+//            toaService.persistToa(toa);
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
+
     public static ArrayList<Toa> getDanhSachToa() {
         if (danhSachToa != null) {
             return danhSachToa;
@@ -69,7 +87,7 @@ public class DAOToa {
         String jpql = "SELECT t FROM Toa t ORDER BY t.maToa";  // Sắp xếp theo mã toa
 
         try {
-            TypedQuery<Toa> query = em.createQuery(jpql, Toa.class);
+            TypedQuery<Toa> query = em1.createQuery(jpql, Toa.class);
             danhSachToa = new ArrayList<>(query.getResultList());
 
             // Sắp xếp lại danh sách theo yêu cầu nếu cần (tương tự như RIGHT(maToa, 2) trong SQL)
@@ -102,28 +120,7 @@ public class DAOToa {
 //
 //        return false;
 //    }
-    /**
-     * Thêm một toa mới vào cơ sở dữ liệu.
-     * @param toa đối tượng toa cần thêm.
-     * @return true nếu thêm thành công, ngược lại false.
-     */
-    public static boolean themToa(Toa toa) {
-        try {
 
-            ToaService toaService = new ToaService();
-            toaService.persistToa(toa);
-            em.getTransaction().begin();
-            em.persist(toa);
-            em.getTransaction().commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-        }
-        return false;
-    }
 //    /**
 //     * Xóa toa khỏi cơ sở dữ liệu theo mã.
 //     * @param maToa mã của toa cần xóa.
@@ -148,17 +145,17 @@ public class DAOToa {
      */
     public static boolean xoaToa(String maToa) {
         try {
-            em.getTransaction().begin();
-            Toa toa = em.find(Toa.class, maToa);
+            em1.getTransaction().begin();
+            Toa toa = em1.find(Toa.class, maToa);
             if (toa != null) {
-                em.remove(toa);
-                em.getTransaction().commit();
+                em1.remove(toa);
+                em1.getTransaction().commit();
                 return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
+            if (em1.getTransaction().isActive()) {
+                em1.getTransaction().rollback();
             }
         }
         return false;
@@ -194,20 +191,20 @@ public class DAOToa {
      */
     public static Toa suaToa(Toa toa) {
         try {
-            em.getTransaction().begin();
-            Toa existingToa = em.find(Toa.class, toa.getMaToa());
+            em1.getTransaction().begin();
+            Toa existingToa = em1.find(Toa.class, toa.getMaToa());
             if (existingToa != null) {
                 existingToa.setSoLuongCho(toa.getSoLuongCho());
                 existingToa.setTau(toa.getTau());
                 existingToa.setLoaiToa(toa.getLoaiToa());
-                em.merge(existingToa);
-                em.getTransaction().commit();
+                em1.merge(existingToa);
+                em1.getTransaction().commit();
                 return existingToa;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
+            if (em1.getTransaction().isActive()) {
+                em1.getTransaction().rollback();
             }
         }
         return null;
@@ -237,7 +234,7 @@ public class DAOToa {
         ArrayList<Toa> dsToaTheoTau = new ArrayList<>();
         try {
             String jpql = "SELECT t FROM Toa t WHERE t.tau.maTau = :maTau";
-            TypedQuery<Toa> query = em.createQuery(jpql, Toa.class);
+            TypedQuery<Toa> query = em1.createQuery(jpql, Toa.class);
             query.setParameter("maTau", maTau);
             dsToaTheoTau = new ArrayList<>(query.getResultList());
         } catch (Exception e) {
@@ -278,7 +275,7 @@ public class DAOToa {
         ArrayList<Toa> dsToa = new ArrayList<>();
         try {
             String jpql = "SELECT t FROM Toa t WHERE t.loaiToa.maLT = :maLoaiToa";
-            TypedQuery<Toa> query = em.createQuery(jpql, Toa.class);
+            TypedQuery<Toa> query = em1.createQuery(jpql, Toa.class);
             query.setParameter("maLoaiToa", maLoaiToa);
             dsToa = new ArrayList<>(query.getResultList());
         } catch (Exception e) {
@@ -318,7 +315,7 @@ public class DAOToa {
     public static Toa getToaTheoMa(String maToa) {
         try {
             String jpql = "SELECT t FROM Toa t WHERE t.maToa = :maToa";
-            TypedQuery<Toa> query = em.createQuery(jpql, Toa.class);
+            TypedQuery<Toa> query = em1.createQuery(jpql, Toa.class);
             query.setParameter("maToa", maToa);
             return query.getSingleResult();
         } catch (Exception e) {
@@ -360,9 +357,9 @@ public class DAOToa {
         String maLoaiToa = rs.getString("maLoaiToa");
         int soLuongCho = rs.getInt("soLuongCho");
 
-        Tau tau = em.find(Tau.class, maTau);
-        LoaiToa loaiToa = em.find(LoaiToa.class, maLoaiToa);
-        ArrayList<ChoNgoi> danhSachChoNgoi = new ArrayList<>(em.createQuery(
+        Tau tau = em1.find(Tau.class, maTau);
+        LoaiToa loaiToa = em1.find(LoaiToa.class, maLoaiToa);
+        ArrayList<ChoNgoi> danhSachChoNgoi = new ArrayList<>(em1.createQuery(
                         "SELECT cn FROM ChoNgoi cn WHERE cn.toa.maToa = :maToa", ChoNgoi.class)
                 .setParameter("maToa", maToa)
                 .getResultList());

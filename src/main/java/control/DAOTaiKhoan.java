@@ -1,6 +1,7 @@
 package control;
 
 import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import entity.TaiKhoan;
 import enums.ETrangThaiTaiKhoan;
 import jakarta.persistence.EntityManager;
@@ -36,13 +37,7 @@ trangThai	NVARCHAR(20)	DEFAULT 'Kích hoạt', IN ('Kích hoạt', 'Bị khóa')
 //        }
 //        return false;
 //    }
-    private static EntityManager em;
-
-    public DAOTaiKhoan(EntityManager entityManager) {
-        this.em = entityManager;
-    }
-
-
+    private static EntityManager em = connectDB_1.getEntityManager();
 
     public static TaiKhoan login(String maTK, String matKhau) {
         String jpql = "SELECT tk FROM TaiKhoan tk WHERE tk.maTK = :maTK AND tk.trangThai = :trangThai";

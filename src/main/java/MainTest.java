@@ -3,6 +3,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import service.ChoNgoiService;
+import service.KhuyenMaiService;
 import service.NhanVienService;
 import service.ToaService;
 import java.time.LocalTime;
@@ -169,25 +170,25 @@ public class MainTest {
         em.persist(loaiCho7);
 
         // Thêm dữ liệu vào bảng LoaiToa
-        LoaiToa loaiToa1 = new LoaiToa("NC", "Ghế ngồi cứng thường");
+        LoaiToa loaiToa1 = new LoaiToa("NC", "Ghe ngoi cung thuong");
         em.persist(loaiToa1);
 
-        LoaiToa loaiToa2 = new LoaiToa("NCL", "Ghế ngồi cứng có điều hòa");
+        LoaiToa loaiToa2 = new LoaiToa("NCL", "Ghe ngoi cung co dieu hoa");
         em.persist(loaiToa2);
 
-        LoaiToa loaiToa3 = new LoaiToa("NM", "Ghế ngồi mềm thường");
+        LoaiToa loaiToa3 = new LoaiToa("NM", "Ghe ngoi mem thuong");
         em.persist(loaiToa3);
 
-        LoaiToa loaiToa4 = new LoaiToa("NML", "Ghế ngồi mềm điều hòa");
+        LoaiToa loaiToa4 = new LoaiToa("NML", "Ghe ngoi mem dieu hoa");
         em.persist(loaiToa4);
 
-        LoaiToa loaiToa5 = new LoaiToa("ANL", "Giường nằm khoang 4");
+        LoaiToa loaiToa5 = new LoaiToa("ANL", "Giuong nam khoang 4");
         em.persist(loaiToa5);
 
-        LoaiToa loaiToa6 = new LoaiToa("BNL", "Giường nằm khoang 6");
+        LoaiToa loaiToa6 = new LoaiToa("BNL", "Giuong nam khoang 6");
         em.persist(loaiToa6);
 
-        LoaiToa loaiToa7 = new LoaiToa("VIP", "Giường nằm khoang 2 VIP");
+        LoaiToa loaiToa7 = new LoaiToa("VIP", "Giuong nam khoang 2 VIP");
         em.persist(loaiToa7);
 
         LoaiVe loaiVe1 = new LoaiVe("LV1", "Vé 1 chiều");
@@ -209,8 +210,7 @@ public class MainTest {
         Tau tau4 = new Tau("SNT", "Tàu chạy tuyến Sài Gòn - Nha Trang", "Hoạt động");
         em.persist(tau4);
 
-        toaService = new ToaService();
-        toaService.em = em;
+        toaService = new ToaService(em);
 
         // Thêm dữ liệu vào bảng Toa
         Toa toa1 = new Toa(60, tau1, loaiToa1);
@@ -333,8 +333,33 @@ public class MainTest {
         Toa toa40 = new Toa(10, tau4, loaiToa7);
         toaService.persistToa(toa40);
 
-        persistChoNgoi = new ChoNgoiService();
-        persistChoNgoi.em = em;
+        KhuyenMaiService khuyenMaiService = new KhuyenMaiService(em);
+
+        KhuyenMai km1 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Người hoạt động cách mạng", 0.10);
+        khuyenMaiService.persistKhuyenMai(km1);
+
+        KhuyenMai km2 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Thương binh", 0.15);
+        khuyenMaiService.persistKhuyenMai(km2);
+
+        KhuyenMai km3 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Người khuyết tật", 0.20);
+        khuyenMaiService.persistKhuyenMai(km3);
+
+        KhuyenMai km4 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Trẻ em", 0.05);
+        khuyenMaiService.persistKhuyenMai(km4);
+
+        KhuyenMai km5 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Người cao tuổi", 0.30);
+        khuyenMaiService.persistKhuyenMai(km5);
+
+        KhuyenMai km6 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Học sinh, sinh viên", 0.30);
+        khuyenMaiService.persistKhuyenMai(km6);
+
+        KhuyenMai km7 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Tất cả", 0.30);
+        khuyenMaiService.persistKhuyenMai(km7);
+
+        KhuyenMai km8 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Người lớn", 0.00);
+        khuyenMaiService.persistKhuyenMai(km8);
+
+        persistChoNgoi = new ChoNgoiService(em);
 
         // Thêm dữ liệu ChoNgoi
         for (int i = 1; i <= 60; i++) {

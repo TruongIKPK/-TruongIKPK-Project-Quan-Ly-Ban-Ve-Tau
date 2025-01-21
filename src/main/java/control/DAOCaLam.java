@@ -1,6 +1,7 @@
 package control;
 
 import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import entity.CaLam;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -15,11 +16,8 @@ import java.util.ArrayList;
 
 public class DAOCaLam {
 
-    private static EntityManager em;
+    private static EntityManager em = connectDB_1.getEntityManager();
 
-    public DAOCaLam(EntityManager entityManager) {
-        this.em = entityManager;
-    }
     // lay danh sach ca lam
     public static ArrayList<CaLam> getDanhSachCaLam() {
         ArrayList<CaLam> dsCaLam = new ArrayList<>();

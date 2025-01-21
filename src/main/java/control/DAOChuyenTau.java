@@ -1,6 +1,7 @@
 package control;
 
 import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import entity.ChuyenTau;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -70,12 +71,7 @@ public class DAOChuyenTau {
 //        return null;
 //    }
 
-    private static EntityManager em;
-
-    public DAOChuyenTau(EntityManager em) {
-        this.em = em;
-    }
-
+    private static EntityManager em = connectDB_1.getEntityManager();
 
     public static ChuyenTau themChuyenTau(ChuyenTau chuyenTau) {
 //        EntityManager em = ConnectDB.getEntityManager(); // Giả sử bạn đã cấu hình EntityManager
@@ -357,31 +353,43 @@ public class DAOChuyenTau {
      * @param maChuyen Mã chuyến cần tìm
      * @return Số lượng chỗ
      */
-    public static int getTongSoLuongChoCuaChuyen(String maChuyen) {
-        String sql = "SELECT CT.maChuyen, COUNT(*) AS tongSoCho\n" +
-                "FROM ChuyenTau AS CT \n" +
-                "    INNER JOIN Tau AS T ON CT.maTau = T.maTau\n" +
-                "    INNER JOIN Toa AS TOA ON T.maTau = TOA.maTau\n" +
-                "    INNER JOIN ChoNgoi AS CN ON TOA.maToa = CN.maToa\n" +
-                "WHERE CT.maChuyen = ?\n" +
-                "GROUP BY CT.maChuyen\n";
-        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, maChuyen);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("tongSoCho");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+//    public static int getTongSoLuongChoCuaChuyen(String maChuyen) {
+//        String sql = "SELECT CT.maChuyen, COUNT(*) AS tongSoCho\n" +
+//                "FROM ChuyenTau AS CT \n" +
+//                "    INNER JOIN Tau AS T ON CT.maTau = T.maTau\n" +
+//                "    INNER JOIN Toa AS TOA ON T.maTau = TOA.maTau\n" +
+//                "    INNER JOIN ChoNgoi AS CN ON TOA.maToa = CN.maToa\n" +
+//                "WHERE CT.maChuyen = ?\n" +
+//                "GROUP BY CT.maChuyen\n";
+//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
+//            stmt.setString(1, maChuyen);
+//            ResultSet rs = stmt.executeQuery();
+//            if (rs.next()) {
+//                return rs.getInt("tongSoCho");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+        public static int getTongSoLuongChoCuaChuyen(String maChuyen) {
+            String jpql = "SELECT COUNT(cn) " +
+                    "FROM ChuyenTau ct " +
+                    "JOIN ct.tau t " +
+                    "JOIN t.danhSachToa toa " +
+                    "JOIN toa.danhSachChoNgoi cn " +
+                    "WHERE ct.maChuyen = :maChuyen";
+
+            TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+            query.setParameter("maChuyen", maChuyen);
+
+            Long result = query.getSingleResult();
+            return result != null ? result.intValue() : 0;
         }
-        return 0;
-    }
 
 
 
-
-
-//
 //    /**
 //     * Cập nhật chuyến tàu.
 //     * @param chuyenTau Chuyến tàu cần cập nhật.

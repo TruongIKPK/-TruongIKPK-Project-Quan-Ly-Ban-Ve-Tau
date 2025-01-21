@@ -1509,8 +1509,10 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         pnlDanhSachToa.removeAll();
 
         // Tạo danh sách toa từ danh sách toa của tàu đang chọn
+
         ArrayList<Toa> dsToa = new ArrayList<>(chuyenDangChon.getTau().getDanhSachToa());
-        ArrayList<Toa> dsToaCopy = chuyenDangChon.getTau().getDanhSachToa();
+        java.util.List<Toa> dsToaCopy = chuyenDangChon.getTau().getDanhSachToa();
+        //System.out.println(dsToa);
 
         // Nếu danh sách toa rỗng, không làm gì và thoát ra
         if (dsToa.isEmpty()) return;
@@ -1590,7 +1592,12 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         ));
 
         listChoNgoi = DAOChoNgoi.getDSChoNgoiTheoToa(toaDangChon.getMaToa());
+
+        System.out.println("1---------------------------------------------------------"+listChoNgoi);
+
         LoaiToa loaiToa = toaDangChon.getLoaiToa();
+
+        System.out.println("2---------------------------------------------------------"+loaiToa);
 
         // Tạo ArrayList hai chiều
         ArrayList<ArrayList<ChoNgoi>> mangHaiChieu = new ArrayList<>();
@@ -1608,7 +1615,6 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
                 }
                 mangHaiChieu.add(hang);
             }
-
             // In ra ArrayList hai chiều
             for (int i = 0; i < mangHaiChieu.size(); i++) {
                 ArrayList<ChoNgoi> hangChoNgoi = mangHaiChieu.get(i);

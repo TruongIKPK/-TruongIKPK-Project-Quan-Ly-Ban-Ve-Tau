@@ -59,11 +59,7 @@ public class DAOKhachHang {
 //        return false;
 //    }
 
-    private static EntityManager em;
-
-    public DAOKhachHang(EntityManager em) {
-        this.em = em;
-    }
+    private static EntityManager em = connectDB_1.getEntityManager();
 
     public static boolean themKhachHang(KhachHang kh) {
         EntityTransaction transaction = em.getTransaction();
@@ -89,7 +85,7 @@ public class DAOKhachHang {
         connectDB_1.connect();
         EntityManager em = connectDB_1.getEntityManager();
 
-        DAOKhachHang daoKhachHang = new DAOKhachHang(em);
+        DAOKhachHang daoKhachHang = new DAOKhachHang();
 
         // Retrieve tickets by invoice ID
         KhachHang kh = new KhachHang("KH01", "Nguyen Van A", "123456789012", "0123456789", "email@gmail.com", LocalDate.of(2000, 1, 1), "Sinh vien");

@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -22,7 +24,10 @@ public class Tau implements Serializable {
     private String trangThai;
 
     @OneToMany(mappedBy = "tau", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ArrayList<Toa> danhSachToa;
+    private List<Toa> danhSachToa;
+
+    @OneToMany(mappedBy = "tau", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ChuyenTau> danhSachChuyenTau;
 
     public Tau() {
         super();
@@ -33,7 +38,7 @@ public class Tau implements Serializable {
         this.maTau = maTau;
     }
 
-    public Tau(String maTau, String tenTau, String trangThai, ArrayList<Toa> danhSachToa) {
+    public Tau(String maTau, String tenTau, String trangThai, List<Toa> danhSachToa) {
         this.maTau = maTau;
         setTenTau(tenTau);
         setTrangThai(trangThai);
@@ -46,7 +51,7 @@ public class Tau implements Serializable {
         setTrangThai(trangThai);
     }
 
-    public Tau(String tenTau, String trangThai, ArrayList<Toa> danhSachToa) {
+    public Tau(String tenTau, String trangThai, List<Toa> danhSachToa) {
         this.maTau = "";
         setTenTau(tenTau);
         setTrangThai(trangThai);
@@ -79,11 +84,11 @@ public class Tau implements Serializable {
         this.trangThai = trangThai;
     }
 
-    public ArrayList<Toa> getDanhSachToa() {
+    public List<Toa> getDanhSachToa() {
         return danhSachToa;
     }
 
-    public void setDanhSachToa(ArrayList<Toa> danhSachToa) {
+    public void setDanhSachToa(List<Toa> danhSachToa) {
         this.danhSachToa = danhSachToa;
     }
 

@@ -24,6 +24,10 @@ public class ChoNgoi implements Serializable {
     @JoinColumn(name = "maToa", nullable = false,columnDefinition = "varchar(20)")
     private Toa toa;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trangThai", nullable = false)
+    private ETrangThaiChoNgoi trangThai;
+
     @OneToOne(mappedBy = "choNgoi")
     private Ve ve;
 
@@ -41,7 +45,6 @@ public class ChoNgoi implements Serializable {
 //        if (!Validation.maCho(maCho)) {
 //            throw new IllegalArgumentException("Mã chỗ không hợp lệ");
 //        }
-
         this.maCho = maCho;
         setLoaiCho(loaiCho);
         setToa(toa);
@@ -51,6 +54,15 @@ public class ChoNgoi implements Serializable {
         this.maCho = "";
         setLoaiCho(loaiCho);
         setToa(toa);
+        this.trangThai = ETrangThaiChoNgoi.CON_TRONG;
+    }
+
+    public ChoNgoi(String maCho, LoaiCho loaiCho, Toa toa, Ve ve) {
+
+        this.maCho = maCho;
+        this.loaiCho = loaiCho;
+        this.toa = toa;
+        this.ve = ve;
     }
 
     public void setMaCho(String maCho) {
@@ -95,6 +107,10 @@ public class ChoNgoi implements Serializable {
         return Integer.parseInt(maCho.substring(maCho.length() - 2));
     }
 
+    public ETrangThaiChoNgoi getTrangThai() {
+        return trangThai;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -114,6 +130,7 @@ public class ChoNgoi implements Serializable {
                 "maCho='" + maCho + '\'' +
                 ", loaiCho=" + loaiCho +
                 ", toa=" + toa +
+                ", trangThai=" + trangThai +
                 '}';
     }
 

@@ -1,38 +1,23 @@
-import connectDB.ConnectDB;
+import connectDB.connectDB_1;
 import control.*;
 import gui.FrmDangNhap;
-import gui.FrmTrangChinh;
 import gui.LoadingGUI;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Persistence;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.*;
-import java.sql.SQLException;
 
 public class TestApp {
 
+    public static EntityManager em;
+
     public static void main(String[] args) {
         // Kết nối cơ sở dữ liệu
+        connectDB_1.connect();
+        em = connectDB_1.getEntityManager();
 
-        EntityManager em = Persistence.createEntityManagerFactory("mssql").createEntityManager();
+        // Bắt đầu giao dịch
         em.getTransaction().begin();
-        DAOTaiKhoan daoTaiKhoan = new DAOTaiKhoan(em);
-        DAONhanVien daoNhanVien = new DAONhanVien(em);
-        DAOGa daoGa = new DAOGa(em);
-        DAOTau daoTau = new DAOTau(em);
-        DAOCaLam daoCaLam = new DAOCaLam(em);
         System.out.println("Hello");
-//        try {
-//            ConnectDB.connect();
-//        } catch (SQLException e) {
-//            JOptionPane.showMessageDialog(null, "Không thể kết nối CSDL!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-//            e.printStackTrace();
-//            System.exit(1);
-//        }
-
-        LoadingGUI.show(); // Hiển thị loading screen
+        // Hiển thị loading screen
+        LoadingGUI.show();
 
         // Chờ 1 giây để hiển thị loading screen
         try {
@@ -41,9 +26,20 @@ public class TestApp {
             e.printStackTrace();
         }
 
-        LoadingGUI.close(); // Đóng loa                 ding screen
+        // Đóng loading screen
+        LoadingGUI.close();
+
+        // Hiển thị form đăng nhập
         FrmDangNhap frmDangNhap = new FrmDangNhap();
         frmDangNhap.setVisible(true);
         frmDangNhap.toFront();
+
+        // Đóng EntityManager và EntityManagerFactory khi không còn sử dụng
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+            connectDB_1.close();
+        }));
     }
 }

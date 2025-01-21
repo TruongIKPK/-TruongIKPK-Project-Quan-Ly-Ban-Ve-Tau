@@ -5,6 +5,7 @@ import utils.Validation;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -24,7 +25,7 @@ public class Toa implements Serializable {
     private int soLuongCho;
 
     @OneToMany(mappedBy = "toa")
-    private ArrayList<ChoNgoi> danhSachChoNgoi;
+    private List<ChoNgoi> danhSachChoNgoi;
 
     @Transient
     private int soThuTu;
@@ -38,7 +39,7 @@ public class Toa implements Serializable {
         this.maToa = maToa;
     }
 
-    public Toa(String maToa, Tau tau, LoaiToa loaiToa, int soLuongCho, ArrayList<ChoNgoi> danhSachChoNgoi) {
+    public Toa(String maToa, Tau tau, LoaiToa loaiToa, int soLuongCho, List<ChoNgoi> danhSachChoNgoi) {
         this.maToa = maToa;
         this.tau = tau;
         this.loaiToa = loaiToa;
@@ -85,11 +86,11 @@ public class Toa implements Serializable {
         this.soLuongCho = soLuongCho;
     }
 
-    public ArrayList<ChoNgoi> getDanhSachChoNgoi() {
+    public List<ChoNgoi> getDanhSachChoNgoi() {
         return danhSachChoNgoi;
     }
 
-    public void setDanhSachChoNgoi(ArrayList<ChoNgoi> danhSachChoNgoi) {
+    public void setDanhSachChoNgoi(List<ChoNgoi> danhSachChoNgoi) {
         this.danhSachChoNgoi = danhSachChoNgoi;
     }
 

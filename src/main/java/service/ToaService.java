@@ -1,5 +1,6 @@
 package service;
 
+import connectDB.connectDB_1;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -10,13 +11,21 @@ import java.util.List;
 public class ToaService {
 
     @PersistenceContext
+//    public EntityManager em = connectDB_1.getEntityManager();
     public EntityManager em;
+
+    public ToaService (EntityManager em) {
+        this.em = em;
+    }
+
 
     @Transactional
     public void persistToa(Toa toa) {
         generateMaToa(toa);
         em.persist(toa);
     }
+
+
 
     private void generateMaToa(Toa toa) {
         if (toa.getMaToa() == null || toa.getMaToa().isEmpty()) {
