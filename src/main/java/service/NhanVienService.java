@@ -23,9 +23,13 @@ public class NhanVienService {
         // Tạo đối tượng TaiKhoan với giá trị matKhau mặc định không null
         TaiKhoan taiKhoan = new TaiKhoan();
         taiKhoan.setMaTK(nhanVien.getMaNV());
+        System.out.println(taiKhoan.getMaTK());
         taiKhoan.setMatKhau("$2a$10$hx.v7Xiy7I8Rpql8ONmMF.WZY3d6pfQmfpp2EgeXJajNJdUa9KVSa");
         taiKhoan.setTrangThai("Kích hoạt");
+        System.out.println(taiKhoan.getMatKhauHash());
         em.persist(taiKhoan);
+       // em.flush();
+        System.out.println("Persist successful");
         nhanVien.setTaiKhoan(taiKhoan);
 
         em.persist(nhanVien);
@@ -60,7 +64,7 @@ public class NhanVienService {
 
             // Tạo mã nhân viên
             String newMaNV = prefix + String.format("%03d", nextID);
-
+            System.out.println(newMaNV);
             nhanVien.setMaNV(newMaNV);
         }
     }

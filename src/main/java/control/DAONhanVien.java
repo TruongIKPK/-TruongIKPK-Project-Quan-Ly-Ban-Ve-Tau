@@ -14,6 +14,7 @@ import jakarta.persistence.TypedQuery;
 import service.NhanVienService;
 import jakarta.persistence.Query;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
@@ -65,16 +66,34 @@ public class DAONhanVien {
 //    }
     private static EntityManager em = connectDB_1.getEntityManager();
 
-    public static boolean themNhanVien(NhanVien nv) {
-        try {
-            NhanVienService nhanVienService = new NhanVienService(em);
-            nhanVienService.persistNhanVien(nv);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+//    public static boolean themNhanVien(NhanVien nv) {
+//        try {
+//            NhanVienService nhanVienService = new NhanVienService(em);
+//            nhanVienService.persistNhanVien(nv);
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+public static boolean themNhanVien(NhanVien nv) {
+    EntityTransaction transaction = em.getTransaction();
+    try {
+        transaction.begin();
+
+        NhanVienService nhanVienService = new NhanVienService(em);
+        nhanVienService.persistNhanVien(nv);
+
+        transaction.commit();
+        return true;
+    } catch (Exception e) {
+        if (transaction.isActive()) {
+            transaction.rollback();
         }
+        e.printStackTrace();
+        return false;
     }
+}
 //get NV
     public static NhanVien getNhanVien(String maNV) {
         String jpql = "SELECT nv FROM NhanVien nv WHERE nv.maNV = :maNV";
@@ -178,31 +197,42 @@ public static ArrayList<NhanVien> getNhanVienTheoTrangThai(String trangThai) {
 }
 //sua NV
 public static NhanVien suaNhanVien(NhanVien nv) {
-    String jpql = "UPDATE NhanVien nv SET nv.tenNV = :tenNV, nv.gioiTinh = :gioiTinh, nv.ngaySinh = :ngaySinh, nv.ngayVaoLam = :ngayVaoLam, nv.CCCD = :CCCD, nv.sdt = :sdt, nv.email = :email, nv.diaChi = :diaChi, nv.trangThai = :trangThai, nv.caLam = :caLam, nv.taiKhoan = :taiKhoan, nv.chucVu = :chucVu WHERE nv.maNV = :maNV";
+    EntityTransaction transaction = em.getTransaction();
     try {
+        transaction.begin(); // Bắt đầu giao dịch
 
-        Query query = em.createQuery(jpql);
-        query.setParameter("tenNV", nv.getTenNV());
-        query.setParameter("gioiTinh", nv.getGioiTinh());
-        query.setParameter("ngaySinh", java.sql.Date.valueOf(nv.getNgaySinh()));
-        query.setParameter("ngayVaoLam", java.sql.Date.valueOf(nv.getNgayVaoLam()));
-        query.setParameter("CCCD", nv.getCCCD());
-        query.setParameter("sdt", nv.getSdt());
-        query.setParameter("email", nv.getEmail());
-        query.setParameter("diaChi", nv.getDiaChi());
-        query.setParameter("trangThai", nv.getTrangThai());
-        query.setParameter("caLam", nv.getCaLam());
-        query.setParameter("taiKhoan", nv.getTaiKhoan());
-        query.setParameter("chucVu", nv.getChucVu());
-        query.setParameter("maNV", nv.getMaNV());
+        NhanVien existingNhanVien = em.find(NhanVien.class, nv.getMaNV());
+        if (existingNhanVien != null) {
+            // Cập nhật các thuộc tính của NhanVien
+            existingNhanVien.setTenNV(nv.getTenNV());
+            existingNhanVien.setGioiTinh(nv.getGioiTinh());
+            existingNhanVien.setNgaySinh(nv.getNgaySinh());
+            existingNhanVien.setNgayVaoLam(nv.getNgayVaoLam());
+            existingNhanVien.setCCCD(nv.getCCCD());
+            existingNhanVien.setSdt(nv.getSdt());
+            existingNhanVien.setEmail(nv.getEmail());
+            existingNhanVien.setDiaChi(nv.getDiaChi());
+            existingNhanVien.setTrangThai(nv.getTrangThai());
 
-        // Thực hiện truy vấn và kiểm tra số lượng bản ghi bị ảnh hưởng
-        int result = query.executeUpdate();
+            // Kiểm tra và cập nhật các thực thể liên quan
+            if (nv.getCaLam() != null) {
+                existingNhanVien.setCaLam(em.merge(nv.getCaLam()));
+            }
+            if (nv.getTaiKhoan() != null) {
+                existingNhanVien.setTaiKhoan(em.merge(nv.getTaiKhoan()));
+            }
+            if (nv.getChucVu() != null) {
+                existingNhanVien.setChucVu(em.merge(nv.getChucVu()));
+            }
 
-        if (result > 0) {
-            return nv; // Trả về đối tượng nhân viên đã được cập nhật
+            em.merge(existingNhanVien); // Lưu các thay đổi vào cơ sở dữ liệu
         }
+        transaction.commit(); // Commit giao dịch
+        return existingNhanVien;
     } catch (Exception e) {
+        if (transaction.isActive()) {
+            transaction.rollback(); // Rollback giao dịch nếu có ngoại lệ
+        }
         e.printStackTrace();
     }
     return null;

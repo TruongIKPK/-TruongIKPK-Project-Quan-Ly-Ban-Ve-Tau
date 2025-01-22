@@ -34,6 +34,7 @@ public class PnlNhanVien extends JPanel {
     private JComboBox<String> cbxCaLam;
     private JPanel pnlCaLam;
     private CButton btnReset;
+    private NhanVien selectedNhanVien;
 
     /**
      * Creates new form PnlChuyenTau
@@ -536,7 +537,8 @@ public class PnlNhanVien extends JPanel {
         String tenCalam = cbxCaLam.getSelectedItem().toString();
         String maCalam = tenCalam.equals("Ca 1") ? "CA1" : "CA2";
 
-        NhanVien nv = new NhanVien(maNV, hoTen, gioiTinh, ngaySinh, sdt, email, diaChi, cccd, ngayVaoLam, new ChucVu(maCv, chucVu), new TaiKhoan(maNV), trangThai, new CaLam(maCalam));
+        NhanVien nv = new NhanVien(maNV, hoTen, gioiTinh, ngaySinh, sdt, email, diaChi, cccd, ngayVaoLam, new ChucVu(maCv, chucVu), new TaiKhoan(maNV,selectedNhanVien.getTaiKhoan().getMatKhauHash(),selectedNhanVien.getTaiKhoan().getTrangThai()), trangThai, new CaLam(maCalam, selectedNhanVien.getCaLam().getTenCL(),selectedNhanVien.getCaLam().getGioBD(),selectedNhanVien.getCaLam().getGioKetThuc()));
+        System.out.println("nv" + nv);
         return nv;
     }
 
@@ -580,7 +582,7 @@ public class PnlNhanVien extends JPanel {
 
         txtDiaChi.setText(nv.getDiaChi());
         cbxCaLam.setSelectedItem(nv.getCaLam().getMaCL());
-
+        selectedNhanVien = nv;
         System.out.println("nhan vien" + nv);
     }
 
@@ -618,9 +620,10 @@ public class PnlNhanVien extends JPanel {
 
     private void btnCapNhatActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
-        NhanVien nv = getNhanVienFromInput();
-        String maCV = nv.getChucVu().getTenCV().equalsIgnoreCase("Nhân viên") ? "NV" : "QL";
-        nv.setChucVu(new ChucVu(maCV, nv.getChucVu().getTenCV()));
+      NhanVien nv = getNhanVienFromInput();
+//        System.out.println("nv" + nv);
+//        String maCV = nv.getChucVu().getTenCV().equalsIgnoreCase("Nhân viên") ? "NV" : "QL";
+//        nv.setChucVu(new ChucVu(maCV, nv.getChucVu().getTenCV()));
         NhanVien nv2 = DAONhanVien.suaNhanVien(nv);
         System.out.println("nv2" + nv2);
         if (nv2 != null) {
@@ -637,6 +640,7 @@ public class PnlNhanVien extends JPanel {
             return;
         }
         NhanVien nv = getNhanVienFromInput();
+        nv.setMaNV("");
         if (DAONhanVien.themNhanVien(nv)) {
             JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công");
             updateModel();
