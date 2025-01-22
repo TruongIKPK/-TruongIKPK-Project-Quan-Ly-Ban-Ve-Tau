@@ -224,7 +224,7 @@ public static NhanVien suaNhanVien(NhanVien nv) {
             if (nv.getChucVu() != null) {
                 existingNhanVien.setChucVu(em.merge(nv.getChucVu()));
             }
-
+            updateTaiKhoanStatus(existingNhanVien);
             em.merge(existingNhanVien); // Lưu các thay đổi vào cơ sở dữ liệu
         }
         transaction.commit(); // Commit giao dịch
@@ -237,6 +237,19 @@ public static NhanVien suaNhanVien(NhanVien nv) {
     }
     return null;
 }
+
+    private static void updateTaiKhoanStatus(NhanVien nhanVien) {
+        TaiKhoan taiKhoan = nhanVien.getTaiKhoan();
+        if (taiKhoan != null) {
+            if (nhanVien.getTrangThai().equals("Nghỉ làm")) {
+                taiKhoan.setTrangThai("Bị khóa");
+            } else if (nhanVien.getTrangThai().equals("Làm việc")) {
+                taiKhoan.setTrangThai("Kích hoạt");
+            }
+            em.merge(taiKhoan);
+        }
+    }
+
     // ham nay tra ve email, sdt, cua ma nv
 //hàm ảnh
     public static String getDuongDanAnh(String maNV) {
