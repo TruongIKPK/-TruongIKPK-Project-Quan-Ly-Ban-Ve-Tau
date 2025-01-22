@@ -50,9 +50,10 @@ public class DAOHoaDon {
 
     public static boolean themHoaDon(HoaDon hd) {
         try {
-
+                em.getTransaction().begin();
                 HoaDonService hoaDonService = new HoaDonService(em);
                 hoaDonService.persistHoaDon(hd);
+                em.getTransaction().commit();
                 System.out.println("Thêm hóa đơn thành công");
             return true;
 
@@ -134,17 +135,35 @@ public class DAOHoaDon {
 //    }
 
     public static ArrayList<HoaDon> docHoaDonTheoKhachHang(String maKH) {
-        try {
-            TypedQuery<HoaDon> query = em.createQuery(
-                    "SELECT hd FROM HoaDon hd WHERE hd.khachHang.maKH = :maKH", HoaDon.class);
-            query.setParameter("maKH", maKH);
-            List<HoaDon> resultList = query.getResultList();
-            return new ArrayList<>(resultList); // Chuyển đổi List thành ArrayList
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>(); // Trả về danh sách trống nếu có lỗi xảy ra
+        String jpql = "SELECT h FROM HoaDon h WHERE h.khachHang.maKH = :maKH";
+        TypedQuery<HoaDon> query = em.createQuery(jpql, HoaDon.class);
+        query.setParameter("maKH", maKH);
+
+        List<HoaDon> dsHoaDon = query.getResultList();
+
+        for (HoaDon hoaDon : dsHoaDon) {
+            List<Ve> dsVe = DAOVe.layDSVeTheoMaHD(hoaDon.getMaHD());
+            ArrayList<Ve> dsVe1 = new ArrayList<>(dsVe);
+            hoaDon.setDanhSachVe(dsVe1);
         }
+
+        return new ArrayList<>(dsHoaDon);
     }
+
+//    public static ArrayList<HoaDon> docHoaDonTheoKhachHang(String maKH) {
+//        try {
+//            TypedQuery<HoaDon> query = em.createQuery(
+//                    "SELECT hd FROM HoaDon hd WHERE hd.khachHang.maKH = :maKH", HoaDon.class);
+//            query.setParameter("maKH", maKH);
+//
+//            List<HoaDon> resultList = query.getResultList();
+//            System.out.println("Danh sách hóa đơn theo khách hàng: "+maKH+"-----------------------------------------------------" + resultList);
+//            return new ArrayList<>(resultList); // Chuyển đổi List thành ArrayList
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ArrayList<>(); // Trả về danh sách trống nếu có lỗi xảy ra
+//        }
+//    }
 
     // doc danh sach hoa don theo ngay
 //    public static ArrayList<HoaDon> docHoaDonTheoNgay(LocalDate ngay) {
@@ -255,7 +274,14 @@ public class DAOHoaDon {
         try {
             TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd ORDER BY hd.ngayGioLapHD DESC", HoaDon.class);
             query.setMaxResults(1);
+
             List<HoaDon> resultList = query.getResultList();
+
+            if (resultList.isEmpty()) {
+                System.out.println("Danh sách hóa đơn trống.");
+                return null; // Trả về null nếu danh sách rỗng
+            }
+
             return resultList.get(0); // Trả về hóa đơn cuối cùng được tạo
         } catch (Exception e) {
             e.printStackTrace();

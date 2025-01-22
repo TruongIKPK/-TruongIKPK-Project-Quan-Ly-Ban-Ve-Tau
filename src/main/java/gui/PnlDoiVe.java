@@ -1118,7 +1118,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
         }
 
         // Kiểm tra vé đã đổi
-        if (veCu.getTrangThai().equals(ETrangThaiVe.VE_DUOC_DOI.getTrangThai())) {
+        if (veCu.getTrangThai().equals(ETrangThaiVe.VE_DUOC_DOI.name())) {
             JOptionPane.showMessageDialog(null, "Vé đã đổi");
             return;
         }
@@ -1211,7 +1211,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
 
         // Tạo danh sách toa từ danh sách toa của tàu đang chọn
         ArrayList<Toa> dsToa = new ArrayList<>(chuyenDangChon.getTau().getDanhSachToa());
-        ArrayList<Toa> dsToaCopy = (ArrayList<Toa>) chuyenDangChon.getTau().getDanhSachToa();
+        java.util.List<Toa> dsToaCopy = chuyenDangChon.getTau().getDanhSachToa();
 
         // Nếu danh sách toa rỗng, không làm gì và thoát ra
         if (dsToa.isEmpty()) return;
@@ -1744,7 +1744,8 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
             return;
         }
 
-        if (!veTim.getTrangThai().equals(ETrangThaiVe.DA_BAN.getTrangThai())) {
+        if (!veTim.getTrangThai().equals("DA_BAN")) {
+            System.out.println("ve tim " + veTim.getTrangThai());
             JOptionPane.showMessageDialog(null, "Vé chưa được bán");
             return;
         }
@@ -1855,18 +1856,18 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
             return false;
         }
 
-        if (veCu.getTrangThai().equals(ETrangThaiVe.VE_DUOC_DOI.getTrangThai())) {
+        if (veCu.getTrangThai().equals(ETrangThaiVe.VE_DUOC_DOI.name())) {
             JOptionPane.showMessageDialog(null, "Vé đã được đổi");
             return false;
         }
 
         // Kiểm tra vé đã được đổi, trả
-        if (veCu.getTrangThai().equals(ETrangThaiVe.DA_DOI.getTrangThai()) || veCu.getTrangThai().equals(ETrangThaiVe.DA_TRA.getTrangThai())) {
+        if (veCu.getTrangThai().equals(ETrangThaiVe.DA_DOI.name()) || veCu.getTrangThai().equals(ETrangThaiVe.DA_TRA.name())) {
             JOptionPane.showMessageDialog(null, "Vé này đã được đổi hoặc trả");
             return false;
         }
 
-        if (!veCu.getTrangThai().equals(ETrangThaiVe.DA_BAN.getTrangThai())) {
+        if (!veCu.getTrangThai().equals(ETrangThaiVe.DA_BAN.name())) {
             JOptionPane.showMessageDialog(null, "Vé chưa được bán");
             return false;
         }

@@ -9,6 +9,7 @@ import gui.custom.CButton;
 import gui.custom.CDialog;
 import gui.custom.CTable;
 import gui.custom.CTextField;
+import jakarta.persistence.EntityManager;
 import service.HoaDonService;
 import utils.*;
 
@@ -102,6 +103,7 @@ public class JdXinVe extends CDialog implements MouseListener {
     private CButton btnThanhToan;
     private CButton btnLuuTam;
     private CButton btnNguoiDat;
+
 
     /**
      * Constructor không có chuyến chiều về
@@ -1167,7 +1169,6 @@ public class JdXinVe extends CDialog implements MouseListener {
                 return null;
             }
         }
-
         khachHang = DAOKhachHang.timKhachHang(cccdNguoiMua, sdtNguoiMua);
         return khachHang;
     }
@@ -1211,10 +1212,10 @@ public class JdXinVe extends CDialog implements MouseListener {
             KhuyenMai khuyenMaiObj = listKhuyenMai.stream().filter(km -> km.getDoiTuong().equals(khachHang.getDoiTuong())).findFirst().orElse(null);
 
             if (chuyenChieuVe != null) {
-                veChieuDi = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV2"), LocalDateTime.now(), listChoNgoiChieuDi.get(i), chuyenChieuDi, khachHang, 10, khuyenMaiObj, ETrangThaiVe.DA_BAN.getTrangThai());
-                veChieuVe = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV2"), LocalDateTime.now(), listChoNgoiChieuVe.get(i), chuyenChieuVe, khachHang, 10, khuyenMaiObj, ETrangThaiVe.DA_BAN.getTrangThai());
+                veChieuDi = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV2"), LocalDateTime.now(), listChoNgoiChieuDi.get(i), chuyenChieuDi, khachHang, 10, khuyenMaiObj, ETrangThaiVe.DA_BAN.name());
+                veChieuVe = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV2"), LocalDateTime.now(), listChoNgoiChieuVe.get(i), chuyenChieuVe, khachHang, 10, khuyenMaiObj, ETrangThaiVe.DA_BAN.name());
             } else {
-                veChieuDi = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV1"), LocalDateTime.now(), listChoNgoiChieuDi.get(i), chuyenChieuDi, khachHang, 10, khuyenMaiObj, ETrangThaiVe.DA_BAN.getTrangThai());
+                veChieuDi = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV1"), LocalDateTime.now(), listChoNgoiChieuDi.get(i), chuyenChieuDi, khachHang, 10, khuyenMaiObj, ETrangThaiVe.DA_BAN.name());
             }
 
             try {
@@ -1278,11 +1279,12 @@ public class JdXinVe extends CDialog implements MouseListener {
         try {
             // Thêm hóa đơn
             DAOHoaDon.themHoaDon(hoaDon);
+            System.out.println("---------------Thêm hóa đơn thành công------------------");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lưu hóa đơn thất bại", "Thông báo", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        ///---- Đang lỗi
         // Lấy hóa đơn vừa thêm
         hoaDon = DAOHoaDon.getHoaDonCuoiCung();
 
@@ -1396,10 +1398,10 @@ public class JdXinVe extends CDialog implements MouseListener {
             KhuyenMai khuyenMaiObj = listKhuyenMai.stream().filter(km -> km.getDoiTuong().equals(khachHang.getDoiTuong())).findFirst().orElse(null);
 
             if (chuyenChieuVe != null) {
-                veChieuDi = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV2"), LocalDateTime.now(), listChoNgoiChieuDi.get(i), chuyenChieuDi, khachHang, 0.1, khuyenMaiObj, ETrangThaiVe.DA_BAN.getTrangThai());
-                veChieuVe = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV2"), LocalDateTime.now(), listChoNgoiChieuVe.get(i), chuyenChieuVe, khachHang, 0.1, khuyenMaiObj, ETrangThaiVe.DA_BAN.getTrangThai());
+                veChieuDi = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV2"), LocalDateTime.now(), listChoNgoiChieuDi.get(i), chuyenChieuDi, khachHang, 0.1, khuyenMaiObj, ETrangThaiVe.DA_BAN.name());
+                veChieuVe = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV2"), LocalDateTime.now(), listChoNgoiChieuVe.get(i), chuyenChieuVe, khachHang, 0.1, khuyenMaiObj, ETrangThaiVe.DA_BAN.name());
             } else {
-                veChieuDi = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV1"), LocalDateTime.now(), listChoNgoiChieuDi.get(i), chuyenChieuDi, khachHang, 0.1, khuyenMaiObj, ETrangThaiVe.DA_BAN.getTrangThai());
+                veChieuDi = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV1"), LocalDateTime.now(), listChoNgoiChieuDi.get(i), chuyenChieuDi, khachHang, 0.1, khuyenMaiObj, ETrangThaiVe.DA_BAN.name());
             }
 
             listVe.add(veChieuDi);

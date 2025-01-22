@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Check(constraints = "trangThai IN ('Đã bán', 'Đã đổi', 'Đã trả', 'Vé được đổi', 'Vé được trả')")
+@Check(constraints = "trangThai IN ('DA_BAN', 'DA_DOI', 'DA_TRA', 'VE_DUOC_DOI', 'VE_DUOC_TRA')")
 public class Ve implements Serializable {
     @Id
     @Column(columnDefinition = "varchar(20)")

@@ -29,9 +29,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Huy
- */
 public class PnlKhuyenMai extends JPanel {
     private ArrayList<String> listDoiTuong;
     private ArrayList<KhuyenMai> listKhuyenMai;

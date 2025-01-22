@@ -291,8 +291,9 @@ public class DAOChuyenTau {
     public static ArrayList<ChuyenTau> getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(LocalDate ngayDi, int maGaDi, int maGaDen) {
         ArrayList<ChuyenTau> dsChuyenTau = new ArrayList<>();
         try {
+            // Sử dụng hàm CAST để chuyển đổi giá trị ngayGioDi sang kiểu DATE trong truy vấn JPQL
             TypedQuery<ChuyenTau> query = em.createQuery(
-                    "SELECT ct FROM ChuyenTau ct WHERE FUNCTION('DATE', ct.ngayGioDi) = :ngayDi AND ct.gaDi.maGa = :maGaDi AND ct.gaDen.maGa = :maGaDen",
+                    "SELECT ct FROM ChuyenTau ct WHERE CAST(ct.ngayGioDi AS date) = :ngayDi AND ct.gaDi.maGa = :maGaDi AND ct.gaDen.maGa = :maGaDen",
                     ChuyenTau.class);
             query.setParameter("ngayDi", ngayDi);
             query.setParameter("maGaDi", maGaDi);

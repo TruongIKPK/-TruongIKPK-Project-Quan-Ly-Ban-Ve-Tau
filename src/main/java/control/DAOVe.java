@@ -248,7 +248,7 @@ public class DAOVe {
         ArrayList<Ve> dsVe = new ArrayList<>();
         String sql = "SELECT v FROM Ve v WHERE v.hoaDon.maHD = :maHD AND v.trangThai = :trangThai";
         try {
-            dsVe = (ArrayList<Ve>) em.createQuery(sql, Ve.class).setParameter("maHD", maHD).setParameter("trangThai", ETrangThaiVe.DA_BAN).getResultList();
+            dsVe = (ArrayList<Ve>) em.createQuery(sql, Ve.class).setParameter("maHD", maHD).setParameter("trangThai", ETrangThaiVe.DA_BAN.name()).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -381,6 +381,7 @@ public class DAOVe {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("VE--------------------------------------------------------------------------------------------------------Ve: " + ve);
         return ve;
     }
 
@@ -564,6 +565,23 @@ public class DAOVe {
         }
         return dsVe;
     }
+
+//    public static ArrayList<Ve> layDSVeDaBanTheoMaChuyen(String maChuyen) {
+//        ArrayList<Ve> dsVe = new ArrayList<>();
+//        List<Ve> dsVe1 = new ArrayList<>();
+//        String jpql = "SELECT v FROM Ve v WHERE v.chuyenTau.maChuyen = :maChuyen AND v.trangThai = :trangThai";
+//        try {
+//            TypedQuery<Ve> query = em.createQuery(jpql, Ve.class);
+//            query.setParameter("maChuyen", maChuyen);
+//            query.setParameter("trangThai", "Da ban"); // Giá trị trạng thái vé
+//            dsVe1 = query.getResultList();
+//            dsVe = new ArrayList<>(dsVe1);
+//            System.out.println("------------DSVEDABAN--------------"+dsVe+"------------------------------");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return dsVe;
+//    }
 
 //    public static String layDoanhThuTheoNgay(Date ngay) {
 //        String sql = "SELECT SUM(lc.giaCho) AS totalRevenue " +

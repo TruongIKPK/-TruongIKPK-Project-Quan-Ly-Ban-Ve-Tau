@@ -31,7 +31,7 @@ public class HoaDonService {
                     .getSingleResult();
 
             String newMaHD = prefix + String.format("%06d", maxSeq);
-
+            System.out.println(newMaHD);
             hd.setMaHD(newMaHD);
         }
     }

@@ -66,11 +66,6 @@ public class HoaDon implements Serializable {
         this.danhSachVe = danhSachVe;
     }
     public void setMaHD(String maHD) {
-        // Kiểm tra mã hóa đơn
-        if (!Validation.maHD(maHD)) {
-            throw new IllegalArgumentException("Mã hóa đơn không hợp lệ");
-        }
-
         this.maHD = maHD;
     }
 

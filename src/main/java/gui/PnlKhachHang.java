@@ -614,8 +614,10 @@ public class PnlKhachHang extends JPanel {
     private void loadHoaDonCuaKhachHang(String maKhach) {
         tblModelHoaDon.setRowCount(0);
         tblModelVe.setRowCount(0);
-
         listHoaDon = DAOHoaDon.docHoaDonTheoKhachHang(maKhach);
+
+        System.out.println("ma khach:------------------------------------------------------------------------ " + listHoaDon);
+
         listHoaDon.forEach(hoaDon -> {
             tblModelHoaDon.addRow(new Object[]{
                     hoaDon.getMaHD(),
@@ -624,8 +626,16 @@ public class PnlKhachHang extends JPanel {
             });
         });
 
-        tblHoaDon.setRowSelectionInterval(0, 0);
-        loadVeCuaHoaDon(tblHoaDon.getValueAt(0, 0).toString());
+        // Kiểm tra xem bảng tblHoaDon có dữ liệu hay không trước khi gọi loadVeCuaHoaDon
+        if (tblHoaDon.getRowCount() > 0) {
+            tblHoaDon.setRowSelectionInterval(0, 0);
+            String selectedHoaDonMa = tblHoaDon.getValueAt(0, 0).toString();
+            if (selectedHoaDonMa != null) {
+                loadVeCuaHoaDon(selectedHoaDonMa);
+            }
+        } else {
+            System.out.println("Không có hóa đơn nào cho khách hàng này.");
+        }
     }
 
     private void loadVeCuaHoaDon(String maHoaDon) {

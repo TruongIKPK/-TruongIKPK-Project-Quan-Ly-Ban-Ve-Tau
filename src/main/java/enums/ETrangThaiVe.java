@@ -11,7 +11,6 @@ public enum ETrangThaiVe {
     DA_DOI("Đã đổi"),
     DA_TRA("Đã trả"),
     VE_DUOC_DOI("Vé được đổi");
-
     private String trangThai;
 
     private ETrangThaiVe(String trangThai) {

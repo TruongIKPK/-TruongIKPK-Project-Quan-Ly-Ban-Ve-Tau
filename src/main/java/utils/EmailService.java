@@ -6,7 +6,6 @@ import entity.Ve;
 
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,22 +18,26 @@ import static utils.RenderHtmlToImage.renderHtmlToImage;
 
 public class EmailService {
 
-    private final String username = "tauvietexpress@gmail.com"; // Địa chỉ email của bạn
-    private final String password = "ldqi howc kcqu xjvc"; // Mật khẩu ứng dụng Gmail
+    private final String username = "duongsatwintoplegends@gmail.com"; // Địa chỉ email của bạn
+    private final String password = "zcay csba xyhs xvky"; // Mật khẩu ứng dụng Gmail
 
-    public boolean sendOTPEmail(String recipient, int otp) {
+    private Session createSession() {
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", "587");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
 
-        Session session = Session.getInstance(properties, new Authenticator() {
+        return Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
             }
         });
+    }
+
+    public boolean sendOTPEmail(String recipient, int otp) {
+        Session session = createSession();
 
         try {
             // Tạo email
@@ -54,18 +57,7 @@ public class EmailService {
     }
 
     public boolean sendEmailWithAttachment(String recipient, String subject, String body, String filePath) {
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-
-        Session session = Session.getInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
-            }
-        });
+        Session session = createSession();
 
         try {
             MimeMessage message = new MimeMessage(session);
@@ -106,18 +98,17 @@ public class EmailService {
                 // Create a PDF file from the HTML content
                 File tempFile = convertImageToPdf(image);
 
-
                 // Use the EmailService to send the email with the PDF attachment
                 EmailService emailService = new EmailService();
-                String content = "Xác nhận đặt vé thành công - " + ve.getMaVe() +"\n" +
+                String content = "Xác nhận đặt vé thành công - " + ve.getMaVe() + "\n" +
                         "\n" +
                         "Kính gửi " + ve.getKhachHang().getTenKH() + ",  \n" +
                         "\n" +
                         "Chúng tôi xin xác nhận rằng bạn đã đặt vé thành công. Dưới đây là thông tin chi tiết vé tàu của bạn:  \n" +
                         "\n" +
                         "Thông tin hành trình:  \n" +
-                        "- Mã đặt vé:" + ve.getMaVe() +"  \n" +
-                        "- Họ và tên hành khách: " + ve.getKhachHang().getTenKH() +  "\n" +
+                        "- Mã đặt vé: " + ve.getMaVe() + "  \n" +
+                        "- Họ và tên hành khách: " + ve.getKhachHang().getTenKH() + "\n" +
                         "- Ngày khởi hành: " + FormatDate.formatLocalDateTimeToHM(ve.getChuyenTau().getNgayGioDi()) + "\n" +
                         "- Ga đi: " + ve.getChuyenTau().getGaDi().getTenGa() + "\n" +
                         "- Ga đến: " + ve.getChuyenTau().getGaDen().getTenGa() + "\n" +
@@ -168,18 +159,7 @@ public class EmailService {
 
     // ham nay de lam gi: gui email cho khach hang
     public boolean sendPromotionNotification(String email, String content) {
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-
-        Session session = Session.getInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
-            }
-        });
+        Session session = createSession();
 
         try {
             // Tạo email

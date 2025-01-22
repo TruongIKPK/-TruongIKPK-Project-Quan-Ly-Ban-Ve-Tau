@@ -28,9 +28,6 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-/**
- * @author Huy
- */
 public class PnlNhanVien extends JPanel {
     private ArrayList<NhanVien> listNhanVien;
     private JLabel lblCaLam;

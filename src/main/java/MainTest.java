@@ -335,28 +335,28 @@ public class MainTest {
 
         KhuyenMaiService khuyenMaiService = new KhuyenMaiService(em);
 
-        KhuyenMai km1 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Người hoạt động cách mạng", 0.10);
+        KhuyenMai km1 = new KhuyenMai(LocalDate.of(2025, 1, 27), LocalDate.of(2025, 12, 30), "Người hoạt động cách mạng", 0.10);
         khuyenMaiService.persistKhuyenMai(km1);
 
-        KhuyenMai km2 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Thương binh", 0.15);
+        KhuyenMai km2 = new KhuyenMai(LocalDate.of(2025, 1, 27), LocalDate.of(2025, 12, 30), "Thương binh", 0.15);
         khuyenMaiService.persistKhuyenMai(km2);
 
-        KhuyenMai km3 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Người khuyết tật", 0.20);
+        KhuyenMai km3 = new KhuyenMai(LocalDate.of(2025, 1, 27), LocalDate.of(2025, 12, 30), "Người khuyết tật", 0.20);
         khuyenMaiService.persistKhuyenMai(km3);
 
-        KhuyenMai km4 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Trẻ em", 0.05);
+        KhuyenMai km4 = new KhuyenMai(LocalDate.of(2025, 1, 27), LocalDate.of(2025, 12, 30), "Trẻ em", 0.05);
         khuyenMaiService.persistKhuyenMai(km4);
 
-        KhuyenMai km5 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Người cao tuổi", 0.30);
+        KhuyenMai km5 = new KhuyenMai(LocalDate.of(2025, 1, 27), LocalDate.of(2025, 12, 30), "Người cao tuổi", 0.30);
         khuyenMaiService.persistKhuyenMai(km5);
 
-        KhuyenMai km6 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Học sinh, sinh viên", 0.30);
+        KhuyenMai km6 = new KhuyenMai(LocalDate.of(2025, 1, 27), LocalDate.of(2025, 12, 30), "Học sinh, sinh viên", 0.30);
         khuyenMaiService.persistKhuyenMai(km6);
 
-        KhuyenMai km7 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Tất cả", 0.30);
+        KhuyenMai km7 = new KhuyenMai(LocalDate.of(2025, 1, 27), LocalDate.of(2025, 12, 30), "Tất cả", 0.30);
         khuyenMaiService.persistKhuyenMai(km7);
 
-        KhuyenMai km8 = new KhuyenMai(LocalDate.of(2025, 1, 21), LocalDate.of(2025, 12, 30), "Người lớn", 0.00);
+        KhuyenMai km8 = new KhuyenMai(LocalDate.of(2025, 1, 27), LocalDate.of(2025, 12, 30), "Người lớn", 0.00);
         khuyenMaiService.persistKhuyenMai(km8);
 
         persistChoNgoi = new ChoNgoiService(em);

@@ -14,12 +14,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: FrmTrangChinh
- * @Tạo vào ngày: 30/9/2024
- * @Tác giả: Huy
- */
 public class FrmTrangChinh extends JFrame {
     private JPanel pnlMain, pnlTop;
     private TaiKhoan taiKhoan;
@@ -339,10 +333,11 @@ public class FrmTrangChinh extends JFrame {
         navThongKe.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (pnlThongKe == null) {
-                    pnlThongKe = new PnlThongKe(nhanVien);
-                }
-                setPnlWithLoading(pnlThongKe);
+//                if (pnlThongKe == null) {
+//                    pnlThongKe = new PnlThongKe(nhanVien);
+//                }
+//                setPnlWithLoading(pnlThongKe);
+                JOptionPane.showMessageDialog(null, "Chức năng đang được phát triển!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 

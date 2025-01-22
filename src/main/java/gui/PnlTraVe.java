@@ -521,11 +521,11 @@ public class PnlTraVe extends JPanel {
                 // Tính toán khoảng thời gian giữa hiện tại và thời gian khởi hành
                 long hoursUntilDeparture = Duration.between(now, ngayGioDi).toHours();
 
-                if (txtTrangThai.getText().equals("Đã đổi")) {
+                if (txtTrangThai.getText().equals("DA_DOI")) {
                     txtDieuKien.setText("Vé không đủ điều kiện trả! ( đã đổi vé )");
 //                txtLePhi.setText("");
 //                txtTienPhi.setText("");
-                } else if(txtTrangThai.getText().equals("Đã trả")) {
+                } else if(txtTrangThai.getText().equals("DA_TRA")) {
                     txtDieuKien.setText("Vé không đủ điều kiện trả! ( đã trả vé )");
 
                 } else {
@@ -659,7 +659,7 @@ public class PnlTraVe extends JPanel {
                 if (ve != null) {
                     //check điều kiện trả vé
                     if(checkDKVe(ve)){
-                        ve.setTrangThai("Đã trả");
+                        ve.setTrangThai("DA_TRA");
                         DAOVe.suaVe(ve);
 
                         // Thêm vé đã trả vào bảng
@@ -756,7 +756,7 @@ public class PnlTraVe extends JPanel {
         Ve ve = DAOVe.layVeTheoMa(maVe);
 
         if (ve != null) {
-            if (!ve.getTrangThai().equals("Đã bán")) {
+            if (!ve.getTrangThai().equals("DA_BAN")) {
                 JOptionPane.showMessageDialog(this, "Trạng thái vé không đủ điều kiện trả!");
 
             }
@@ -801,11 +801,11 @@ public class PnlTraVe extends JPanel {
 
             double thanhTien = ve.getThanhTien(); // Lấy tổng thành tiền của vé
 
-            if (txtTrangThai.getText().equals("Đã đổi")) {
+            if (txtTrangThai.getText().equals("DA_DOI")) {
                 txtDieuKien.setText("Vé không đủ điều kiện trả! ( đã đổi vé )");
 //                txtLePhi.setText("");
 //                txtTienPhi.setText("");
-            } else if(txtTrangThai.getText().equals("Đã trả")) {
+            } else if(txtTrangThai.getText().equals("DA_TRA")) {
                 txtDieuKien.setText("Vé không đủ điều kiện trả! ( đã trả vé )");
 
             } else {
@@ -853,7 +853,7 @@ public class PnlTraVe extends JPanel {
     private boolean checkDKVe(Ve ve){
 
         //Check trạng thái vé
-        if (!ve.getTrangThai().equals("Đã bán")) {
+        if (!ve.getTrangThai().equals("DA_BAN")) {
             return false;
         }
 

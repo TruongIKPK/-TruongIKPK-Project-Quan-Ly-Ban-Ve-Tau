@@ -185,7 +185,13 @@ public class DAOKhachHang {
                     "SELECT kh FROM KhachHang kh WHERE kh.CCCD = :CCCD AND kh.sdt = :sdt", KhachHang.class);
             query.setParameter("CCCD", CCCD);
             query.setParameter("sdt", sdt);
-            return query.getSingleResult();
+
+            List<KhachHang> resultList = query.getResultList();
+            if (resultList.isEmpty()) {
+                return null; // Không có kết quả trả về
+            } else {
+                return resultList.get(0); // Trả về kết quả đầu tiên
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null;

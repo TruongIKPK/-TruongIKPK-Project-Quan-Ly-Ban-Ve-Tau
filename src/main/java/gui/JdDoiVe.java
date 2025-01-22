@@ -17,12 +17,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
-    * @Dự án: tau-viet-express
-    * @Class: JdDoiVe
-    * @Tạo vào ngày: 10/26/2024
-    * @Tác giả: Huy
-*/
 public class JdDoiVe extends JDialog {
     private static final double PHI_DOI_VE = 20000;
     private PnlDoiVe pnlDoiVe;
@@ -311,10 +305,10 @@ public class JdDoiVe extends JDialog {
         // HoaDon hoaDon, LoaiVe loaiVe, LocalDateTime ngayGioXuatVe, ChoNgoi choNgoi, ChuyenTau chuyenTau, KhachHang khachHang, double thue, KhuyenMai khuyenMai, String trangThai)
         Ve veMoi = new Ve(veCu.getHoaDon(), veCu.getLoaiVe(), veCu.getNgayGioXuatVe(), choNgoi,
                 veCu.getChuyenTau(), veCu.getKhachHang(), veCu.getThue(), veCu.getKhuyenMai(),
-                ETrangThaiVe.DA_DOI.getTrangThai());
+                ETrangThaiVe.DA_DOI.name());
 
         // Cập nhật vé cũ
-        veCu.setTrangThai(ETrangThaiVe.VE_DUOC_DOI.getTrangThai());
+        veCu.setTrangThai(ETrangThaiVe.VE_DUOC_DOI.name());
 
         // Thêm vé mới vào CSDL
         if (DAOVe.themVeCoKhuyenMai(veMoi)) {

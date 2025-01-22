@@ -776,12 +776,12 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     public void getCacChuyenTauSapKhoiHanh() {
         // Lấy danh sách các chuyến tàu sắp khởi hành
         listChuyenDi = DAOChuyenTau.getDanhSachChuyenTauSapKhoiHanh();
-
+        System.out.println("Số chuyến đi:*********************************************************** " + listChuyenDi);
         // Lặp qua từng chuyến tàu trong danh sách và lấy vé đã bán theo mã chuyến
         for (ChuyenTau chuyenTau : listChuyenDi) {
             listVeDaBan.addAll(DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen()));
         }
-
+        System.out.println(")))))))))))))))))))))))))))))))))))))))))))))))))))))LISTVEDABAN"+listVeDaBan);
         // Hiển thị danh sách chuyến tàu
         hienThiDanhSachChuyenTau("Chiều đi");
 
@@ -913,9 +913,12 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         pnlChuyenTau.setBackground(EColor.BG_COLOR.getColor());
         pnlChuyenTau.setPreferredSize(new Dimension(250, 200));
 
+
+
         long soLuongChoTrong = DAOChuyenTau.getTongSoLuongChoCuaChuyen(chuyenTau.getMaChuyen())
                 - listVeDaBan.stream().filter(ve -> ve.getChuyenTau().equals(chuyenTau)).count();
 
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%SOLUONGCHOTRONG%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"+soLuongChoTrong);
         // Tạo Box chứa mác tàu
         JPanel boxMacTau = new JPanel();
         boxMacTau.setBackground(EColor.BG_COLOR.getColor());
@@ -2145,7 +2148,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
         // Lấy danh sách chuyến tàu theo các trường
         listChuyenDi = DAOChuyenTau.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayDi, gaDi.getMaGa(), gaDen.getMaGa());
-
+        System.out.println("DS Chuyến đi:---###############################################################################################################################################################33 " + listChuyenDi);
         if (listChuyenDi.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Không có chuyến tàu lượt đi");
             pnlLocTheoLoaiToa.setVisible(false);
@@ -2156,6 +2159,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
         // Lấy danh sách vé của chuyến
         listChuyenDi.forEach(chuyenTau -> {
+            System.out.println("Chuyến đi:---###############################################################################################################################################################33 " + chuyenTau.getMaChuyen());
             ArrayList<Ve> dsVeDaBan = DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
             listVeDaBan.addAll(dsVeDaBan);
         });
