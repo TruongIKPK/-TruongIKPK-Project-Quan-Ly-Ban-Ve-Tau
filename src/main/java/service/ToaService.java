@@ -1,6 +1,7 @@
 package service;
 
 import connectDB.connectDB_1;
+import entity.Tau;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -50,5 +51,13 @@ public class ToaService {
 
             toa.setMaToa(newMaToa);
         }
+    }
+
+
+    private boolean isMaToaExist(String maToa) {
+        Long count = (Long) em.createQuery("SELECT COUNT(t) FROM Toa t WHERE t.maToa = :maToa")
+                .setParameter("maToa", maToa)
+                .getSingleResult();
+        return count > 0;
     }
 }

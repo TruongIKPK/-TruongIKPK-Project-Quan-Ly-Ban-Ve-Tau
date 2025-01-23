@@ -40,4 +40,5 @@ public class KhuyenMaiService {
             khuyenMai.setMaKM(newMaKM);
         }
     }
+
 }
