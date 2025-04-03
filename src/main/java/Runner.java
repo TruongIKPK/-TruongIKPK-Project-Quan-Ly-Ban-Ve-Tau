@@ -34,7 +34,6 @@ public class Runner {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         // Đóng loading screen
         LoadingGUI.close();
 

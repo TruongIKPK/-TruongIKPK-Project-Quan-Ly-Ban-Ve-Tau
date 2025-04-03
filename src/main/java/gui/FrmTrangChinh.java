@@ -30,7 +30,7 @@ public class FrmTrangChinh extends JFrame {
     private PnlThongKe pnlThongKe;
     private PnlQuyDinh pnlQuyDinh;
     private PnlHuongDan pnlHuongDan;
-    private  AboutDialog aboutDialog;
+    private AboutDialog aboutDialog;
 
     private JPanel pnlTopCenter;
     private JPanel pnlDangChon;
@@ -63,7 +63,6 @@ public class FrmTrangChinh extends JFrame {
 
         initPnlTop();
         initPnlMain();
-
         add(pnlTop, BorderLayout.NORTH);
         add(pnlMain, BorderLayout.CENTER);
         //hàm check nếu mật khẩu của tài khoản là Abc1234.
@@ -196,7 +195,6 @@ public class FrmTrangChinh extends JFrame {
             pnlMain.add(pnlChuyenTau, BorderLayout.CENTER);
             pnlDangChon = pnlChuyenTau;
         }
-
         add(pnlMain, BorderLayout.CENTER);
     }
 
@@ -429,21 +427,9 @@ public class FrmTrangChinh extends JFrame {
         worker.execute();
     }
 
-
-    // toi muon lam 1 jdialog de hien thi thong tin cua nhan vien khi nhan vao icon nhan vien
-//(String maNV, String tenNV, String gioiTinh, LocalDate ngaySinh, String sdt, String email, String diaChi, String CCCD, java.time.LocalDate ngayVaoLam, ChucVu chucVu, TaiKhoan taiKhoan, String trangThai, CaLam caLam)
-
-
-
-
-
-
     private void showInfoNhanVien() {
         // Hiển thị dialog thông tin nhân viên
         DlgThongTinNhanVien dlgNhanVien =  new DlgThongTinNhanVien(nhanVien);
         dlgNhanVien.setVisible(true);
     }
-
-
-
 }
