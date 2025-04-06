@@ -1,18 +1,21 @@
-package control.impl;
+package control;
 
+import connectDB.ConnectDB;
 import connectDB.connectDB_1;
 import entity.KhachHang;
+import entity.Ve;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import service.KhachHangService;
 
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DAOKhachHang extends UnicastRemoteObject {
+public class DAOKhachHang {
+
     /*maKH     VARCHAR(20) PRIMARY KEY,
     tenKH    NVARCHAR(50) NOT NULL,
     CCCD     CHAR(12) NULL UNIQUE,
@@ -57,12 +60,9 @@ public class DAOKhachHang extends UnicastRemoteObject {
 //        return false;
 //    }
 
-    public static EntityManager em = connectDB_1.getEntityManager();
+    private static EntityManager em = connectDB_1.getEntityManager();
 
-    protected DAOKhachHang() throws RemoteException {
-    }
-
-    public static boolean themKhachHang(KhachHang kh)throws RemoteException {
+    public static boolean themKhachHang(KhachHang kh) {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
@@ -80,21 +80,22 @@ public class DAOKhachHang extends UnicastRemoteObject {
             return false;
         }
     }
-//    public static void main(String[] args) throws SQLException {
-//        // Initialize the database connection
-//        connectDB_1.connect();
-//        EntityManager em = connectDB_1.getEntityManager();
-//
-//        DAOKhachHang daoKhachHang = new DAOKhachHang();
-//
-//        // Retrieve tickets by invoice ID
-//        KhachHang kh = new KhachHang("KH01", "Nguyen Van A", "123456789012", "0123456789", "email@gmail.com", LocalDate.of(2000, 1, 1), "Sinh vien");
-//        System.out.println(daoKhachHang.themKhachHang(kh));
-//
-//        // Close the EntityManager and database connection
-//        em.close();
-//        connectDB_1.close();
-//    }
+
+    public static void main(String[] args) throws SQLException {
+        // Initialize the database connection
+        connectDB_1.connect();
+        EntityManager em = connectDB_1.getEntityManager();
+
+        DAOKhachHang daoKhachHang = new DAOKhachHang();
+
+        // Retrieve tickets by invoice ID
+        KhachHang kh = new KhachHang("KH01", "Nguyen Van A", "123456789012", "0123456789", "email@gmail.com", LocalDate.of(2000, 1, 1), "Sinh vien");
+        System.out.println(daoKhachHang.themKhachHang(kh));
+
+        // Close the EntityManager and database connection
+        em.close();
+        connectDB_1.close();
+    }
 
     // Hàm sửa khách hàng tra ve doi tuong khach hang
 //    public static KhachHang suaKhachHang(KhachHang kh) {
@@ -121,7 +122,7 @@ public class DAOKhachHang extends UnicastRemoteObject {
 //            }
 //            return null;
 //        }
-    public static KhachHang suaKhachHang(KhachHang kh)throws RemoteException {
+    public static KhachHang suaKhachHang(KhachHang kh) {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
@@ -179,7 +180,7 @@ public class DAOKhachHang extends UnicastRemoteObject {
 //        return null;
 //    }
 
-    public static KhachHang timKhachHang(String CCCD, String sdt)throws RemoteException {
+    public static KhachHang timKhachHang(String CCCD, String sdt) {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.CCCD = :CCCD AND kh.sdt = :sdt", KhachHang.class);
@@ -230,7 +231,7 @@ public class DAOKhachHang extends UnicastRemoteObject {
 //        return null;
 //    }
 
-    public static ArrayList<KhachHang> layDanhSachKhachHang()throws RemoteException {
+    public static ArrayList<KhachHang> layDanhSachKhachHang() {
         try {
             TypedQuery<KhachHang> query = em.createQuery("SELECT kh FROM KhachHang kh", KhachHang.class);
             List<KhachHang> resultList = query.getResultList();
@@ -273,7 +274,7 @@ public class DAOKhachHang extends UnicastRemoteObject {
 //        return null;
 //    }
 
-    public static KhachHang layKhachHangTheoCCCD(String CCCD)throws RemoteException {
+    public static KhachHang layKhachHangTheoCCCD(String CCCD) {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.CCCD = :CCCD", KhachHang.class);
@@ -318,7 +319,7 @@ public class DAOKhachHang extends UnicastRemoteObject {
 //        return null;
 //    }
 
-    public static KhachHang layKhachHangTheoSdt(String sdt)throws RemoteException {
+    public static KhachHang layKhachHangTheoSdt(String sdt) {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.sdt = :sdt", KhachHang.class);
@@ -359,7 +360,7 @@ public class DAOKhachHang extends UnicastRemoteObject {
 //        return null;
 //    }
 
-    public static KhachHang layKhachHangTheoMa(String maKH)throws RemoteException {
+    public static KhachHang layKhachHangTheoMa(String maKH) {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.maKH = :maKH", KhachHang.class);
@@ -398,7 +399,7 @@ public class DAOKhachHang extends UnicastRemoteObject {
 //        return null;
 //    }
 
-    public static KhachHang timKhachHangTheoEmail(String email)throws RemoteException {
+    public static KhachHang timKhachHangTheoEmail(String email) {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.email = :email", KhachHang.class);
@@ -442,7 +443,7 @@ public class DAOKhachHang extends UnicastRemoteObject {
 //        }
 //        return null;
 //    }
-    public static ArrayList<KhachHang> layKhachHangTheoDoiTuong(String doiTuong)throws RemoteException {
+    public static ArrayList<KhachHang> layKhachHangTheoDoiTuong(String doiTuong) {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.doiTuong = :doiTuong", KhachHang.class);
