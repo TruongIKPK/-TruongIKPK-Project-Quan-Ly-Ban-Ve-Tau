@@ -23,6 +23,7 @@ import java.util.List;
 
 public class DAOHoaDon {
 
+
     /*CREATE TABLE HoaDon
 (
     maHD         VARCHAR(20) PRIMARY KEY,
