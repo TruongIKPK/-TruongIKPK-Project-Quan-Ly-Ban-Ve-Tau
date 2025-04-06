@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DAOKhachHang {
+
     /*maKH     VARCHAR(20) PRIMARY KEY,
     tenKH    NVARCHAR(50) NOT NULL,
     CCCD     CHAR(12) NULL UNIQUE,

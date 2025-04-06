@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class DAOVe {
+
     /*CREATE TABLE Ve
 (
     maVe          VARCHAR(20) PRIMARY KEY,
