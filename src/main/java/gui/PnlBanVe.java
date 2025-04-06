@@ -1,6 +1,7 @@
 package gui;
 
 import control.*;
+import control.impl.DAOVe;
 import entity.*;
 import enums.*;
 import gui.components.DatePicker;
@@ -17,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,7 +108,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
      *
      * @param nhanVien Nhân viên đăng nhập.
      */
-    public PnlBanVe(NhanVien nhanVien) {
+    public PnlBanVe(NhanVien nhanVien) throws RemoteException {
         this.nhanVien = nhanVien;
         this.loaiVe = ELoaiVe.MOT_CHIEU.getValue();
 
@@ -767,7 +769,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Lấy danh sách các chuyến tàu sắp khởi hành.
      */
-    public void getCacChuyenTauSapKhoiHanh() {
+    public void getCacChuyenTauSapKhoiHanh() throws RemoteException {
         // Lấy danh sách các chuyến tàu sắp khởi hành
         listChuyenDi = DAOChuyenTau.getDanhSachChuyenTauSapKhoiHanh();
         System.out.println("Số chuyến đi:*********************************************************** " + listChuyenDi);
@@ -2154,7 +2156,12 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         // Lấy danh sách vé của chuyến
         listChuyenDi.forEach(chuyenTau -> {
             System.out.println("Chuyến đi:---###############################################################################################################################################################33 " + chuyenTau.getMaChuyen());
-            ArrayList<Ve> dsVeDaBan = DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
+            ArrayList<Ve> dsVeDaBan = null;
+            try {
+                dsVeDaBan = DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
             listVeDaBan.addAll(dsVeDaBan);
         });
 
@@ -2178,7 +2185,12 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             }
 
             listChuyenVe.forEach(chuyenTau -> {
-                ArrayList<Ve> dsVeDaBan = DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
+                ArrayList<Ve> dsVeDaBan = null;
+                try {
+                    dsVeDaBan = DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
                 listVeDaBan.addAll(dsVeDaBan);
             });
         }
@@ -2400,7 +2412,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
         // Xử lý chuyến tàu sắp chạy khi người dùng nhấn nút "Tra Chuyến Sắp Chạy"
         if (obj.equals(btnTraChuyenSapChay)) {
-            getCacChuyenTauSapKhoiHanh();
+            try {
+                getCacChuyenTauSapKhoiHanh();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Chọn nhanh theo loại toa khi người dùng nhấn nút "Chọn Nhanh Theo Loại Toa"

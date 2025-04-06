@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class FrmDangNhap extends JFrame {
@@ -181,7 +182,12 @@ public class FrmDangNhap extends JFrame {
                             SwingUtilities.invokeLater(() -> {
                                 saveLogin(maTK); // Ghi tài khoản vào file
                                 dispose();
-                                FrmTrangChinh frmTrangChinh = new FrmTrangChinh(tk, nv);
+                                FrmTrangChinh frmTrangChinh = null;
+                                try {
+                                    frmTrangChinh = new FrmTrangChinh(tk, nv);
+                                } catch (RemoteException ex) {
+                                    throw new RuntimeException(ex);
+                                }
                                 frmTrangChinh.setVisible(true);
                             });
                         } else {

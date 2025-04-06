@@ -1,20 +1,18 @@
-package control;
+package control.impl;
 
-import connectDB.ConnectDB;
 import connectDB.connectDB_1;
 import entity.KhachHang;
-import entity.Ve;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import service.KhachHangService;
 
-import java.sql.*;
-import java.time.LocalDate;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DAOKhachHang {
+public class DAOKhachHang extends UnicastRemoteObject {
     /*maKH     VARCHAR(20) PRIMARY KEY,
     tenKH    NVARCHAR(50) NOT NULL,
     CCCD     CHAR(12) NULL UNIQUE,
@@ -59,9 +57,12 @@ public class DAOKhachHang {
 //        return false;
 //    }
 
-    private static EntityManager em = connectDB_1.getEntityManager();
+    public static EntityManager em = connectDB_1.getEntityManager();
 
-    public static boolean themKhachHang(KhachHang kh) {
+    protected DAOKhachHang() throws RemoteException {
+    }
+
+    public static boolean themKhachHang(KhachHang kh)throws RemoteException {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
@@ -79,7 +80,6 @@ public class DAOKhachHang {
             return false;
         }
     }
-
 //    public static void main(String[] args) throws SQLException {
 //        // Initialize the database connection
 //        connectDB_1.connect();
@@ -121,7 +121,7 @@ public class DAOKhachHang {
 //            }
 //            return null;
 //        }
-    public static KhachHang suaKhachHang(KhachHang kh) {
+    public static KhachHang suaKhachHang(KhachHang kh)throws RemoteException {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
@@ -179,7 +179,7 @@ public class DAOKhachHang {
 //        return null;
 //    }
 
-    public static KhachHang timKhachHang(String CCCD, String sdt) {
+    public static KhachHang timKhachHang(String CCCD, String sdt)throws RemoteException {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.CCCD = :CCCD AND kh.sdt = :sdt", KhachHang.class);
@@ -230,7 +230,7 @@ public class DAOKhachHang {
 //        return null;
 //    }
 
-    public static ArrayList<KhachHang> layDanhSachKhachHang() {
+    public static ArrayList<KhachHang> layDanhSachKhachHang()throws RemoteException {
         try {
             TypedQuery<KhachHang> query = em.createQuery("SELECT kh FROM KhachHang kh", KhachHang.class);
             List<KhachHang> resultList = query.getResultList();
@@ -273,7 +273,7 @@ public class DAOKhachHang {
 //        return null;
 //    }
 
-    public static KhachHang layKhachHangTheoCCCD(String CCCD) {
+    public static KhachHang layKhachHangTheoCCCD(String CCCD)throws RemoteException {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.CCCD = :CCCD", KhachHang.class);
@@ -318,7 +318,7 @@ public class DAOKhachHang {
 //        return null;
 //    }
 
-    public static KhachHang layKhachHangTheoSdt(String sdt) {
+    public static KhachHang layKhachHangTheoSdt(String sdt)throws RemoteException {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.sdt = :sdt", KhachHang.class);
@@ -359,7 +359,7 @@ public class DAOKhachHang {
 //        return null;
 //    }
 
-    public static KhachHang layKhachHangTheoMa(String maKH) {
+    public static KhachHang layKhachHangTheoMa(String maKH)throws RemoteException {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.maKH = :maKH", KhachHang.class);
@@ -398,7 +398,7 @@ public class DAOKhachHang {
 //        return null;
 //    }
 
-    public static KhachHang timKhachHangTheoEmail(String email) {
+    public static KhachHang timKhachHangTheoEmail(String email)throws RemoteException {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.email = :email", KhachHang.class);
@@ -442,7 +442,7 @@ public class DAOKhachHang {
 //        }
 //        return null;
 //    }
-    public static ArrayList<KhachHang> layKhachHangTheoDoiTuong(String doiTuong) {
+    public static ArrayList<KhachHang> layKhachHangTheoDoiTuong(String doiTuong)throws RemoteException {
         try {
             TypedQuery<KhachHang> query = em.createQuery(
                     "SELECT kh FROM KhachHang kh WHERE kh.doiTuong = :doiTuong", KhachHang.class);

@@ -1,27 +1,19 @@
-package control;
+package control.impl;
 
-import connectDB.ConnectDB;
 import connectDB.connectDB_1;
 import entity.HoaDon;
-import entity.KhachHang;
-import entity.NhanVien;
 import entity.Ve;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import service.HoaDonService;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DAOHoaDon {
+public class DAOHoaDon extends UnicastRemoteObject {
     /*CREATE TABLE HoaDon
 (
     maHD         VARCHAR(20) PRIMARY KEY,
@@ -46,9 +38,12 @@ public class DAOHoaDon {
 //        return false;
 //    }
 
-    private static EntityManager em = connectDB_1.getEntityManager();
+    public static EntityManager em = connectDB_1.getEntityManager();
 
-    public static boolean themHoaDon(HoaDon hd) {
+    protected DAOHoaDon() throws RemoteException {
+    }
+
+    public static boolean themHoaDon(HoaDon hd) throws RemoteException{
         try {
                 em.getTransaction().begin();
                 HoaDonService hoaDonService = new HoaDonService(em);
@@ -94,7 +89,7 @@ public class DAOHoaDon {
 //        return dsHoaDon; // Trả về danh sách trống nếu có lỗi xảy ra
 //    }
 
-    public ArrayList<HoaDon> docHoaDonTheoNhanVien(String maNV) {
+    public ArrayList<HoaDon> docHoaDonTheoNhanVien(String maNV)throws RemoteException {
         try {
             TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd WHERE hd.nhanVien.maNV = :maNV", HoaDon.class);
             query.setParameter("maNV", maNV);
@@ -134,7 +129,7 @@ public class DAOHoaDon {
 //        return dsHoaDon;
 //    }
 
-    public static ArrayList<HoaDon> docHoaDonTheoKhachHang(String maKH) {
+    public static ArrayList<HoaDon> docHoaDonTheoKhachHang(String maKH)throws RemoteException {
         String jpql = "SELECT h FROM HoaDon h WHERE h.khachHang.maKH = :maKH";
         TypedQuery<HoaDon> query = em.createQuery(jpql, HoaDon.class);
         query.setParameter("maKH", maKH);
@@ -193,7 +188,7 @@ public class DAOHoaDon {
 //        return null;
 //    }
 
-    public static ArrayList<HoaDon> docHoaDonTheoNgay(LocalDate ngay) {
+    public static ArrayList<HoaDon> docHoaDonTheoNgay(LocalDate ngay)throws RemoteException{
         try {
             TypedQuery<HoaDon> query = em.createQuery(
                     "SELECT hd FROM HoaDon hd WHERE hd.ngayGioLapHD = :ngay", HoaDon.class);
@@ -232,7 +227,7 @@ public class DAOHoaDon {
 //        return dsHoaDon;
 //    }
 
-    public static ArrayList<HoaDon> layDanhSachHoaDon() {
+    public static ArrayList<HoaDon> layDanhSachHoaDon()throws RemoteException {
         try {
             TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd", HoaDon.class);
             List<HoaDon> resultList = query.getResultList();
@@ -270,7 +265,7 @@ public class DAOHoaDon {
 //        return null;
 //    }
 
-    public static HoaDon getHoaDonCuoiCung() {
+    public static HoaDon getHoaDonCuoiCung()throws RemoteException {
         try {
             TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd ORDER BY hd.ngayGioLapHD DESC", HoaDon.class);
             query.setMaxResults(1);
@@ -314,7 +309,7 @@ public class DAOHoaDon {
 //
 //    }
 
-    public static HoaDon getHoaDon(String maHD) {
+    public static HoaDon getHoaDon(String maHD)throws RemoteException {
         try {
             TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd WHERE hd.maHD = :maHD", HoaDon.class);
             query.setParameter("maHD", maHD);
@@ -330,7 +325,4 @@ public class DAOHoaDon {
 //        //lay ds ve daban theo mahd
 //        System.out.println(DAOHoaDon.getHoaDon("HD241023000003").getDanhSachVe());
 //    }
-
-
-
 }

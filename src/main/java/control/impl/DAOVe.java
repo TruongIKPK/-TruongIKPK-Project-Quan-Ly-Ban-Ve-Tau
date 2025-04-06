@@ -1,4 +1,4 @@
-package control;
+package control.impl;
 
 import connectDB.ConnectDB;
 import connectDB.connectDB_1;
@@ -10,19 +10,17 @@ import jakarta.persistence.TypedQuery;
 import service.VeService;
 
 import java.math.BigDecimal;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
-import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.text.DecimalFormat;
 import java.util.List;
 
-public class DAOVe {
+public class DAOVe extends UnicastRemoteObject {
     /*CREATE TABLE Ve
 (
     maVe          VARCHAR(20) PRIMARY KEY,
@@ -56,9 +54,12 @@ public class DAOVe {
 //        }
 //        return false;
 //    }
-    private static EntityManager em = connectDB_1.getEntityManager();
+    public static EntityManager em = connectDB_1.getEntityManager();
 
-    public static boolean themVeCoKhuyenMai(Ve ve) {
+    protected DAOVe() throws RemoteException {
+    }
+
+    public static boolean themVeCoKhuyenMai(Ve ve)throws RemoteException {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
@@ -95,7 +96,7 @@ public class DAOVe {
 //        return false;
 //    }
 
-    public static boolean themVeKhongKhuyenMai(Ve ve) {
+    public static boolean themVeKhongKhuyenMai(Ve ve)throws RemoteException {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
@@ -125,7 +126,7 @@ public class DAOVe {
 //        return false;
 //    }
 
-    public static boolean suaVe(Ve ve) {
+    public static boolean suaVe(Ve ve)throws RemoteException {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
@@ -184,7 +185,7 @@ public class DAOVe {
 //        return dsVe;
 //    }
 
-    public static ArrayList<Ve> layDSVeTheoMaHD(String maHD) {
+    public static ArrayList<Ve> layDSVeTheoMaHD(String maHD)throws RemoteException {
         ArrayList<Ve> dsVe = new ArrayList<>();
         String sql = "SELECT v FROM Ve v WHERE v.hoaDon.maHD = :maHD";
         try {
@@ -244,7 +245,7 @@ public class DAOVe {
 //        return dsVe;
 //    }
 
-    public static ArrayList<Ve> layDSVeDaBanTheoMaHD(String maHD) {
+    public static ArrayList<Ve> layDSVeDaBanTheoMaHD(String maHD)throws RemoteException {
         ArrayList<Ve> dsVe = new ArrayList<>();
         String sql = "SELECT v FROM Ve v WHERE v.hoaDon.maHD = :maHD AND v.trangThai = :trangThai";
         try {
@@ -288,7 +289,7 @@ public class DAOVe {
 //        return dsVe;
 //    }
 
-    public static ArrayList<Ve> layDSVeTheoMaChuyen(String maChuyen) {
+    public static ArrayList<Ve> layDSVeTheoMaChuyen(String maChuyen)throws RemoteException {
         ArrayList<Ve> dsVe = new ArrayList<>();
         String sql = "SELECT v FROM Ve v WHERE v.chuyenTau.maChuyen = :maChuyen";
         try {
@@ -333,7 +334,7 @@ public class DAOVe {
 //        return dsVe;
 //    }
 
-    public static ArrayList<Ve> layDSVeTheoMaKH(String maKH) {
+    public static ArrayList<Ve> layDSVeTheoMaKH(String maKH)throws RemoteException {
         ArrayList<Ve> dsVe = new ArrayList<>();
         String sql = "SELECT v FROM Ve v WHERE v.khachHang.maKH = :maKH";
         try {
@@ -374,7 +375,7 @@ public class DAOVe {
 //        return null;
 //    }
 
-    public static Ve layVeTheoMa(String maVe) {
+    public static Ve layVeTheoMa(String maVe)throws RemoteException {
         Ve ve = null;
         try {
             ve = em.find(Ve.class, maVe);
@@ -418,7 +419,7 @@ public class DAOVe {
 //        return null;
 //    }
 
-    public static Ve layVeTheoMaChuyenVaMaKH(String maChuyen, String maKH) {
+    public static Ve layVeTheoMaChuyenVaMaKH(String maChuyen, String maKH)throws RemoteException {
         Ve ve = null;
         String sql = "SELECT v FROM Ve v WHERE v.chuyenTau.maChuyen = :maChuyen AND v.khachHang.maKH = :maKH";
         try {
@@ -464,7 +465,7 @@ public class DAOVe {
 //        return dsVe;
 //    }
 
-    public static ArrayList<Ve> layDSVeTheoSDT(String sdt) {
+    public static ArrayList<Ve> layDSVeTheoSDT(String sdt)throws RemoteException {
         ArrayList<Ve> dsVe = new ArrayList<>();
         String sql = "SELECT v FROM Ve v WHERE v.khachHang.sdt = :sdt";
         try {
@@ -507,7 +508,7 @@ public class DAOVe {
 //        return dsVe;
 //    }
 
-    public static ArrayList<Ve> layDSVeGanNhat() {
+    public static ArrayList<Ve> layDSVeGanNhat()throws RemoteException {
         ArrayList<Ve> dsVe = new ArrayList<>();
         String sql = "SELECT v FROM Ve v ORDER BY v.ngayGioXuatVe DESC";
         try {
@@ -551,7 +552,7 @@ public class DAOVe {
 //        return dsVe;
 //    }
 
-    public static ArrayList<Ve> layDSVeDaBanTheoMaChuyen(String maChuyen) {
+    public static ArrayList<Ve> layDSVeDaBanTheoMaChuyen(String maChuyen)throws RemoteException {
         ArrayList<Ve> dsVe = new ArrayList<>();
         String sql = "SELECT v FROM Ve v WHERE v.chuyenTau.maChuyen = :maChuyen AND v.trangThai = :trangThai";
         try {
@@ -605,7 +606,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuTheoNgay(Date ngay) {
+    public static String layDoanhThuTheoNgay(Date ngay)throws RemoteException {
         String sql = "SELECT SUM(lc.giaCho) AS totalRevenue " +
                 "FROM Ve v " +
                 "JOIN ChoNgoi cn ON v.choNgoi.maCho = cn.maCho " +
@@ -636,7 +637,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuTheoNgayHienTai() {
+    public static String layDoanhThuTheoNgayHienTai()throws RemoteException {
         String sql = "SELECT SUM(lc.giaCho) AS totalRevenue " +
                 "FROM Ve v " +
                 "JOIN ChoNgoi cn ON v.choNgoi.maCho = cn.maCho " +
@@ -669,7 +670,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuTuanHienTai() {
+    public static String layDoanhThuTuanHienTai()throws RemoteException {
         try {
             LocalDate now = LocalDate.now();
             LocalDate startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -712,7 +713,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuThangHienTai() {
+    public static String layDoanhThuThangHienTai()throws RemoteException {
         try {
             LocalDate now = LocalDate.now();
             LocalDate startOfMonth = now.with(TemporalAdjusters.firstDayOfMonth());
@@ -755,7 +756,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuQuyHienTai() {
+    public static String layDoanhThuQuyHienTai()throws RemoteException {
         try {
             LocalDate now = LocalDate.now();
             int quarter = (now.getMonthValue() - 1) / 3 + 1;
@@ -799,7 +800,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuNamHienTai() {
+    public static String layDoanhThuNamHienTai()throws RemoteException {
         try {
             LocalDate now = LocalDate.now();
             LocalDate startOfYear = now.with(TemporalAdjusters.firstDayOfYear());
@@ -841,7 +842,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuNgayHomQua() {
+    public static String layDoanhThuNgayHomQua()throws RemoteException {
         try {
             LocalDate yesterday = LocalDate.now().minusDays(1);
 
@@ -880,7 +881,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuTuanVuaRoi() {
+    public static String layDoanhThuTuanVuaRoi()throws RemoteException {
         try {
             LocalDate now = LocalDate.now();
             LocalDate startOfLastWeek = now.with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
@@ -922,7 +923,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuThangVuaRoi() {
+    public static String layDoanhThuThangVuaRoi()throws RemoteException {
         try {
             LocalDate now = LocalDate.now();
             LocalDate startOfLastMonth = now.with(TemporalAdjusters.firstDayOfMonth()).minusMonths(1);
@@ -964,7 +965,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuQuyVuaRoi() {
+    public static String layDoanhThuQuyVuaRoi()throws RemoteException {
         try {
             LocalDate now = LocalDate.now();
             int quarter = (now.getMonthValue() - 1) / 3 + 1;
@@ -1007,7 +1008,7 @@ public class DAOVe {
 //        return "0";
 //    }
 
-    public static String layDoanhThuNamVuaRoi() {
+    public static String layDoanhThuNamVuaRoi()throws RemoteException {
         try {
             LocalDate now = LocalDate.now();
             LocalDate startOfLastYear = now.with(TemporalAdjusters.firstDayOfYear()).minusYears(1);
@@ -1056,7 +1057,7 @@ public class DAOVe {
 //        return -1;
 //    }
 
-    public double getBestSellingHourOfDay() {
+    public double getBestSellingHourOfDay()throws RemoteException {
         try {
             String jpql = "SELECT EXTRACT(HOUR FROM v.ngayGioXuatVe) AS gio, COUNT(v.maVe) AS soVeBan " +
                     "FROM Ve v " +
@@ -1103,7 +1104,7 @@ public class DAOVe {
 //        return -1;
 //    }
 
-    public double getAverageBestSellingHourOfWeek() {
+    public double getAverageBestSellingHourOfWeek()throws RemoteException {
         try {
             String jpql = "SELECT EXTRACT(HOUR FROM v.ngayGioXuatVe) AS hour, COUNT(v.maVe) AS total_sales " +
                     "FROM Ve v " +
@@ -1162,7 +1163,7 @@ public class DAOVe {
 //        return -1;
 //    }
 
-    public double getAverageBestSellingHourOfMonth() {
+    public double getAverageBestSellingHourOfMonth()throws RemoteException {
         try {
             String jpql = "SELECT EXTRACT(HOUR FROM v.ngayGioXuatVe) AS hour, COUNT(v.maVe) AS total_sales " +
                     "FROM Ve v " +
@@ -1221,7 +1222,7 @@ public class DAOVe {
 //        return -1;
 //    }
 
-    public double getAverageBestSellingHourOfQuarter() {
+    public double getAverageBestSellingHourOfQuarter()throws RemoteException {
         try {
             String jpql = "SELECT EXTRACT(HOUR FROM v.ngayGioXuatVe) AS hour, COUNT(v.maVe) AS total_sales " +
                     "FROM Ve v " +
@@ -1281,7 +1282,7 @@ public class DAOVe {
 //        return -1;
 //    }
 
-    public double getAverageBestSellingHourOfYear() {
+    public double getAverageBestSellingHourOfYear()throws RemoteException {
         try {
             String jpql = "SELECT EXTRACT(HOUR FROM v.ngayGioXuatVe) AS hour, COUNT(v.maVe) AS total_sales " +
                     "FROM Ve v " +
@@ -1339,7 +1340,7 @@ public class DAOVe {
 //        return "N/A"; // Trả về 'N/A' nếu không tìm thấy dữ liệu
 //    }
 
-    public static String getSlowestSalesTimeLastWeek() {
+    public static String getSlowestSalesTimeLastWeek()throws RemoteException {
         try {
             LocalDate now = LocalDate.now();
             LocalDate startOfLastWeek = now.with(TemporalAdjusters.previous(DayOfWeek.MONDAY)).minusWeeks(1);
@@ -1368,7 +1369,7 @@ public class DAOVe {
         return "N/A";
     }
 
-    public static String getSlowestSalesTimeLastMonth() {
+    public static String getSlowestSalesTimeLastMonth()throws RemoteException {
         String query =
                 "WITH HourlySales AS (\n" +
                         "    SELECT \n" +
@@ -1419,7 +1420,7 @@ public class DAOVe {
 //        return "N/A";
 //    }
 
-    public static String getSlowestSalesTimeLastQuarter() {
+    public static String getSlowestSalesTimeLastQuarter()throws RemoteException {
         String query =
                 "WITH HourlySales AS (\n" +
                         "    SELECT \n" +
@@ -1470,7 +1471,7 @@ public class DAOVe {
 //        return "N/A";
 //    }
 
-    public static String getSlowestSalesTimeLastYear() {
+    public static String getSlowestSalesTimeLastYear()throws RemoteException {
         String query =
                 "WITH HourlySales AS (\n" +
                         "    SELECT \n" +
@@ -1528,7 +1529,7 @@ public class DAOVe {
 //        return dsVe;
 //    }
 
-     public static ArrayList<Ve> getDanhSachVeDaTra() {
+     public static ArrayList<Ve> getDanhSachVeDaTra()throws RemoteException {
         try {
             TypedQuery<Ve> query = em.createQuery(
                     "SELECT v FROM Ve v WHERE v.trangThai = :trangThai", Ve.class);

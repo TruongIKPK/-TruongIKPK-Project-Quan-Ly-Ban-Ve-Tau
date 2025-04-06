@@ -1,9 +1,9 @@
 package gui;
 
-import control.DAOHoaDon;
-import control.DAOKhachHang;
+import control.impl.DAOHoaDon;
+import control.impl.DAOKhachHang;
 import control.DAOKhuyenMai;
-import control.DAOVe;
+import control.impl.DAOVe;
 import entity.HoaDon;
 import entity.KhachHang;
 import entity.NhanVien;
@@ -20,6 +20,7 @@ import utils.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class PnlKhachHang extends JPanel {
     /**
      * Creates new form PnlKhachHang
      */
-    public PnlKhachHang(NhanVien nhanVien) {
+    public PnlKhachHang(NhanVien nhanVien) throws RemoteException {
         this.nhanVien = nhanVien;
 
         filterKhachHang = () -> {
@@ -55,7 +56,7 @@ public class PnlKhachHang extends JPanel {
         datePickerNgaySinh.requestFocus();
     }
 
-    private void readDataFromDb() {
+    private void readDataFromDb() throws RemoteException {
         listDoiTuong = DAOKhuyenMai.getDSDoiTuongKhuyenMai();
         listDoiTuong.forEach(cboDoiTuong::addItem);
         listDoiTuong.forEach(cboLocDoiTuong::addItem);
@@ -286,7 +287,11 @@ public class PnlKhachHang extends JPanel {
 
         btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCapNhatActionPerformed(evt);
+                try {
+                    btnCapNhatActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxChucNang.setBackground(EColor.BG_COLOR.getColor());
@@ -316,7 +321,11 @@ public class PnlKhachHang extends JPanel {
 
         btnTraCuuTheoMa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTraCuuTheoMaActionPerformed(evt);
+                try {
+                    btnTraCuuTheoMaActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         btnTraCuuTheoMa.setPreferredSize(new java.awt.Dimension(100, 30));
@@ -342,7 +351,11 @@ public class PnlKhachHang extends JPanel {
         btnXoaBoLoc.addActionListener(
                 new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        resetAll();
+                        try {
+                            resetAll();
+                        } catch (RemoteException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
         );
@@ -358,7 +371,11 @@ public class PnlKhachHang extends JPanel {
         btnInVe.setPreferredSize(new java.awt.Dimension(100, 30));
         btnInVe.addActionListener(new java.awt.event.ActionListener() {
                                       public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                          inVe();
+                                          try {
+                                              inVe();
+                                          } catch (RemoteException e) {
+                                              throw new RuntimeException(e);
+                                          }
                                       }
                                   });
         pnlRightBot.add(btnInVe);
@@ -367,7 +384,11 @@ public class PnlKhachHang extends JPanel {
         btnInTatCaVe
                 .addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        inAllVe();
+                        try {
+                            inAllVe();
+                        } catch (RemoteException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
         pnlRightBot.add(btnInTatCaVe);
@@ -375,7 +396,11 @@ public class PnlKhachHang extends JPanel {
         btnInHoaDon.setPreferredSize(new java.awt.Dimension(120, 30));
         btnInHoaDon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inHoaDon();
+                try {
+                    inHoaDon();
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         pnlRightBot.add(btnInHoaDon);
@@ -401,7 +426,11 @@ public class PnlKhachHang extends JPanel {
                     datePickerNgaySinh.getJFormattedTextField().setText(FormatDate.formatLocalDateToDMY(ngaySinh));
                     cboDoiTuong.setSelectedItem(tblKhachHang.getValueAt(row, 6).toString());
 
-                    loadHoaDonCuaKhachHang(tblKhachHang.getValueAt(row, 0).toString());
+                    try {
+                        loadHoaDonCuaKhachHang(tblKhachHang.getValueAt(row, 0).toString());
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
@@ -429,7 +458,11 @@ public class PnlKhachHang extends JPanel {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int row = tblHoaDon.getSelectedRow();
                 if (row >= 0) {
-                    loadVeCuaHoaDon(tblHoaDon.getValueAt(row, 0).toString());
+                    try {
+                        loadVeCuaHoaDon(tblHoaDon.getValueAt(row, 0).toString());
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
@@ -475,7 +508,7 @@ public class PnlKhachHang extends JPanel {
     }// </editor-fold>
 
     // Reset tất cả thông tin
-    private void resetAll() {
+    private void resetAll() throws RemoteException {
         txtMaKH.setText("");
         txtHoTen.setText("");
         txtCccd.setText("");
@@ -537,7 +570,7 @@ public class PnlKhachHang extends JPanel {
     }
 
     // Xử lý sự kiện khi click vào nút cập nhật
-    private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {
+    private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {
         String maKhach = txtMaKH.getText();
         String hoTen = txtHoTen.getText();
         String cccd = txtCccd.getText();
@@ -564,7 +597,7 @@ public class PnlKhachHang extends JPanel {
         }
     }
 
-    private void btnTraCuuTheoMaActionPerformed(java.awt.event.ActionEvent evt) {
+    private void btnTraCuuTheoMaActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {
         String timKiemText = txtTimKiem.getText();
         KhachHang khachHang = null;
 
@@ -611,7 +644,7 @@ public class PnlKhachHang extends JPanel {
         }
     }
 
-    private void loadHoaDonCuaKhachHang(String maKhach) {
+    private void loadHoaDonCuaKhachHang(String maKhach) throws RemoteException {
         tblModelHoaDon.setRowCount(0);
         tblModelVe.setRowCount(0);
         listHoaDon = DAOHoaDon.docHoaDonTheoKhachHang(maKhach);
@@ -638,7 +671,7 @@ public class PnlKhachHang extends JPanel {
         }
     }
 
-    private void loadVeCuaHoaDon(String maHoaDon) {
+    private void loadVeCuaHoaDon(String maHoaDon) throws RemoteException {
         tblModelVe.setRowCount(0);
         listVe = DAOVe.layDSVeTheoMaHD(maHoaDon);
         listVe.forEach(ve -> {
@@ -651,7 +684,7 @@ public class PnlKhachHang extends JPanel {
         });
     }
 
-    public void inVe() {
+    public void inVe() throws RemoteException {
         int[] selectedRows = tblVe.getSelectedRows();
         if (selectedRows.length == 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn vé cần in", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -667,7 +700,7 @@ public class PnlKhachHang extends JPanel {
         }
     }
 
-    public void inAllVe() {
+    public void inAllVe() throws RemoteException {
         int row = tblHoaDon.getSelectedRow();
         if (row < 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn cần in", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -687,7 +720,7 @@ public class PnlKhachHang extends JPanel {
         });
     }
 
-    public void inHoaDon() {
+    public void inHoaDon() throws RemoteException {
         int row = tblHoaDon.getSelectedRow();
         if (row < 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn cần in", "Lỗi", JOptionPane.ERROR_MESSAGE);

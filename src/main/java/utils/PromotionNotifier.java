@@ -1,19 +1,13 @@
 package utils;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: Pro
- * @Tạo vào ngày: 12/13/2024
- * @Tác giả: Thai
- */
-import control.DAOKhachHang;
+import control.impl.DAOKhachHang;
 import control.DAOKhuyenMai;
 import entity.KhachHang;
 import entity.KhuyenMai;
 
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,13 +21,17 @@ public class PromotionNotifier {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                checkAndSendNotifications();
+                try {
+                    checkAndSendNotifications();
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, 0, 24 * 60 * 60 * 1000); // Run once a day
     }
 
     // Phương thức kiểm tra và gửi thông báo
-    private void checkAndSendNotifications() {
+    private void checkAndSendNotifications() throws RemoteException {
         ArrayList<KhuyenMai> promotions = DAOKhuyenMai.getDSKhuyenMai();
         LocalDate today = LocalDate.now();
         LocalDate notificationDate = today.plusDays(10); // Ngày cần thông báo trước
@@ -53,7 +51,7 @@ public class PromotionNotifier {
 
 
     // ham nay de lam gi: gui thong bao
-    private void sendNotification(KhuyenMai promotion) {
+    private void sendNotification(KhuyenMai promotion) throws RemoteException {
         //neu la tat ca thi gui het cho tat ca khach hang
         if (promotion.getDoiTuong().equals("Tất cả")) {
             sendToAllCustomers(promotion);
@@ -64,7 +62,7 @@ public class PromotionNotifier {
         //cap nhat la da gui thong bao
         DAOKhuyenMai.capNhatTrangThaiDaGuiThongBao(promotion.getMaKM());
     }
-    private void sendToAllCustomers(KhuyenMai promotion) {
+    private void sendToAllCustomers(KhuyenMai promotion) throws RemoteException {
         ArrayList<KhachHang> customers = DAOKhachHang.layDanhSachKhachHang();
         String content = "Đừng bỏ lỡ cơ hội ưu đãi vé tàu hấp dẫn!  \n" +
                 "\n" +
@@ -82,7 +80,7 @@ public class PromotionNotifier {
         }
     }
 
-    private  void sendToTargetCustomers(KhuyenMai promotion) {
+    private  void sendToTargetCustomers(KhuyenMai promotion) throws RemoteException {
         ArrayList<KhachHang> customers = DAOKhachHang.layKhachHangTheoDoiTuong(promotion.getDoiTuong());
         String content = "Đừng bỏ lỡ cơ hội ưu đãi vé tàu hấp dẫn!  \n" +
                 "\n" +

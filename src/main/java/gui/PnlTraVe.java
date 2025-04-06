@@ -2,7 +2,7 @@ package gui;
 
 import javax.swing.*;
 
-import control.DAOVe;
+import control.impl.DAOVe;
 import entity.Ve;
 import enums.EColor;
 import gui.custom.CButton;
@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class PnlTraVe extends JPanel {
     /**
      * Creates new form PnlChuyenTau
      */
-    public PnlTraVe() {
+    public PnlTraVe() throws RemoteException {
         initComponents();
     }
 
@@ -53,7 +54,7 @@ public class PnlTraVe extends JPanel {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
-    private void initComponents() {
+    private void initComponents() throws RemoteException {
 
         pnlTop = new JPanel();
         lblTitle = new JLabel();
@@ -203,7 +204,11 @@ public class PnlTraVe extends JPanel {
         btnTraCuu.setText("Tra cứu");
         btnTraCuu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnTraCuuActionPerformed(evt);
+                try {
+                    btnTraCuuActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         BoxTimVe.add(btnTraCuu);
@@ -351,7 +356,11 @@ public class PnlTraVe extends JPanel {
         btnXacNhan.setEnabled(false);
         btnXacNhan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnXacNhanActionPerformed(evt);
+                try {
+                    btnXacNhanActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxXacNhan.add(btnXacNhan);
@@ -380,7 +389,11 @@ public class PnlTraVe extends JPanel {
         btnXoa.setName(""); // NOI18N
         btnXoa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnXoaActionPerformed(evt);
+                try {
+                    btnXoaActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxXoa.add(btnXoa);
@@ -447,7 +460,11 @@ public class PnlTraVe extends JPanel {
         btnTraVe.setPreferredSize(new Dimension(100, 30));
         btnTraVe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnTraVeActionPerformed(evt);
+                try {
+                    btnTraVeActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxTraVe.add(btnTraVe);
@@ -458,7 +475,11 @@ public class PnlTraVe extends JPanel {
         khoaTextField();
         tblVeTra.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
-                tableDsVeMouseClicked(evt);
+                try {
+                    tableDsVeMouseClicked(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -466,7 +487,7 @@ public class PnlTraVe extends JPanel {
         docVeDaTraLenTable();
     }// </editor-fold>
 
-    public void docVeDaTraLenTable() {
+    public void docVeDaTraLenTable() throws RemoteException {
         ArrayList<Ve> listVeDaTra = DAOVe.getDanhSachVeDaTra();
 
         tblModelVeDaTra.setRowCount(0);
@@ -490,7 +511,7 @@ public class PnlTraVe extends JPanel {
 
     }
 
-    private void tableDsVeMouseClicked(MouseEvent evt){
+    private void tableDsVeMouseClicked(MouseEvent evt) throws RemoteException {
         int selectedRow = tblVeTra.getSelectedRow();
         if (selectedRow != -1) {
             String maVe = tblVeTra.getValueAt(selectedRow, 1).toString();
@@ -548,7 +569,7 @@ public class PnlTraVe extends JPanel {
         }
     }
 
-    private void btnXoaActionPerformed(ActionEvent evt) {
+    private void btnXoaActionPerformed(ActionEvent evt) throws RemoteException {
         int selectedRow = tblVeTra.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn vé để xóa!");
@@ -573,7 +594,7 @@ public class PnlTraVe extends JPanel {
         // TODO add your handling code here:
     }
 
-    private void btnTraCuuActionPerformed(ActionEvent evt) {
+    private void btnTraCuuActionPerformed(ActionEvent evt) throws RemoteException {
         if (jcbMaVe.getSelectedItem().equals("Mã vé")) {
             timVe();
         } else if (jcbMaVe.getSelectedItem().equals("Mã hóa đơn")) {
@@ -581,7 +602,7 @@ public class PnlTraVe extends JPanel {
         }
     }
 
-    private void btnXacNhanActionPerformed(ActionEvent evt) {
+    private void btnXacNhanActionPerformed(ActionEvent evt) throws RemoteException {
         String maVe = txtMaTraCuu.getText().trim();
         Ve ve = DAOVe.layVeTheoMa(maVe);
 
@@ -627,7 +648,7 @@ public class PnlTraVe extends JPanel {
         btnXacNhan.setEnabled(false);
     }
 
-    private void btnTraVeActionPerformed(ActionEvent evt) {
+    private void btnTraVeActionPerformed(ActionEvent evt) throws RemoteException {
         int rowCount = tblModelVeTra.getRowCount();
         if (rowCount == 0) {
             JOptionPane.showMessageDialog(this, "Danh sách vé trống!");
@@ -702,7 +723,7 @@ public class PnlTraVe extends JPanel {
     }
 
 
-    private void timDSVeTheoHD() {
+    private void timDSVeTheoHD() throws RemoteException {
         String maHD = txtMaTraCuu.getText().trim();
 
         if (maHD.isEmpty()) {
@@ -744,7 +765,7 @@ public class PnlTraVe extends JPanel {
     }
 
 
-    private void timVe() {
+    private void timVe() throws RemoteException {
         String maVe = txtMaTraCuu.getText().trim(); // Lấy mã vé từ JTextField txtMaTraCuu
 
         if (maVe.isEmpty()) {
@@ -939,7 +960,7 @@ public class PnlTraVe extends JPanel {
         return tienTra;
     }
 
-    private void tinhTongTienPhi() {
+    private void tinhTongTienPhi() throws RemoteException {
         double tongTienPhi = 0;
         DefaultTableModel model = (DefaultTableModel) tblVeTra.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -951,7 +972,7 @@ public class PnlTraVe extends JPanel {
         txtPhiTraVe.setText(valueOf(FormatMoney.format(tongTienPhi)));
     }
 
-    private void tinhTongTienTra() {
+    private void tinhTongTienTra() throws RemoteException {
         double tongTienTra = 0;
         DefaultTableModel model = (DefaultTableModel) tblVeTra.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {

@@ -10,7 +10,7 @@ public class connectDB_1 {
 
     public static void connect() {
         if (emf == null) {
-            emf = Persistence.createEntityManagerFactory("MariaDB");
+            emf = Persistence.createEntityManagerFactory("mssql");
         }
     }
 

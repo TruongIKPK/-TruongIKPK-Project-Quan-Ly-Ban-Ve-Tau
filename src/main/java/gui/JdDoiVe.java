@@ -1,7 +1,7 @@
 package gui;
 
 import control.DAOChuyenTau;
-import control.DAOVe;
+import control.impl.DAOVe;
 import entity.ChoNgoi;
 import entity.ChuyenTau;
 import entity.Ve;
@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 public class JdDoiVe extends JDialog {
     private static final double PHI_DOI_VE = 20000;
@@ -289,7 +290,11 @@ public class JdDoiVe extends JDialog {
         btnXacNhan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                doiVe();
+                try {
+                    doiVe();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         btnHuy.addActionListener(new ActionListener() {
@@ -300,7 +305,7 @@ public class JdDoiVe extends JDialog {
         });
     }
 
-    private void doiVe() {
+    private void doiVe() throws RemoteException {
         // Đổi vé bằng cách tạo ra vé mới có chuyến mới chỗ ngồi mới
         // HoaDon hoaDon, LoaiVe loaiVe, LocalDateTime ngayGioXuatVe, ChoNgoi choNgoi, ChuyenTau chuyenTau, KhachHang khachHang, double thue, KhuyenMai khuyenMai, String trangThai)
         Ve veMoi = new Ve(veCu.getHoaDon(), veCu.getLoaiVe(), veCu.getNgayGioXuatVe(), choNgoi,

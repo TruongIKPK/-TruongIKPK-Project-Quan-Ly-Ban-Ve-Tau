@@ -1,6 +1,9 @@
 package gui;
 
 import control.*;
+import control.impl.DAOHoaDon;
+import control.impl.DAOKhachHang;
+import control.impl.DAOVe;
 import entity.*;
 import enums.EColor;
 import enums.ETrangThaiVe;
@@ -9,8 +12,6 @@ import gui.custom.CButton;
 import gui.custom.CDialog;
 import gui.custom.CTable;
 import gui.custom.CTextField;
-import jakarta.persistence.EntityManager;
-import service.HoaDonService;
 import utils.*;
 
 import javax.swing.*;
@@ -21,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -372,7 +374,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         btnTimKh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                timKhachHang();
+                try {
+                    timKhachHang();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -408,7 +414,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         btnThanhToan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                luuHoaDon();
+                try {
+                    luuHoaDon();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -427,7 +437,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         btnInVe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                inVe();
+                try {
+                    inVe();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -451,7 +465,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         actionMap.put("ThanhToan", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                luuHoaDon();
+                try {
+                    luuHoaDon();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -460,7 +478,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         actionMap.put("InVe", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                inVe();
+                try {
+                    inVe();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -496,7 +518,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         actionMap.put("TimKhachHang", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                timKhachHang();
+                try {
+                    timKhachHang();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -878,7 +904,7 @@ public class JdXinVe extends CDialog implements MouseListener {
     /**
      * Tìm khách hàng
      */
-    public void timKhachHang() {
+    public void timKhachHang() throws RemoteException {
         String timKhachStr = txtTimKh.getText().trim();
 
         if (timKhachStr.isEmpty()) {
@@ -1147,7 +1173,7 @@ public class JdXinVe extends CDialog implements MouseListener {
      *
      * @return Khách hàng
      */
-    public KhachHang getThongTinNguoiMua() {
+    public KhachHang getThongTinNguoiMua() throws RemoteException {
         KhachHang khachHang = null;
 
         String tenNguoiMua = txtTenNguoiMua.getText();
@@ -1176,7 +1202,7 @@ public class JdXinVe extends CDialog implements MouseListener {
     /**
      * Lưu thông tin khách hàng
      */
-    public void luuThongTinCacKhachHang() {
+    public void luuThongTinCacKhachHang() throws RemoteException {
         for (int i = 0; i < tblModelVeXinChieuDi.getRowCount(); i++) {
             String tenKh = tblModelVeXinChieuDi.getValueAt(i, 2).toString();
             String cccd = tblModelVeXinChieuDi.getValueAt(i, 3).toString();
@@ -1247,7 +1273,7 @@ public class JdXinVe extends CDialog implements MouseListener {
     /**
      * Lưu hóa đơn
      */
-    public void luuHoaDon() {
+    public void luuHoaDon() throws RemoteException {
         // Kiểm tra thông tin hóa đơn
         if (!validateHoaDon()) {
             JOptionPane.showMessageDialog(this, "Thông tin hóa đơn sai!");
@@ -1425,7 +1451,7 @@ public class JdXinVe extends CDialog implements MouseListener {
     /**
      * In vé
      */
-    public void inVe() {
+    public void inVe() throws RemoteException {
         if (hoaDon == null) {
             JOptionPane.showMessageDialog(this, "Chưa có thông tin hóa đơn", "Thông báo", JOptionPane.ERROR_MESSAGE);
             return;
