@@ -59,7 +59,7 @@ encrypt=true;" />
             <property name="jakarta.persistence.jdbc.driver"
                       value="org.mariadb.jdbc.Driver" />
             <property name="jakarta.persistence.jdbc.url"
-            value="jdbc:mariadb://localhost:3306/QuanLiBanVeTau " />
+            value="jdbc:mariadb://localhost:3306/QuanLiBanVeTau" />
             <property name="jakarta.persistence.jdbc.user" value="truong_root" />
             <property name="jakarta.persistence.jdbc.password"
                       value="1234" />

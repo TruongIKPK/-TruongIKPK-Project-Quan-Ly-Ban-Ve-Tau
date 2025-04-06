@@ -80,21 +80,21 @@ public class DAOKhachHang {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
-        // Initialize the database connection
-        connectDB_1.connect();
-        EntityManager em = connectDB_1.getEntityManager();
-
-        DAOKhachHang daoKhachHang = new DAOKhachHang();
-
-        // Retrieve tickets by invoice ID
-        KhachHang kh = new KhachHang("KH01", "Nguyen Van A", "123456789012", "0123456789", "email@gmail.com", LocalDate.of(2000, 1, 1), "Sinh vien");
-        System.out.println(daoKhachHang.themKhachHang(kh));
-
-        // Close the EntityManager and database connection
-        em.close();
-        connectDB_1.close();
-    }
+//    public static void main(String[] args) throws SQLException {
+//        // Initialize the database connection
+//        connectDB_1.connect();
+//        EntityManager em = connectDB_1.getEntityManager();
+//
+//        DAOKhachHang daoKhachHang = new DAOKhachHang();
+//
+//        // Retrieve tickets by invoice ID
+//        KhachHang kh = new KhachHang("KH01", "Nguyen Van A", "123456789012", "0123456789", "email@gmail.com", LocalDate.of(2000, 1, 1), "Sinh vien");
+//        System.out.println(daoKhachHang.themKhachHang(kh));
+//
+//        // Close the EntityManager and database connection
+//        em.close();
+//        connectDB_1.close();
+//    }
 
     // Hàm sửa khách hàng tra ve doi tuong khach hang
 //    public static KhachHang suaKhachHang(KhachHang kh) {

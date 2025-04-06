@@ -23,12 +23,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: PnlBanThuong
- * @Tạo vào ngày: 3/10/2024
- * @Tác giả: Huy
- */
 public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     private NhanVien nhanVien;
 

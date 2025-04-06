@@ -17,12 +17,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: DAOKhuyenMai
- * @Tạo vào ngày: 10/15/2024
- * @Tác giả: Thai
- */
 public class DAOKhuyenMai {
     /*maKM        VARCHAR(15) PRIMARY KEY,
     ngayApDung  DATE NOT NULL,
@@ -222,18 +216,18 @@ public class DAOKhuyenMai {
         return dsKhuyenMai;
     }
 
-    public static void main(String[] args) {
-        // get ds doi tuong khuyen mai
-        try {
-            ConnectDB.connect();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        ArrayList<String> dsDoiTuong = getDSDoiTuongKhuyenMai();
-        for (String doiTuong : dsDoiTuong) {
-            System.out.println(doiTuong);
-        }
-    }
+//    public static void main(String[] args) {
+//        // get ds doi tuong khuyen mai
+//        try {
+//            ConnectDB.connect();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        ArrayList<String> dsDoiTuong = getDSDoiTuongKhuyenMai();
+//        for (String doiTuong : dsDoiTuong) {
+//            System.out.println(doiTuong);
+//        }
+//    }
 
     // lay khuyen mai theo ma
 //    public  static KhuyenMai getKhuyenMaiTheoMa(String maKM) {
