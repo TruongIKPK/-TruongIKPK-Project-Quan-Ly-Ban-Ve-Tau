@@ -2,7 +2,7 @@ package gui;
 
 import control.impl.DAOHoaDon;
 import control.impl.DAOKhachHang;
-import control.DAOKhuyenMai;
+import control.impl.DAOKhuyenMai;
 import control.impl.DAOVe;
 import entity.HoaDon;
 import entity.KhachHang;
@@ -33,6 +33,7 @@ import java.util.List;
  */
 public class PnlKhachHang extends JPanel {
     private DAOKhachHang daoKhachHang;
+    private DAOKhuyenMai daoKhuyenMai;
 
     /**
      * Creates new form PnlKhachHang
@@ -42,6 +43,7 @@ public class PnlKhachHang extends JPanel {
         this.daoHoaDon = new DAOHoaDon();
         this.daoKhachHang = new DAOKhachHang();
         this.daoVe = new DAOVe();
+        this.daoKhuyenMai = new DAOKhuyenMai();
         filterKhachHang = () -> {
             List<RowFilter<Object, Object>> filters = new ArrayList<>();
 
@@ -61,7 +63,7 @@ public class PnlKhachHang extends JPanel {
     }
 
     private void readDataFromDb() throws RemoteException {
-        listDoiTuong = DAOKhuyenMai.getDSDoiTuongKhuyenMai();
+        listDoiTuong = daoKhuyenMai.getDSDoiTuongKhuyenMai();
         listDoiTuong.forEach(cboDoiTuong::addItem);
         listDoiTuong.forEach(cboLocDoiTuong::addItem);
 

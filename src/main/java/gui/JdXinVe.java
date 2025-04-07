@@ -1,8 +1,8 @@
 package gui;
 
-import control.*;
 import control.impl.DAOHoaDon;
 import control.impl.DAOKhachHang;
+import control.impl.DAOKhuyenMai;
 import control.impl.DAOVe;
 import entity.*;
 import enums.EColor;
@@ -107,6 +107,7 @@ public class JdXinVe extends CDialog implements MouseListener {
     private CButton btnNguoiDat;
     private DAOHoaDon daoHoaDon;
     private DAOKhachHang daoKhachHang;
+    private DAOKhuyenMai daoKhuyenMai;
 
     private DAOVe daoVe;
     /**
@@ -129,6 +130,7 @@ public class JdXinVe extends CDialog implements MouseListener {
         this.listChoNgoiChieuDi = new ArrayList<>(hoaDonTam.getDanhSachVe()
                 .stream().filter(ve -> ve.getChuyenTau().getGaDi().equals(chuyenChieuDi.getGaDi())).map(Ve::getChoNgoi).toList());
         this.daoKhachHang = new DAOKhachHang();
+        this.daoKhuyenMai = new DAOKhuyenMai();
         // Kiểm tra có chuyến chiều về không
         boolean isChieuVe = hoaDonTam.getDanhSachVe()
                 .stream().filter(ve -> ve.getChuyenTau().getGaDi().equals(chuyenChieuDi.getGaDen())).count() > 0;
@@ -151,7 +153,7 @@ public class JdXinVe extends CDialog implements MouseListener {
      * @param chuyenChieuDi      Chuyến chiều đi
      * @param listChoNgoiChieuDi Danh sách chỗ ngồi chiều đi
      */
-    public JdXinVe(PnlBanVe pnlParent, NhanVien nhanVien, ChuyenTau chuyenChieuDi, ArrayList<ChoNgoi> listChoNgoiChieuDi) {
+    public JdXinVe(PnlBanVe pnlParent, NhanVien nhanVien, ChuyenTau chuyenChieuDi, ArrayList<ChoNgoi> listChoNgoiChieuDi) throws RemoteException {
         this.nhanVien = nhanVien;
         this.pnlParent = pnlParent;
         this.chuyenChieuDi = chuyenChieuDi;
@@ -170,7 +172,7 @@ public class JdXinVe extends CDialog implements MouseListener {
      * @param listChoNgoiChieuDi Danh sách chỗ ngồi chiều đi
      * @param listChoNgoiChieuVe Danh sách chỗ ngồi chiều về
      */
-    public JdXinVe(PnlBanVe pnlParent, NhanVien nhanVien, ChuyenTau chuyenChieuDi, ChuyenTau chuyenChieuVe, ArrayList<ChoNgoi> listChoNgoiChieuDi, ArrayList<ChoNgoi> listChoNgoiChieuVe) {
+    public JdXinVe(PnlBanVe pnlParent, NhanVien nhanVien, ChuyenTau chuyenChieuDi, ChuyenTau chuyenChieuVe, ArrayList<ChoNgoi> listChoNgoiChieuDi, ArrayList<ChoNgoi> listChoNgoiChieuVe) throws RemoteException {
         this.nhanVien = nhanVien;
         this.pnlParent = pnlParent;
         this.chuyenChieuDi = chuyenChieuDi;
@@ -202,7 +204,7 @@ public class JdXinVe extends CDialog implements MouseListener {
     /**
      * Khởi tạo giao diện
      */
-    public void init() {
+    public void init() throws RemoteException {
         setTitle("Xin vé");
 
         initTable();
@@ -431,7 +433,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         btnLuuTam.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                luuTam();
+                try {
+                    luuTam();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -495,7 +501,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         actionMap.put("LuuTam", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                luuTam();
+                try {
+                    luuTam();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -806,8 +816,8 @@ public class JdXinVe extends CDialog implements MouseListener {
     /**
      * Đọc dữ liệu từ database
      */
-    public void readDataFromDB() {
-        listKhuyenMai = DAOKhuyenMai.getDSKhuyenMai();
+    public void readDataFromDB() throws RemoteException {
+        listKhuyenMai = daoKhuyenMai.getDSKhuyenMai();
         listKhuyenMai.forEach(khuyenMai -> {
             cboDoiTuong.addItem(khuyenMai.getDoiTuong());
         });
@@ -1391,7 +1401,7 @@ public class JdXinVe extends CDialog implements MouseListener {
     /**
      * Lưu tạm hóa đơn
      */
-    public void luuTam() {
+    public void luuTam() throws RemoteException {
         // Kiểm tra thông tin hóa đơn
         if (!validateHoaDon()) {
             JOptionPane.showMessageDialog(this, "Thông tin hóa đơn sai!");

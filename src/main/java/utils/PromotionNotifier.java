@@ -7,7 +7,7 @@ package utils;
  * @Tác giả: Thai
  */
 import control.impl.DAOKhachHang;
-import control.DAOKhuyenMai;
+import control.impl.DAOKhuyenMai;
 import entity.KhachHang;
 import entity.KhuyenMai;
 
@@ -21,9 +21,11 @@ public class PromotionNotifier {
 
     private EmailService emailService = new EmailService();
     private DAOKhachHang daoKhachHang;
+    private DAOKhuyenMai daoKhuyenMai;
 
     public PromotionNotifier() throws RemoteException {
         this.daoKhachHang = new DAOKhachHang();
+        this.daoKhuyenMai = new DAOKhuyenMai();
     }
     //ham nay de lam gi: gui email thong bao cho khach hang khi khuyen mai sap ket thuc
     public void schedulePromotionNotifications() {
@@ -42,7 +44,7 @@ public class PromotionNotifier {
 
     // Phương thức kiểm tra và gửi thông báo
     private void checkAndSendNotifications() throws RemoteException {
-        ArrayList<KhuyenMai> promotions = DAOKhuyenMai.getDSKhuyenMai();
+        ArrayList<KhuyenMai> promotions = daoKhuyenMai.getDSKhuyenMai();
         LocalDate today = LocalDate.now();
         LocalDate notificationDate = today.plusDays(10); // Ngày cần thông báo trước
 
@@ -70,7 +72,7 @@ public class PromotionNotifier {
         }
 
         //cap nhat la da gui thong bao
-        DAOKhuyenMai.capNhatTrangThaiDaGuiThongBao(promotion.getMaKM());
+        daoKhuyenMai.capNhatTrangThaiDaGuiThongBao(promotion.getMaKM());
     }
     private void sendToAllCustomers(KhuyenMai promotion) throws RemoteException {
         ArrayList<KhachHang> customers = daoKhachHang.layDanhSachKhachHang();
