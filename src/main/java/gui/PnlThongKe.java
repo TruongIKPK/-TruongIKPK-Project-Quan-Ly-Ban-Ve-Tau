@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+import control.impl.DAOVe;
 import entity.NhanVien;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
@@ -157,6 +158,8 @@ public class PnlThongKe extends JPanel implements ActionListener {
 	private DefaultTableModel model_SL;
 	private CTable table_SL;
 	private NhanVien nv;
+	private control.impl.DAOVe daoVe;
+
 	/**
 	 * Create the panel.
 	 */
@@ -164,6 +167,7 @@ public class PnlThongKe extends JPanel implements ActionListener {
 
 	public PnlThongKe(NhanVien nhanVien) throws RemoteException {
 		this.nv = nhanVien;
+		this.daoVe = new DAOVe();
 		setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(957, 622));
 		setBackground(EColor.BG_COLOR.getColor());
@@ -2679,20 +2683,20 @@ public class PnlThongKe extends JPanel implements ActionListener {
 		String totalRevenue = "";
 		String previousMonthRevenue = "";
 		if (comboBox_TQ.getSelectedIndex() == 0) {
-			totalRevenue = control.impl.DAOVe.layDoanhThuTheoNgayHienTai();
-			previousMonthRevenue = control.impl.DAOVe.layDoanhThuNgayHomQua();
+			totalRevenue = daoVe.layDoanhThuTheoNgayHienTai();
+			previousMonthRevenue = daoVe.layDoanhThuNgayHomQua();
 		} else if (comboBox_TQ.getSelectedIndex() == 1) {
-			totalRevenue = control.impl.DAOVe.layDoanhThuTuanHienTai();
-			previousMonthRevenue = control.impl.DAOVe.layDoanhThuTuanVuaRoi();
+			totalRevenue = daoVe.layDoanhThuTuanHienTai();
+			previousMonthRevenue = daoVe.layDoanhThuTuanVuaRoi();
 		} else if (comboBox_TQ.getSelectedIndex() == 2) {
-			totalRevenue = control.impl.DAOVe.layDoanhThuThangHienTai();
-			previousMonthRevenue = control.impl.DAOVe.layDoanhThuThangVuaRoi();
+			totalRevenue = daoVe.layDoanhThuThangHienTai();
+			previousMonthRevenue = daoVe.layDoanhThuThangVuaRoi();
 		} else if (comboBox_TQ.getSelectedIndex() == 3) {
-			totalRevenue = control.impl.DAOVe.layDoanhThuQuyHienTai();
-			previousMonthRevenue = control.impl.DAOVe.layDoanhThuQuyVuaRoi();
+			totalRevenue = daoVe.layDoanhThuQuyHienTai();
+			previousMonthRevenue = daoVe.layDoanhThuQuyVuaRoi();
 		} else if (comboBox_TQ.getSelectedIndex() == 4) {
-			totalRevenue = control.impl.DAOVe.layDoanhThuNamHienTai();
-			previousMonthRevenue = control.impl.DAOVe.layDoanhThuNamVuaRoi();
+			totalRevenue = daoVe.layDoanhThuNamHienTai();
+			previousMonthRevenue = daoVe.layDoanhThuNamVuaRoi();
 		}
 
 		if(totalRevenue == null) previousMonthRevenue = "0";
@@ -2790,15 +2794,15 @@ public class PnlThongKe extends JPanel implements ActionListener {
 		String chuoi = "";
 
 		if (comboBox_TQ.getSelectedIndex() == 0) {
-			chuoi = control.impl.DAOVe.getSlowestSalesTimeLastWeek();
+			chuoi = daoVe.getSlowestSalesTimeLastWeek();
 		} else if (comboBox_TQ.getSelectedIndex() == 1) {
-			chuoi = control.impl.DAOVe.getSlowestSalesTimeLastWeek();
+			chuoi = daoVe.getSlowestSalesTimeLastWeek();
 		} else if (comboBox_TQ.getSelectedIndex() == 2) {
-			chuoi = control.impl.DAOVe.getSlowestSalesTimeLastMonth();
+			chuoi = daoVe.getSlowestSalesTimeLastMonth();
 		} else if (comboBox_TQ.getSelectedIndex() == 3) {
-			chuoi = control.impl.DAOVe.getSlowestSalesTimeLastQuarter();
+			chuoi = daoVe.getSlowestSalesTimeLastQuarter();
 		} else if (comboBox_TQ.getSelectedIndex() == 4) {
-			chuoi = control.impl.DAOVe.getSlowestSalesTimeLastYear();
+			chuoi = daoVe.getSlowestSalesTimeLastYear();
 		}
 
 		lbl_TGBanChamNhat_TQ.setText(chuoi);

@@ -32,12 +32,16 @@ import java.util.List;
  * @Tác giả: Huy
  */
 public class PnlKhachHang extends JPanel {
+    private DAOKhachHang daoKhachHang;
+
     /**
      * Creates new form PnlKhachHang
      */
     public PnlKhachHang(NhanVien nhanVien) throws RemoteException {
         this.nhanVien = nhanVien;
-
+        this.daoHoaDon = new DAOHoaDon();
+        this.daoKhachHang = new DAOKhachHang();
+        this.daoVe = new DAOVe();
         filterKhachHang = () -> {
             List<RowFilter<Object, Object>> filters = new ArrayList<>();
 
@@ -64,7 +68,7 @@ public class PnlKhachHang extends JPanel {
         cboDoiTuong.setSelectedItem("Tất cả");
         cboLocDoiTuong.setSelectedItem("Tất cả");
 
-        listKhachHang = DAOKhachHang.layDanhSachKhachHang();
+        listKhachHang = daoKhachHang.layDanhSachKhachHang();
         listKhachHang.forEach(khachHang -> {
             System.out.println("khach hagn: " + khachHang);
             tblModelKhachHang.addRow(new Object[]{
@@ -519,7 +523,7 @@ public class PnlKhachHang extends JPanel {
         cboLocDoiTuong.setSelectedItem("Tất cả");
 
         tblModelKhachHang.setRowCount(0);
-        listKhachHang = DAOKhachHang.layDanhSachKhachHang();
+        listKhachHang = daoKhachHang.layDanhSachKhachHang();
         listKhachHang.forEach(khachHang -> {
             tblModelKhachHang.addRow(new Object[]{
                     khachHang.getMaKH(),
@@ -584,7 +588,7 @@ public class PnlKhachHang extends JPanel {
 
         if (validateInput()) {
             KhachHang khachHang = new KhachHang(maKhach, hoTen, cccd, sdt, email, ngaySinh, doiTuong);
-            if (DAOKhachHang.suaKhachHang(khachHang) != null) {
+            if (daoKhachHang.suaKhachHang(khachHang) != null) {
                 JOptionPane.showMessageDialog(this, "Cập nhật thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
 
                 if (tblKhachHang.getSelectedRow() > -1) {
@@ -603,11 +607,11 @@ public class PnlKhachHang extends JPanel {
 
         // Kiểm tra nếu là mã khách hàng
         if (Validation.maKH(timKiemText)) {
-            khachHang = DAOKhachHang.layKhachHangTheoMa(timKiemText);
+            khachHang = daoKhachHang.layKhachHangTheoMa(timKiemText);
         } else if (Validation.CCCD(timKiemText)) {
-            khachHang = DAOKhachHang.layKhachHangTheoCCCD(timKiemText);
+            khachHang = daoKhachHang.layKhachHangTheoCCCD(timKiemText);
         } else if (Validation.sdt(timKiemText)) {
-            khachHang = DAOKhachHang.layKhachHangTheoSdt(timKiemText);
+            khachHang = daoKhachHang.layKhachHangTheoSdt(timKiemText);
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập mã khách hàng, CCCD hoặc SĐT", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -647,7 +651,7 @@ public class PnlKhachHang extends JPanel {
     private void loadHoaDonCuaKhachHang(String maKhach) throws RemoteException {
         tblModelHoaDon.setRowCount(0);
         tblModelVe.setRowCount(0);
-        listHoaDon = DAOHoaDon.docHoaDonTheoKhachHang(maKhach);
+        listHoaDon = daoHoaDon.docHoaDonTheoKhachHang(maKhach);
 
         System.out.println("ma khach:------------------------------------------------------------------------ " + listHoaDon);
 
@@ -673,7 +677,7 @@ public class PnlKhachHang extends JPanel {
 
     private void loadVeCuaHoaDon(String maHoaDon) throws RemoteException {
         tblModelVe.setRowCount(0);
-        listVe = DAOVe.layDSVeTheoMaHD(maHoaDon);
+        listVe = daoVe.layDSVeTheoMaHD(maHoaDon);
         listVe.forEach(ve -> {
             tblModelVe.addRow(new Object[]{
                     ve.getMaVe(),
@@ -693,7 +697,7 @@ public class PnlKhachHang extends JPanel {
 
         for (int selectedRow : selectedRows) {
             String maVe = tblVe.getValueAt(selectedRow, 0).toString();
-            Ve ve = DAOVe.layVeTheoMa(maVe);
+            Ve ve = daoVe.layVeTheoMa(maVe);
             if (ve != null) {
                 TicketPrinter printer = new TicketPrinter(ve);
             }
@@ -708,7 +712,7 @@ public class PnlKhachHang extends JPanel {
         }
 
         String maHoaDon = tblHoaDon.getValueAt(row, 0).toString();
-        listVe = DAOVe.layDSVeTheoMaHD(maHoaDon);
+        listVe = daoVe.layDSVeTheoMaHD(maHoaDon);
 
         if (listVe.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Hóa đơn không có vé", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -728,7 +732,7 @@ public class PnlKhachHang extends JPanel {
         }
 
         String maHoaDon = tblHoaDon.getValueAt(row, 0).toString();
-        HoaDon hoaDon = DAOHoaDon.getHoaDon(maHoaDon);
+        HoaDon hoaDon = daoHoaDon.getHoaDon(maHoaDon);
 
         if (hoaDon != null) {
             BillPrinter printer = new BillPrinter(hoaDon);
@@ -812,5 +816,7 @@ public class PnlKhachHang extends JPanel {
     private CButton btnInHoaDon;
     private JPanel pnlRightBot;
     private CButton btnInTatCaVe;
+    private DAOHoaDon daoHoaDon;
+    private DAOVe daoVe;
     // End of variables declaration
 }

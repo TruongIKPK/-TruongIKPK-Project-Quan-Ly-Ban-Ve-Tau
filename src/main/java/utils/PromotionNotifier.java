@@ -1,5 +1,11 @@
 package utils;
 
+/**
+ * @Dự án: tau-viet-express
+ * @Class: Pro
+ * @Tạo vào ngày: 12/13/2024
+ * @Tác giả: Thai
+ */
 import control.impl.DAOKhachHang;
 import control.DAOKhuyenMai;
 import entity.KhachHang;
@@ -14,7 +20,11 @@ import java.util.TimerTask;
 public class PromotionNotifier {
 
     private EmailService emailService = new EmailService();
+    private DAOKhachHang daoKhachHang;
 
+    public PromotionNotifier() throws RemoteException {
+        this.daoKhachHang = new DAOKhachHang();
+    }
     //ham nay de lam gi: gui email thong bao cho khach hang khi khuyen mai sap ket thuc
     public void schedulePromotionNotifications() {
         Timer timer = new Timer(true);
@@ -63,7 +73,7 @@ public class PromotionNotifier {
         DAOKhuyenMai.capNhatTrangThaiDaGuiThongBao(promotion.getMaKM());
     }
     private void sendToAllCustomers(KhuyenMai promotion) throws RemoteException {
-        ArrayList<KhachHang> customers = DAOKhachHang.layDanhSachKhachHang();
+        ArrayList<KhachHang> customers = daoKhachHang.layDanhSachKhachHang();
         String content = "Đừng bỏ lỡ cơ hội ưu đãi vé tàu hấp dẫn!  \n" +
                 "\n" +
                 "Kính gửi Quý khách hàng,  \n" +
@@ -81,7 +91,7 @@ public class PromotionNotifier {
     }
 
     private  void sendToTargetCustomers(KhuyenMai promotion) throws RemoteException {
-        ArrayList<KhachHang> customers = DAOKhachHang.layKhachHangTheoDoiTuong(promotion.getDoiTuong());
+        ArrayList<KhachHang> customers = daoKhachHang.layKhachHangTheoDoiTuong(promotion.getDoiTuong());
         String content = "Đừng bỏ lỡ cơ hội ưu đãi vé tàu hấp dẫn!  \n" +
                 "\n" +
                 "Kính gửi Quý khách hàng,  \n" +

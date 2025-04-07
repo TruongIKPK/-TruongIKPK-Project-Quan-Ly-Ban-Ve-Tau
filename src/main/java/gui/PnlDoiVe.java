@@ -109,15 +109,17 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
 
     private JDatePickerImpl ngayDiPicker;
     private JDatePickerImpl ngayVePicker;
+    private DAOVe daoVe;
 
     /**
      * Khởi tạo giao diện Panel Bán vé.
      *
      * @param nhanVien Nhân viên đăng nhập.
      */
-    public PnlDoiVe(NhanVien nhanVien) {
+    public PnlDoiVe(NhanVien nhanVien) throws RemoteException {
         this.nhanVien = nhanVien;
         this.loaiVe = ELoaiVe.MOT_CHIEU.getValue();
+        this.daoVe = new DAOVe();
 
         setLayout(new BorderLayout());
         setBackground(EColor.BG_COLOR.getColor());
@@ -1122,7 +1124,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
 
         // Kiểm tra vé cũ
         String maVeCu = txtMaVeCu.getText();
-        Ve veCu = DAOVe.layVeTheoMa(maVeCu);
+        Ve veCu = daoVe.layVeTheoMa(maVeCu);
 
         if (veCu == null) {
             JOptionPane.showMessageDialog(null, "Không tìm thấy vé");
@@ -1749,7 +1751,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
             return;
         }
 
-        veTim = DAOVe.layVeTheoMa(maVe);
+        veTim = daoVe.layVeTheoMa(maVe);
 
         if (veTim == null) {
             JOptionPane.showMessageDialog(null, "Không tìm thấy vé");
@@ -1780,7 +1782,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
         listChuyenDi.forEach(chuyenTau -> {
             ArrayList<Ve> dsVeDaBan = null;
             try {
-                dsVeDaBan = DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
+                dsVeDaBan = daoVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -1849,7 +1851,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
             return false;
         }
 
-        Ve veCu = DAOVe.layVeTheoMa(maVeCu);
+        Ve veCu = daoVe.layVeTheoMa(maVeCu);
 
         if (veCu == null) {
             JOptionPane.showMessageDialog(null, "Không tìm thấy vé");
@@ -1981,7 +1983,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
 
     public void nhapThongTinVeCu() throws RemoteException {
         String maVe = txtMaVeCu.getText();
-        Ve ve = DAOVe.layVeTheoMa(maVe);
+        Ve ve = daoVe.layVeTheoMa(maVe);
 
         if (ve == null) {
             JOptionPane.showMessageDialog(null, "Không tìm thấy vé");

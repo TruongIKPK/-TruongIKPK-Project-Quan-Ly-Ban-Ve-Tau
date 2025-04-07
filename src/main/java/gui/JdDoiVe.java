@@ -42,12 +42,14 @@ public class JdDoiVe extends JDialog {
             txtKhuyenMai,
             txtPhiDoiVe, txtTienThu;
     private CButton btnXacNhan, btnHuy;
+    private DAOVe daoVe;
 
-    public JdDoiVe(PnlDoiVe pnlDoiVe, Ve veCu, ChuyenTau chuyenTau, ChoNgoi choNgoi) {
+    public JdDoiVe(PnlDoiVe pnlDoiVe, Ve veCu, ChuyenTau chuyenTau, ChoNgoi choNgoi) throws RemoteException {
         this.veCu = veCu;
         this.pnlDoiVe = pnlDoiVe;
         this.chuyenTau = chuyenTau;
         this.choNgoi = choNgoi;
+        this.daoVe = new DAOVe();
 
         setTitle("Đổi vé");
         setSize(900, 500);
@@ -316,7 +318,7 @@ public class JdDoiVe extends JDialog {
         veCu.setTrangThai(ETrangThaiVe.VE_DUOC_DOI.name());
 
         // Thêm vé mới vào CSDL
-        if (DAOVe.themVeCoKhuyenMai(veMoi)) {
+        if (daoVe.themVeCoKhuyenMai(veMoi)) {
             JOptionPane.showMessageDialog(null, "Đổi vé thành công");
             pnlDoiVe.hienThiDanhSachChoNgoi();
         } else {
@@ -324,7 +326,7 @@ public class JdDoiVe extends JDialog {
         }
 
         // Cập nhật vé cũ
-        if (!DAOVe.suaVe(veCu) ) {
+        if (!daoVe.suaVe(veCu) ) {
             JOptionPane.showMessageDialog(null, "Cập nhật vé cũ thất bại");
         }
 

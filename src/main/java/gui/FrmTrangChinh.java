@@ -267,7 +267,11 @@ public class FrmTrangChinh extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (pnlDoiVe == null) {
-                    pnlDoiVe = new PnlDoiVe(nhanVien);
+                    try {
+                        pnlDoiVe = new PnlDoiVe(nhanVien);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
                 setPnlWithLoading(pnlDoiVe); // Gọi phương thức với hiệu ứng loading
             }
@@ -304,7 +308,11 @@ public class FrmTrangChinh extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (pnlKhuyenMai == null) {
-                    pnlKhuyenMai = new PnlKhuyenMai(nhanVien);
+                    try {
+                        pnlKhuyenMai = new PnlKhuyenMai(nhanVien);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
                 setPnlWithLoading(pnlKhuyenMai);
             }

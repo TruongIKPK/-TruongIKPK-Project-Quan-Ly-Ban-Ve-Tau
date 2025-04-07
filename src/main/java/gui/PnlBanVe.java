@@ -25,6 +25,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
 
+/**
+ * @Dự án: tau-viet-express
+ * @Class: PnlBanThuong
+ * @Tạo vào ngày: 3/10/2024
+ * @Tác giả: Huy
+ */
 public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     private NhanVien nhanVien;
 
@@ -103,6 +109,8 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     private JDatePickerImpl ngayDiPicker;
     private JDatePickerImpl ngayVePicker;
 
+    private DAOVe daoVe;
+
     /**
      * Khởi tạo giao diện Panel Bán vé.
      *
@@ -111,6 +119,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     public PnlBanVe(NhanVien nhanVien) throws RemoteException {
         this.nhanVien = nhanVien;
         this.loaiVe = ELoaiVe.MOT_CHIEU.getValue();
+        this.daoVe = new DAOVe();
 
         setLayout(new BorderLayout());
         setBackground(EColor.BG_COLOR.getColor());
@@ -627,7 +636,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         actionMap.put("f5Pressed", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                xuLyDonTam();
+                try {
+                    xuLyDonTam();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -775,7 +788,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         System.out.println("Số chuyến đi:*********************************************************** " + listChuyenDi);
         // Lặp qua từng chuyến tàu trong danh sách và lấy vé đã bán theo mã chuyến
         for (ChuyenTau chuyenTau : listChuyenDi) {
-            listVeDaBan.addAll(DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen()));
+            listVeDaBan.addAll(daoVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen()));
         }
         System.out.println(")))))))))))))))))))))))))))))))))))))))))))))))))))))LISTVEDABAN"+listVeDaBan);
         // Hiển thị danh sách chuyến tàu
@@ -2158,7 +2171,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             System.out.println("Chuyến đi:---###############################################################################################################################################################33 " + chuyenTau.getMaChuyen());
             ArrayList<Ve> dsVeDaBan = null;
             try {
-                dsVeDaBan = DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
+                dsVeDaBan = daoVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -2187,7 +2200,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             listChuyenVe.forEach(chuyenTau -> {
                 ArrayList<Ve> dsVeDaBan = null;
                 try {
-                    dsVeDaBan = DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
+                    dsVeDaBan = daoVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
@@ -2203,7 +2216,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Xử lý đơn tạm.
      */
-    public void xuLyDonTam() {
+    public void xuLyDonTam() throws RemoteException {
         int row = tblHoaDonTam.getSelectedRow();
 
         // Kiểm tra nếu chưa chọn đơn tạm
@@ -2461,7 +2474,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
         // Xử lý đơn tạm
         if (obj.equals(btnXuLyDonTam)) {
-            xuLyDonTam();
+            try {
+                xuLyDonTam();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Xử lý xóa đơn tạm
