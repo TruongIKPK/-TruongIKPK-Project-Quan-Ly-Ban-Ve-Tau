@@ -1,7 +1,7 @@
 package gui;
 
-import connectDB.ConnectDB;
 import control.*;
+import control.impl.DAOVe;
 import entity.*;
 import enums.*;
 import gui.components.DatePicker;
@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.SQLException;
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -109,15 +109,17 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
 
     private JDatePickerImpl ngayDiPicker;
     private JDatePickerImpl ngayVePicker;
+    private DAOVe daoVe;
 
     /**
      * Khởi tạo giao diện Panel Bán vé.
      *
      * @param nhanVien Nhân viên đăng nhập.
      */
-    public PnlDoiVe(NhanVien nhanVien) {
+    public PnlDoiVe(NhanVien nhanVien) throws RemoteException {
         this.nhanVien = nhanVien;
         this.loaiVe = ELoaiVe.MOT_CHIEU.getValue();
+        this.daoVe = new DAOVe();
 
         setLayout(new BorderLayout());
         setBackground(EColor.BG_COLOR.getColor());
@@ -534,7 +536,11 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Thực hiện tìm kiếm chuyến tàu khi nhấn Enter
-                traCuuChuyenTau();
+                try {
+                    traCuuChuyenTau();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -544,7 +550,11 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Thực hiện tìm kiếm chuyến tàu khi nhấn Ctrl + F
-                traCuuChuyenTau();
+                try {
+                    traCuuChuyenTau();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -568,7 +578,11 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Thực hiện đổi vé khi nhấn phím F1
-                doiVe();
+                try {
+                    doiVe();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -1101,7 +1115,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Thực hiện đổi vé cho hành khách.
      */
-    public void doiVe() {
+    public void doiVe() throws RemoteException {
         // Kiểm tra chỗ ngồi đã chọn
         if (choNgoiDangChon == null) {
             JOptionPane.showMessageDialog(null, "Chưa chọn chỗ ngồi");
@@ -1110,7 +1124,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
 
         // Kiểm tra vé cũ
         String maVeCu = txtMaVeCu.getText();
-        Ve veCu = DAOVe.layVeTheoMa(maVeCu);
+        Ve veCu = daoVe.layVeTheoMa(maVeCu);
 
         if (veCu == null) {
             JOptionPane.showMessageDialog(null, "Không tìm thấy vé");
@@ -1708,7 +1722,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Tra cứu thông tin chuyến tàu
      */
-    public void traCuuChuyenTau() {
+    public void traCuuChuyenTau() throws RemoteException {
         lblDsChuyenTau.setText("Danh sách chuyến tàu");
 
         resetAll();
@@ -1737,7 +1751,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
             return;
         }
 
-        veTim = DAOVe.layVeTheoMa(maVe);
+        veTim = daoVe.layVeTheoMa(maVe);
 
         if (veTim == null) {
             JOptionPane.showMessageDialog(null, "Không tìm thấy vé");
@@ -1766,7 +1780,12 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
 
         // Lấy danh sách vé của chuyến
         listChuyenDi.forEach(chuyenTau -> {
-            ArrayList<Ve> dsVeDaBan = DAOVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
+            ArrayList<Ve> dsVeDaBan = null;
+            try {
+                dsVeDaBan = daoVe.layDSVeDaBanTheoMaChuyen(chuyenTau.getMaChuyen());
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
             listVeDaBan.addAll(dsVeDaBan);
         });
 
@@ -1820,7 +1839,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    public boolean kiemTraVeCu() {
+    public boolean kiemTraVeCu() throws RemoteException {
         // 1. Vé tồn tại
         // 2. Vé còn thời gian đổi
         // 3. Vé đã được đổi hay chưa
@@ -1832,7 +1851,7 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
             return false;
         }
 
-        Ve veCu = DAOVe.layVeTheoMa(maVeCu);
+        Ve veCu = daoVe.layVeTheoMa(maVeCu);
 
         if (veCu == null) {
             JOptionPane.showMessageDialog(null, "Không tìm thấy vé");
@@ -1914,12 +1933,20 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
 
         // Xử lý tra cứu chuyến tàu khi người dùng nhấn nút "Tra Cứu Chuyến Tàu"
         if (obj.equals(btnTraCuuChuyenTau)) {
-            traCuuChuyenTau();
+            try {
+                traCuuChuyenTau();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Xử lý đổi vé
         if (obj.equals(btnDoiVe)) {
-            doiVe();
+            try {
+                doiVe();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Chọn nhanh theo loại toa khi người dùng nhấn nút "Chọn Nhanh Theo Loại Toa"
@@ -1940,19 +1967,23 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
         // Kiểm tra vé cũ
         if (obj.equals(btnKiemTraVeCu)) {
             resetAll();
-            if (kiemTraVeCu()) {
-                btnTraCuuChuyenTau.setEnabled(true);
-                traCuuChuyenTau();
-                nhapThongTinVeCu();
-            } else {
-                btnTraCuuChuyenTau.setEnabled(false);
+            try {
+                if (kiemTraVeCu()) {
+                    btnTraCuuChuyenTau.setEnabled(true);
+                    traCuuChuyenTau();
+                    nhapThongTinVeCu();
+                } else {
+                    btnTraCuuChuyenTau.setEnabled(false);
+                }
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
             }
         }
     }
 
-    public void nhapThongTinVeCu() {
+    public void nhapThongTinVeCu() throws RemoteException {
         String maVe = txtMaVeCu.getText();
-        Ve ve = DAOVe.layVeTheoMa(maVe);
+        Ve ve = daoVe.layVeTheoMa(maVe);
 
         if (ve == null) {
             JOptionPane.showMessageDialog(null, "Không tìm thấy vé");

@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+import control.impl.DAOVe;
 import entity.NhanVien;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
@@ -29,6 +30,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
+import java.rmi.RemoteException;
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -96,7 +98,7 @@ public class PnlThongKe extends JPanel implements ActionListener {
 	private DefaultTableModel model_LoaiGheUaThich;
 	private gui.components.DatePicker DatePicker;
 	private JLabel lbl_tongDT_TQ;
-	private control.DAOVe DAOVe;
+	private control.impl.DAOVe DAOVe;
 	private JComboBox comboBox_TQ;
 	private JLabel lbl_phapTram_TQ;
 	private JLabel lbl_hinhTangGiam;
@@ -156,13 +158,16 @@ public class PnlThongKe extends JPanel implements ActionListener {
 	private DefaultTableModel model_SL;
 	private CTable table_SL;
 	private NhanVien nv;
+	private control.impl.DAOVe daoVe;
+
 	/**
 	 * Create the panel.
 	 */
 
 
-	public PnlThongKe(NhanVien nhanVien) {
+	public PnlThongKe(NhanVien nhanVien) throws RemoteException {
 		this.nv = nhanVien;
+		this.daoVe = new DAOVe();
 		setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(957, 622));
 		setBackground(EColor.BG_COLOR.getColor());
@@ -269,7 +274,7 @@ public class PnlThongKe extends JPanel implements ActionListener {
 		}
 	}
 
-	public JPanel BoLocChung() {
+	public JPanel BoLocChung() throws RemoteException {
 		JPanel pnl_thongKeChung = new JPanel();
 		pnl_thongKeChung.setBackground(new Color(255, 255, 255));
 		pnl_thongKeChung.setLayout(new GridLayout(1, 2, 0, 0));
@@ -1836,10 +1841,22 @@ public class PnlThongKe extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if(obj.equals(comboBox_TQ)){
-			CapNhatTongDoanhThu_TQ();
-			CapNhatTBBanChayVaKhongChay();
-			CapNhatBanChamNhat();
-			updateTableTopNhanVien();
+            try {
+                CapNhatTongDoanhThu_TQ();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+            try {
+                CapNhatTBBanChayVaKhongChay();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+            try {
+                CapNhatBanChamNhat();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+            updateTableTopNhanVien();
 			updateTableLoaiGheUaThich();
 
 			if (comboBox_TQ.getSelectedIndex() == 0) {
@@ -2662,24 +2679,24 @@ public class PnlThongKe extends JPanel implements ActionListener {
 		chartPanel.setPreferredSize(new Dimension(800, 260));
 		return chartPanel;
 	}
-	public void CapNhatTongDoanhThu_TQ() {
+	public void CapNhatTongDoanhThu_TQ() throws RemoteException {
 		String totalRevenue = "";
 		String previousMonthRevenue = "";
 		if (comboBox_TQ.getSelectedIndex() == 0) {
-			totalRevenue = control.DAOVe.layDoanhThuTheoNgayHienTai();
-			previousMonthRevenue = control.DAOVe.layDoanhThuNgayHomQua();
+			totalRevenue = daoVe.layDoanhThuTheoNgayHienTai();
+			previousMonthRevenue = daoVe.layDoanhThuNgayHomQua();
 		} else if (comboBox_TQ.getSelectedIndex() == 1) {
-			totalRevenue = control.DAOVe.layDoanhThuTuanHienTai();
-			previousMonthRevenue = control.DAOVe.layDoanhThuTuanVuaRoi();
+			totalRevenue = daoVe.layDoanhThuTuanHienTai();
+			previousMonthRevenue = daoVe.layDoanhThuTuanVuaRoi();
 		} else if (comboBox_TQ.getSelectedIndex() == 2) {
-			totalRevenue = control.DAOVe.layDoanhThuThangHienTai();
-			previousMonthRevenue = control.DAOVe.layDoanhThuThangVuaRoi();
+			totalRevenue = daoVe.layDoanhThuThangHienTai();
+			previousMonthRevenue = daoVe.layDoanhThuThangVuaRoi();
 		} else if (comboBox_TQ.getSelectedIndex() == 3) {
-			totalRevenue = control.DAOVe.layDoanhThuQuyHienTai();
-			previousMonthRevenue = control.DAOVe.layDoanhThuQuyVuaRoi();
+			totalRevenue = daoVe.layDoanhThuQuyHienTai();
+			previousMonthRevenue = daoVe.layDoanhThuQuyVuaRoi();
 		} else if (comboBox_TQ.getSelectedIndex() == 4) {
-			totalRevenue = control.DAOVe.layDoanhThuNamHienTai();
-			previousMonthRevenue = control.DAOVe.layDoanhThuNamVuaRoi();
+			totalRevenue = daoVe.layDoanhThuNamHienTai();
+			previousMonthRevenue = daoVe.layDoanhThuNamVuaRoi();
 		}
 
 		if(totalRevenue == null) previousMonthRevenue = "0";
@@ -2730,7 +2747,7 @@ public class PnlThongKe extends JPanel implements ActionListener {
 			lbl_phapTram_TQ.setText("Không có dữ liệu");
 		}
 	}
-	public void CapNhatTBBanChayVaKhongChay() {
+	public void CapNhatTBBanChayVaKhongChay() throws RemoteException {
 		double bestSellingHour = -1;
 		if (comboBox_TQ.getSelectedIndex() == 0) {
 			Calendar calendar = Calendar.getInstance();
@@ -2773,19 +2790,19 @@ public class PnlThongKe extends JPanel implements ActionListener {
 			lbl_tg_Tb_CaoNhat.setText(formatHour(bestSellingHour));
 		}
 	}
-	public void CapNhatBanChamNhat(){
+	public void CapNhatBanChamNhat() throws RemoteException {
 		String chuoi = "";
 
 		if (comboBox_TQ.getSelectedIndex() == 0) {
-			chuoi = control.DAOVe.getSlowestSalesTimeLastWeek();
+			chuoi = daoVe.getSlowestSalesTimeLastWeek();
 		} else if (comboBox_TQ.getSelectedIndex() == 1) {
-			chuoi = control.DAOVe.getSlowestSalesTimeLastWeek();
+			chuoi = daoVe.getSlowestSalesTimeLastWeek();
 		} else if (comboBox_TQ.getSelectedIndex() == 2) {
-			chuoi = control.DAOVe.getSlowestSalesTimeLastMonth();
+			chuoi = daoVe.getSlowestSalesTimeLastMonth();
 		} else if (comboBox_TQ.getSelectedIndex() == 3) {
-			chuoi = control.DAOVe.getSlowestSalesTimeLastQuarter();
+			chuoi = daoVe.getSlowestSalesTimeLastQuarter();
 		} else if (comboBox_TQ.getSelectedIndex() == 4) {
-			chuoi = control.DAOVe.getSlowestSalesTimeLastYear();
+			chuoi = daoVe.getSlowestSalesTimeLastYear();
 		}
 
 		lbl_TGBanChamNhat_TQ.setText(chuoi);

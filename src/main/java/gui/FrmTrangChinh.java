@@ -12,6 +12,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class FrmTrangChinh extends JFrame {
@@ -36,7 +37,7 @@ public class FrmTrangChinh extends JFrame {
     private JPanel pnlDangChon;
     private JPanel pnlLoading;
 
-    public FrmTrangChinh(TaiKhoan taiKhoan, NhanVien nhanVien) {
+    public FrmTrangChinh(TaiKhoan taiKhoan, NhanVien nhanVien) throws RemoteException {
         this.taiKhoan = taiKhoan;
         this.nhanVien = nhanVien;
         this.pnlDangChon = pnlBanVe;
@@ -181,7 +182,7 @@ public class FrmTrangChinh extends JFrame {
         pnlTop.add(pnlTopRight, BorderLayout.EAST);
     }
 
-    public void initPnlMain() {
+    public void initPnlMain() throws RemoteException {
         pnlMain = new JPanel();
         pnlMain.setLayout(new BorderLayout());
         pnlMain.setBackground(EColor.BG_COLOR.getColor());
@@ -266,7 +267,11 @@ public class FrmTrangChinh extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (pnlDoiVe == null) {
-                    pnlDoiVe = new PnlDoiVe(nhanVien);
+                    try {
+                        pnlDoiVe = new PnlDoiVe(nhanVien);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
                 setPnlWithLoading(pnlDoiVe); // Gọi phương thức với hiệu ứng loading
             }
@@ -277,7 +282,11 @@ public class FrmTrangChinh extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (pnlTraVe == null) {
-                    pnlTraVe = new PnlTraVe();
+                    try {
+                        pnlTraVe = new PnlTraVe();
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
                 setPnlWithLoading(pnlTraVe); // Gọi phương thức với hiệu ứng loading
             }
@@ -299,7 +308,11 @@ public class FrmTrangChinh extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (pnlKhuyenMai == null) {
-                    pnlKhuyenMai = new PnlKhuyenMai(nhanVien);
+                    try {
+                        pnlKhuyenMai = new PnlKhuyenMai(nhanVien);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
                 setPnlWithLoading(pnlKhuyenMai);
             }
@@ -310,7 +323,11 @@ public class FrmTrangChinh extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (pnlKhachHang == null) {
-                    pnlKhachHang = new PnlKhachHang(nhanVien);
+                    try {
+                        pnlKhachHang = new PnlKhachHang(nhanVien);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
                 setPnlWithLoading(pnlKhachHang);
             }

@@ -2,7 +2,7 @@ package gui;
 
 import javax.swing.*;
 
-import control.DAOVe;
+import control.impl.DAOVe;
 import entity.Ve;
 import enums.EColor;
 import gui.custom.CButton;
@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,12 +38,13 @@ public class PnlTraVe extends JPanel {
     private JButton btnSearchHD;
     private double tongTienPhi;
     private double tongTienTra;
+    private DAOVe daoVe;
 
 
     /**
      * Creates new form PnlChuyenTau
      */
-    public PnlTraVe() {
+    public PnlTraVe() throws RemoteException {
         initComponents();
     }
 
@@ -53,8 +55,8 @@ public class PnlTraVe extends JPanel {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
-    private void initComponents() {
-
+    private void initComponents() throws RemoteException {
+        this.daoVe = new DAOVe();
         pnlTop = new JPanel();
         lblTitle = new JLabel();
         pnlLeft = new JPanel();
@@ -203,7 +205,11 @@ public class PnlTraVe extends JPanel {
         btnTraCuu.setText("Tra cứu");
         btnTraCuu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnTraCuuActionPerformed(evt);
+                try {
+                    btnTraCuuActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         BoxTimVe.add(btnTraCuu);
@@ -351,7 +357,11 @@ public class PnlTraVe extends JPanel {
         btnXacNhan.setEnabled(false);
         btnXacNhan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnXacNhanActionPerformed(evt);
+                try {
+                    btnXacNhanActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxXacNhan.add(btnXacNhan);
@@ -380,7 +390,11 @@ public class PnlTraVe extends JPanel {
         btnXoa.setName(""); // NOI18N
         btnXoa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnXoaActionPerformed(evt);
+                try {
+                    btnXoaActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxXoa.add(btnXoa);
@@ -447,7 +461,11 @@ public class PnlTraVe extends JPanel {
         btnTraVe.setPreferredSize(new Dimension(100, 30));
         btnTraVe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnTraVeActionPerformed(evt);
+                try {
+                    btnTraVeActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxTraVe.add(btnTraVe);
@@ -458,7 +476,11 @@ public class PnlTraVe extends JPanel {
         khoaTextField();
         tblVeTra.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
-                tableDsVeMouseClicked(evt);
+                try {
+                    tableDsVeMouseClicked(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -466,8 +488,8 @@ public class PnlTraVe extends JPanel {
         docVeDaTraLenTable();
     }// </editor-fold>
 
-    public void docVeDaTraLenTable() {
-        ArrayList<Ve> listVeDaTra = DAOVe.getDanhSachVeDaTra();
+    public void docVeDaTraLenTable() throws RemoteException {
+        ArrayList<Ve> listVeDaTra = daoVe.getDanhSachVeDaTra();
 
         tblModelVeDaTra.setRowCount(0);
 
@@ -490,11 +512,11 @@ public class PnlTraVe extends JPanel {
 
     }
 
-    private void tableDsVeMouseClicked(MouseEvent evt){
+    private void tableDsVeMouseClicked(MouseEvent evt) throws RemoteException {
         int selectedRow = tblVeTra.getSelectedRow();
         if (selectedRow != -1) {
             String maVe = tblVeTra.getValueAt(selectedRow, 1).toString();
-            Ve ve = DAOVe.layVeTheoMa(maVe);
+            Ve ve = daoVe.layVeTheoMa(maVe);
             if (ve != null) {
                 txtNgayDi.setText(FormatDate.formatLocaldatetimeToString(ve.getChuyenTau().getNgayGioDi()));
                 txtChuyenTau.setText(ve.getChuyenTau().getGaDi().getTenGa().substring(6) + " --> " + ve.getChuyenTau().getGaDen().getTenGa().substring(6) + " - " + ve.getChuyenTau().getMaChuyen());
@@ -548,7 +570,7 @@ public class PnlTraVe extends JPanel {
         }
     }
 
-    private void btnXoaActionPerformed(ActionEvent evt) {
+    private void btnXoaActionPerformed(ActionEvent evt) throws RemoteException {
         int selectedRow = tblVeTra.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn vé để xóa!");
@@ -573,7 +595,7 @@ public class PnlTraVe extends JPanel {
         // TODO add your handling code here:
     }
 
-    private void btnTraCuuActionPerformed(ActionEvent evt) {
+    private void btnTraCuuActionPerformed(ActionEvent evt) throws RemoteException {
         if (jcbMaVe.getSelectedItem().equals("Mã vé")) {
             timVe();
         } else if (jcbMaVe.getSelectedItem().equals("Mã hóa đơn")) {
@@ -581,9 +603,9 @@ public class PnlTraVe extends JPanel {
         }
     }
 
-    private void btnXacNhanActionPerformed(ActionEvent evt) {
+    private void btnXacNhanActionPerformed(ActionEvent evt) throws RemoteException {
         String maVe = txtMaTraCuu.getText().trim();
-        Ve ve = DAOVe.layVeTheoMa(maVe);
+        Ve ve = daoVe.layVeTheoMa(maVe);
 
         // Kiểm tra có đủ điều kiện trả vé không
         if (checkDKVe(ve)==false) {
@@ -627,7 +649,7 @@ public class PnlTraVe extends JPanel {
         btnXacNhan.setEnabled(false);
     }
 
-    private void btnTraVeActionPerformed(ActionEvent evt) {
+    private void btnTraVeActionPerformed(ActionEvent evt) throws RemoteException {
         int rowCount = tblModelVeTra.getRowCount();
         if (rowCount == 0) {
             JOptionPane.showMessageDialog(this, "Danh sách vé trống!");
@@ -638,7 +660,7 @@ public class PnlTraVe extends JPanel {
         boolean isAllNotEligible = true;
         for (int i = 0; i < rowCount; i++) {
             String maVe = tblModelVeTra.getValueAt(i, 1).toString();
-            Ve ve = DAOVe.layVeTheoMa(maVe);
+            Ve ve = daoVe.layVeTheoMa(maVe);
             if (checkDKVe(ve)) {
                 isAllNotEligible = false;
                 break;
@@ -654,13 +676,13 @@ public class PnlTraVe extends JPanel {
         if (confirm == JOptionPane.YES_OPTION) {
             for (int i = 0; i < rowCount; i++) {
                 String maVe = tblModelVeTra.getValueAt(i, 1).toString();
-                Ve ve = DAOVe.layVeTheoMa(maVe);
+                Ve ve = daoVe.layVeTheoMa(maVe);
 
                 if (ve != null) {
                     //check điều kiện trả vé
                     if(checkDKVe(ve)){
                         ve.setTrangThai("DA_TRA");
-                        DAOVe.suaVe(ve);
+                        daoVe.suaVe(ve);
 
                         // Thêm vé đã trả vào bảng
                         double giaVe = ve.getChoNgoi().getLoaiCho().getGiaCho();
@@ -702,7 +724,7 @@ public class PnlTraVe extends JPanel {
     }
 
 
-    private void timDSVeTheoHD() {
+    private void timDSVeTheoHD() throws RemoteException {
         String maHD = txtMaTraCuu.getText().trim();
 
         if (maHD.isEmpty()) {
@@ -710,7 +732,7 @@ public class PnlTraVe extends JPanel {
             return;
         }
 
-        ArrayList<Ve> listVe = DAOVe.layDSVeTheoMaHD(maHD);
+        ArrayList<Ve> listVe = daoVe.layDSVeTheoMaHD(maHD);
 
         if (listVe.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Không tìm thấy vé nào với mã hóa đơn " + maHD + "!");
@@ -744,7 +766,7 @@ public class PnlTraVe extends JPanel {
     }
 
 
-    private void timVe() {
+    private void timVe() throws RemoteException {
         String maVe = txtMaTraCuu.getText().trim(); // Lấy mã vé từ JTextField txtMaTraCuu
 
         if (maVe.isEmpty()) {
@@ -753,7 +775,7 @@ public class PnlTraVe extends JPanel {
         }
 
         // Gọi hàm DAO để lấy thông tin vé dựa trên mã vé
-        Ve ve = DAOVe.layVeTheoMa(maVe);
+        Ve ve = daoVe.layVeTheoMa(maVe);
 
         if (ve != null) {
             if (!ve.getTrangThai().equals("DA_BAN")) {
@@ -939,24 +961,24 @@ public class PnlTraVe extends JPanel {
         return tienTra;
     }
 
-    private void tinhTongTienPhi() {
+    private void tinhTongTienPhi() throws RemoteException {
         double tongTienPhi = 0;
         DefaultTableModel model = (DefaultTableModel) tblVeTra.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
-            if(checkDKVe(DAOVe.layVeTheoMa(model.getValueAt(i, 1).toString()))){
-                double tienPhi =  tinhTienPhi(DAOVe.layVeTheoMa(model.getValueAt(i, 1).toString()));
+            if(checkDKVe(daoVe.layVeTheoMa(model.getValueAt(i, 1).toString()))){
+                double tienPhi =  tinhTienPhi(daoVe.layVeTheoMa(model.getValueAt(i, 1).toString()));
                 tongTienPhi += tienPhi;
             }
         }
         txtPhiTraVe.setText(valueOf(FormatMoney.format(tongTienPhi)));
     }
 
-    private void tinhTongTienTra() {
+    private void tinhTongTienTra() throws RemoteException {
         double tongTienTra = 0;
         DefaultTableModel model = (DefaultTableModel) tblVeTra.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
-            if(checkDKVe(DAOVe.layVeTheoMa(model.getValueAt(i, 1).toString()))) {
-                double tienTra = tinhTienTra(DAOVe.layVeTheoMa(model.getValueAt(i, 1).toString()));
+            if(checkDKVe(daoVe.layVeTheoMa(model.getValueAt(i, 1).toString()))) {
+                double tienTra = tinhTienTra(daoVe.layVeTheoMa(model.getValueAt(i, 1).toString()));
                 tongTienTra += tienTra;
             }
         }

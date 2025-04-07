@@ -1,7 +1,7 @@
 package gui;
 
 import control.DAOChuyenTau;
-import control.DAOVe;
+import control.impl.DAOVe;
 import entity.ChoNgoi;
 import entity.ChuyenTau;
 import entity.Ve;
@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 public class JdDoiVe extends JDialog {
     private static final double PHI_DOI_VE = 20000;
@@ -41,12 +42,14 @@ public class JdDoiVe extends JDialog {
             txtKhuyenMai,
             txtPhiDoiVe, txtTienThu;
     private CButton btnXacNhan, btnHuy;
+    private DAOVe daoVe;
 
-    public JdDoiVe(PnlDoiVe pnlDoiVe, Ve veCu, ChuyenTau chuyenTau, ChoNgoi choNgoi) {
+    public JdDoiVe(PnlDoiVe pnlDoiVe, Ve veCu, ChuyenTau chuyenTau, ChoNgoi choNgoi) throws RemoteException {
         this.veCu = veCu;
         this.pnlDoiVe = pnlDoiVe;
         this.chuyenTau = chuyenTau;
         this.choNgoi = choNgoi;
+        this.daoVe = new DAOVe();
 
         setTitle("Đổi vé");
         setSize(900, 500);
@@ -289,7 +292,11 @@ public class JdDoiVe extends JDialog {
         btnXacNhan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                doiVe();
+                try {
+                    doiVe();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         btnHuy.addActionListener(new ActionListener() {
@@ -300,7 +307,7 @@ public class JdDoiVe extends JDialog {
         });
     }
 
-    private void doiVe() {
+    private void doiVe() throws RemoteException {
         // Đổi vé bằng cách tạo ra vé mới có chuyến mới chỗ ngồi mới
         // HoaDon hoaDon, LoaiVe loaiVe, LocalDateTime ngayGioXuatVe, ChoNgoi choNgoi, ChuyenTau chuyenTau, KhachHang khachHang, double thue, KhuyenMai khuyenMai, String trangThai)
         Ve veMoi = new Ve(veCu.getHoaDon(), veCu.getLoaiVe(), veCu.getNgayGioXuatVe(), choNgoi,
@@ -311,7 +318,7 @@ public class JdDoiVe extends JDialog {
         veCu.setTrangThai(ETrangThaiVe.VE_DUOC_DOI.name());
 
         // Thêm vé mới vào CSDL
-        if (DAOVe.themVeCoKhuyenMai(veMoi)) {
+        if (daoVe.themVeCoKhuyenMai(veMoi)) {
             JOptionPane.showMessageDialog(null, "Đổi vé thành công");
             pnlDoiVe.hienThiDanhSachChoNgoi();
         } else {
@@ -319,7 +326,7 @@ public class JdDoiVe extends JDialog {
         }
 
         // Cập nhật vé cũ
-        if (!DAOVe.suaVe(veCu) ) {
+        if (!daoVe.suaVe(veCu) ) {
             JOptionPane.showMessageDialog(null, "Cập nhật vé cũ thất bại");
         }
 

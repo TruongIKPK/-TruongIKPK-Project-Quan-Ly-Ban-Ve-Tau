@@ -1,6 +1,9 @@
 package gui;
 
 import control.*;
+import control.impl.DAOHoaDon;
+import control.impl.DAOKhachHang;
+import control.impl.DAOVe;
 import entity.*;
 import enums.EColor;
 import enums.ETrangThaiVe;
@@ -9,8 +12,6 @@ import gui.custom.CButton;
 import gui.custom.CDialog;
 import gui.custom.CTable;
 import gui.custom.CTextField;
-import jakarta.persistence.EntityManager;
-import service.HoaDonService;
 import utils.*;
 
 import javax.swing.*;
@@ -21,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -103,8 +105,10 @@ public class JdXinVe extends CDialog implements MouseListener {
     private CButton btnThanhToan;
     private CButton btnLuuTam;
     private CButton btnNguoiDat;
+    private DAOHoaDon daoHoaDon;
+    private DAOKhachHang daoKhachHang;
 
-
+    private DAOVe daoVe;
     /**
      * Constructor không có chuyến chiều về
      *
@@ -112,17 +116,19 @@ public class JdXinVe extends CDialog implements MouseListener {
      * @param nhanVien  Nhân viên
      * @param hoaDonTam Hoá đơn tạm
      */
-    public JdXinVe(PnlBanVe pnlParent, NhanVien nhanVien, HoaDon hoaDonTam) {
+    public JdXinVe(PnlBanVe pnlParent, NhanVien nhanVien, HoaDon hoaDonTam) throws RemoteException {
         this.nhanVien = nhanVien;
         this.pnlParent = pnlParent;
         this.hoaDon = hoaDonTam;
         this.listVe = hoaDonTam.getDanhSachVe();
         this.nguoiMuaVe = hoaDonTam.getKhachHang();
+        this.daoHoaDon = new DAOHoaDon();
+        this.daoVe = new DAOVe();
         this.listKhachHang = new ArrayList<>(hoaDonTam.getDanhSachVe().stream().map(Ve::getKhachHang).toList());
         this.chuyenChieuDi = hoaDonTam.getDanhSachVe().get(0).getChuyenTau();
         this.listChoNgoiChieuDi = new ArrayList<>(hoaDonTam.getDanhSachVe()
                 .stream().filter(ve -> ve.getChuyenTau().getGaDi().equals(chuyenChieuDi.getGaDi())).map(Ve::getChoNgoi).toList());
-
+        this.daoKhachHang = new DAOKhachHang();
         // Kiểm tra có chuyến chiều về không
         boolean isChieuVe = hoaDonTam.getDanhSachVe()
                 .stream().filter(ve -> ve.getChuyenTau().getGaDi().equals(chuyenChieuDi.getGaDen())).count() > 0;
@@ -372,7 +378,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         btnTimKh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                timKhachHang();
+                try {
+                    timKhachHang();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -408,7 +418,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         btnThanhToan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                luuHoaDon();
+                try {
+                    luuHoaDon();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -427,7 +441,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         btnInVe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                inVe();
+                try {
+                    inVe();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -451,7 +469,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         actionMap.put("ThanhToan", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                luuHoaDon();
+                try {
+                    luuHoaDon();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -460,7 +482,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         actionMap.put("InVe", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                inVe();
+                try {
+                    inVe();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -496,7 +522,11 @@ public class JdXinVe extends CDialog implements MouseListener {
         actionMap.put("TimKhachHang", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                timKhachHang();
+                try {
+                    timKhachHang();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -878,7 +908,7 @@ public class JdXinVe extends CDialog implements MouseListener {
     /**
      * Tìm khách hàng
      */
-    public void timKhachHang() {
+    public void timKhachHang() throws RemoteException {
         String timKhachStr = txtTimKh.getText().trim();
 
         if (timKhachStr.isEmpty()) {
@@ -889,9 +919,9 @@ public class JdXinVe extends CDialog implements MouseListener {
         KhachHang khachHang;
 
         if (Validation.sdt(timKhachStr)) {
-            khachHang = DAOKhachHang.layKhachHangTheoSdt(timKhachStr);
+            khachHang = daoKhachHang.layKhachHangTheoSdt(timKhachStr);
         } else if (Validation.CCCD(timKhachStr)) {
-            khachHang = DAOKhachHang.layKhachHangTheoCCCD(timKhachStr);
+            khachHang = daoKhachHang.layKhachHangTheoCCCD(timKhachStr);
         } else {
             JOptionPane.showMessageDialog(this, "Sai định dạng tìm!");
             return;
@@ -1147,7 +1177,7 @@ public class JdXinVe extends CDialog implements MouseListener {
      *
      * @return Khách hàng
      */
-    public KhachHang getThongTinNguoiMua() {
+    public KhachHang getThongTinNguoiMua() throws RemoteException {
         KhachHang khachHang = null;
 
         String tenNguoiMua = txtTenNguoiMua.getText();
@@ -1161,22 +1191,22 @@ public class JdXinVe extends CDialog implements MouseListener {
                 FormatDate.formatStrToLocalDate(ngaySinhNguoiMua), doiTuongNguoiMua);
 
         // Kiểm tra khách hàng đã tồn tại chưa
-        if (DAOKhachHang.timKhachHang(cccdNguoiMua, sdtNguoiMua) == null) {
-            if (DAOKhachHang.themKhachHang(khachHang)) {
+        if (daoKhachHang.timKhachHang(cccdNguoiMua, sdtNguoiMua) == null) {
+            if (daoKhachHang.themKhachHang(khachHang)) {
                 JOptionPane.showMessageDialog(this, "Lưu người mua thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "Lưu người mua thất bại", "Thông báo", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
         }
-        khachHang = DAOKhachHang.timKhachHang(cccdNguoiMua, sdtNguoiMua);
+        khachHang = daoKhachHang.timKhachHang(cccdNguoiMua, sdtNguoiMua);
         return khachHang;
     }
 
     /**
      * Lưu thông tin khách hàng
      */
-    public void luuThongTinCacKhachHang() {
+    public void luuThongTinCacKhachHang() throws RemoteException {
         for (int i = 0; i < tblModelVeXinChieuDi.getRowCount(); i++) {
             String tenKh = tblModelVeXinChieuDi.getValueAt(i, 2).toString();
             String cccd = tblModelVeXinChieuDi.getValueAt(i, 3).toString();
@@ -1187,16 +1217,16 @@ public class JdXinVe extends CDialog implements MouseListener {
             KhachHang khachHang = new KhachHang(tenKh, cccd, sdt, email, ngaySinh, doiTuong);
 
             // Kiểm tra nếu khách hàng chưa tồn tại thì thêm vào
-            if (DAOKhachHang.timKhachHang(cccd, sdt) == null && !khachHang.getCCCD().equals(nguoiMuaVe.getCCCD())) {
+            if (daoKhachHang.timKhachHang(cccd, sdt) == null && !khachHang.getCCCD().equals(nguoiMuaVe.getCCCD())) {
                 try {
-                    DAOKhachHang.themKhachHang(khachHang);
+                    daoKhachHang.themKhachHang(khachHang);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this, "Lưu khách hàng thất bại", "Thông báo", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
 
-            khachHang = DAOKhachHang.timKhachHang(cccd, sdt);
+            khachHang = daoKhachHang.timKhachHang(cccd, sdt);
             listKhachHang.add(khachHang);
         }
     }
@@ -1219,8 +1249,8 @@ public class JdXinVe extends CDialog implements MouseListener {
             }
 
             try {
-                boolean themVeChieuDiCoKhuyenMai = DAOVe.themVeCoKhuyenMai(veChieuDi);
-                boolean themVeChieuVeCoKhuyenMai = veChieuVe == null ? true : DAOVe.themVeCoKhuyenMai(veChieuVe);
+                boolean themVeChieuDiCoKhuyenMai = daoVe.themVeCoKhuyenMai(veChieuDi);
+                boolean themVeChieuVeCoKhuyenMai = veChieuVe == null ? true : daoVe.themVeCoKhuyenMai(veChieuVe);
                 if (!themVeChieuDiCoKhuyenMai) {
                     JOptionPane.showMessageDialog(this, "Lưu vé chiều đi thất bại", "Thông báo", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -1247,7 +1277,7 @@ public class JdXinVe extends CDialog implements MouseListener {
     /**
      * Lưu hóa đơn
      */
-    public void luuHoaDon() {
+    public void luuHoaDon() throws RemoteException {
         // Kiểm tra thông tin hóa đơn
         if (!validateHoaDon()) {
             JOptionPane.showMessageDialog(this, "Thông tin hóa đơn sai!");
@@ -1278,7 +1308,7 @@ public class JdXinVe extends CDialog implements MouseListener {
 
         try {
             // Thêm hóa đơn
-            DAOHoaDon.themHoaDon(hoaDon);
+            daoHoaDon.themHoaDon(hoaDon);
             System.out.println("---------------Thêm hóa đơn thành công------------------");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lưu hóa đơn thất bại", "Thông báo", JOptionPane.ERROR_MESSAGE);
@@ -1286,7 +1316,6 @@ public class JdXinVe extends CDialog implements MouseListener {
         }
         ///---- Đang lỗi
         // Lấy hóa đơn vừa thêm
-        hoaDon = DAOHoaDon.getHoaDonCuoiCung();
 
         // Lưu khách hàng
         luuThongTinCacKhachHang();
@@ -1295,7 +1324,7 @@ public class JdXinVe extends CDialog implements MouseListener {
         luuThongTinVe();
 
         // Cập nhật danh sách vé
-        listVe = DAOVe.layDSVeDaBanTheoMaHD(hoaDon.getMaHD());
+        listVe = daoVe.layDSVeDaBanTheoMaHD(hoaDon.getMaHD());
         hoaDon.setDanhSachVe(listVe);
 
         // Xóa thông tin vé
@@ -1319,7 +1348,7 @@ public class JdXinVe extends CDialog implements MouseListener {
             @Override
             protected Void doInBackground() throws Exception {
                 // Lấy danh sách vé theo hóa đơn
-                ArrayList<Ve> listVe = DAOVe.layDSVeDaBanTheoMaHD(hoaDon.getMaHD());
+                ArrayList<Ve> listVe = daoVe.layDSVeDaBanTheoMaHD(hoaDon.getMaHD());
 
                 // Gửi email từng vé
                 listVe.forEach(EmailService::sendTicketByEmail);
@@ -1425,13 +1454,13 @@ public class JdXinVe extends CDialog implements MouseListener {
     /**
      * In vé
      */
-    public void inVe() {
+    public void inVe() throws RemoteException {
         if (hoaDon == null) {
             JOptionPane.showMessageDialog(this, "Chưa có thông tin hóa đơn", "Thông báo", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        ArrayList<Ve> listVe = DAOVe.layDSVeDaBanTheoMaHD(hoaDon.getMaHD());
+        ArrayList<Ve> listVe = daoVe.layDSVeDaBanTheoMaHD(hoaDon.getMaHD());
         if (listVe == null || listVe.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Chưa có vé", "Thông báo", JOptionPane.ERROR_MESSAGE);
             return;

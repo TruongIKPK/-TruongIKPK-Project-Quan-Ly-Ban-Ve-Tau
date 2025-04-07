@@ -25,6 +25,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class PnlKhuyenMai extends JPanel {
     /**
      * Creates new form PnlChuyenTau
      */
-    public PnlKhuyenMai(NhanVien nhanVien) {
+    public PnlKhuyenMai(NhanVien nhanVien) throws RemoteException {
         this.nhanVien = nhanVien;
         setBackground(EColor.BG_COLOR.getColor());
         initComponents();
