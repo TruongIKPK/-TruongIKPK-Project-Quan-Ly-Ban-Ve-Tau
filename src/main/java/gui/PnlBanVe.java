@@ -605,7 +605,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Thực hiện xin vé khi nhấn phím F1
-                xinVe();
+                try {
+                    xinVe();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -2496,7 +2500,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
         // Xử lý xin vé khi người dùng nhấn nút "Xin Vé"
         if (obj.equals(btnXinVe)) {
-            xinVe();
+            try {
+                xinVe();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Xử lý tự động chọn chỗ khi người dùng nhấn nút "Tự Động Chọn Chỗ"
