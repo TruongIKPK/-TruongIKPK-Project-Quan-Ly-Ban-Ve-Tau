@@ -392,7 +392,11 @@ public class PnlChuyenTau extends JPanel  {
         btnCapNhat.setIcon(new CImage("images/icons/loop.png", 16, 16));
         btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnCapNhatActionPerformed(evt);
+                try {
+                    btnCapNhatActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxChucNang.add(btnCapNhat);
@@ -727,7 +731,7 @@ public class PnlChuyenTau extends JPanel  {
      * Hàm xử lý sự kiện nút cập nhật
      * @param evt
      */
-    public void btnCapNhatActionPerformed(ActionEvent evt) {
+    public void btnCapNhatActionPerformed(ActionEvent evt) throws RemoteException {
         capNhatChuyenTau();
     }
 
