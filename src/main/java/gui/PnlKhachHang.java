@@ -2,7 +2,7 @@ package gui;
 
 import control.impl.DAOHoaDon;
 import control.impl.DAOKhachHang;
-import control.DAOKhuyenMai;
+import control.impl.DAOKhuyenMai;
 import control.impl.DAOVe;
 import entity.HoaDon;
 import entity.KhachHang;
@@ -33,6 +33,7 @@ import java.util.List;
  */
 public class PnlKhachHang extends JPanel {
     private DAOKhachHang daoKhachHang;
+    private DAOKhuyenMai daoKhuyenMai;
 
     /**
      * Creates new form PnlKhachHang
@@ -42,6 +43,7 @@ public class PnlKhachHang extends JPanel {
         this.daoHoaDon = new DAOHoaDon();
         this.daoKhachHang = new DAOKhachHang();
         this.daoVe = new DAOVe();
+        this.daoKhuyenMai = new DAOKhuyenMai();
         filterKhachHang = () -> {
             List<RowFilter<Object, Object>> filters = new ArrayList<>();
 
@@ -61,7 +63,7 @@ public class PnlKhachHang extends JPanel {
     }
 
     private void readDataFromDb() throws RemoteException {
-        listDoiTuong = DAOKhuyenMai.getDSDoiTuongKhuyenMai();
+        listDoiTuong = daoKhuyenMai.getDSDoiTuongKhuyenMai();
         listDoiTuong.forEach(cboDoiTuong::addItem);
         listDoiTuong.forEach(cboLocDoiTuong::addItem);
 
@@ -400,7 +402,11 @@ public class PnlKhachHang extends JPanel {
         btnInHoaDon.setPreferredSize(new java.awt.Dimension(120, 30));
         btnInHoaDon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inHoaDon();
+                try {
+                    inHoaDon();
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         pnlRightBot.add(btnInHoaDon);
@@ -720,7 +726,7 @@ public class PnlKhachHang extends JPanel {
         });
     }
 
-    public void inHoaDon() {
+    public void inHoaDon() throws RemoteException {
         int row = tblHoaDon.getSelectedRow();
         if (row < 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn cần in", "Lỗi", JOptionPane.ERROR_MESSAGE);

@@ -4,8 +4,7 @@
  */
 package gui;
 
-import control.DAOKhuyenMai;
-import entity.KhachHang;
+import control.impl.DAOKhuyenMai;
 import entity.KhuyenMai;
 import entity.NhanVien;
 import enums.EChucVu;
@@ -16,7 +15,6 @@ import gui.custom.CTable;
 import gui.custom.CTextField;
 import gui.custom.CImage;
 import org.jdatepicker.impl.JDatePickerImpl;
-import utils.EmailService;
 import utils.FormatDate;
 import utils.PromotionNotifier;
 
@@ -37,11 +35,14 @@ public class PnlKhuyenMai extends JPanel {
     private NhanVien nhanVien;
     private PromotionNotifier promotionNotifier;
 
+    private DAOKhuyenMai daoKhuyenMai;
+
     /**
      * Creates new form PnlChuyenTau
      */
     public PnlKhuyenMai(NhanVien nhanVien) throws RemoteException {
         this.nhanVien = nhanVien;
+        this.daoKhuyenMai = new DAOKhuyenMai();
         setBackground(EColor.BG_COLOR.getColor());
         initComponents();
         readDataFromDb();
@@ -79,8 +80,8 @@ public class PnlKhuyenMai extends JPanel {
         };
     }
 
-    private void readDataFromDb() {
-        listDoiTuong = DAOKhuyenMai.getDSDoiTuongKhuyenMai();
+    private void readDataFromDb() throws RemoteException {
+        listDoiTuong = daoKhuyenMai.getDSDoiTuongKhuyenMai();
 
         // Đổ dữ liệu đối tượng vào cbo box
         listDoiTuong.forEach((item) -> {
@@ -317,7 +318,11 @@ public class PnlKhuyenMai extends JPanel {
         btnThem.setIcon(new CImage("images/icons/plus.png", 16, 16));
         btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnThemActionPerformed(evt);
+                try {
+                    btnThemActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxChucNang.setBackground(EColor.BG_COLOR.getColor());
@@ -326,7 +331,11 @@ public class PnlKhuyenMai extends JPanel {
         btnCapNhat.setIcon(new CImage("images/icons/loop.png", 16, 16));
         btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCapNhatActionPerformed(evt);
+                try {
+                    btnCapNhatActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxChucNang.add(btnCapNhat);
@@ -388,7 +397,11 @@ public class PnlKhuyenMai extends JPanel {
             txtTimMa.setText("");
             cboLocDoiTuong.setSelectedIndex(0);
             cboLocTrangThai.setSelectedIndex(0);
-            updateModel();
+            try {
+                updateModel();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         pnlRightNorth.add(Box.createHorizontalStrut(30));
@@ -415,7 +428,7 @@ public class PnlKhuyenMai extends JPanel {
     }
 
     // Xử lý sự kiện cập nhật khuyến mãi
-    private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {
+    private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {
         // Cập nhật khuyến mãi
         String maKM = tblModelKhuyenMai.getValueAt(tblKhuyenMai.getSelectedRow(), 0).toString();
         String ngayAD = txtNgayAD.getJFormattedTextField().getText();
@@ -434,7 +447,7 @@ public class PnlKhuyenMai extends JPanel {
 
         // Phần trăm 100% sang 1
         double newPhanTram = phanTramDouble / 100;
-        KhuyenMai km = DAOKhuyenMai.suaKhuyenMai(khuyenMaiObj);
+        KhuyenMai km = daoKhuyenMai.suaKhuyenMai(khuyenMaiObj);
         if (km != null) {
             // Cập nhật lên bảng
             int selectedRow = tblKhuyenMai.getSelectedRow();
@@ -449,7 +462,7 @@ public class PnlKhuyenMai extends JPanel {
 
     }
 
-    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {
         // Thêm khuyến mãi
         String ngayAD = txtNgayAD.getJFormattedTextField().getText();
         String ngayKT = txtNgayKT.getJFormattedTextField().getText();
@@ -468,9 +481,13 @@ public class PnlKhuyenMai extends JPanel {
         KhuyenMai khuyenMaiObj = new KhuyenMai(ngayADLocal, ngayKTLocal, doiTuong, newPhanTram);
 
         // TODO: Xử lý thêm khuyến mãi
-        if (DAOKhuyenMai.themKhuyenMai(khuyenMaiObj)) {
+        if (daoKhuyenMai.themKhuyenMai(khuyenMaiObj)) {
             // Thêm vào bảng bang cach goi lai ham lay danh sach khuyen mai
-            updateModel();
+            try {
+                updateModel();
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
 
             JOptionPane.showMessageDialog(this, "Thêm khuyến mãi thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
         } else {
@@ -480,9 +497,9 @@ public class PnlKhuyenMai extends JPanel {
 
     }
 
-    public void updateModel() {
+    public void updateModel() throws RemoteException {
         tblModelKhuyenMai.setRowCount(0);
-        listKhuyenMai = DAOKhuyenMai.getDSKhuyenMai();
+        listKhuyenMai = daoKhuyenMai.getDSKhuyenMai();
         listKhuyenMai.forEach((khuyenMai) -> {
             tblModelKhuyenMai.addRow(new Object[]{
                     khuyenMai.getMaKM(),
