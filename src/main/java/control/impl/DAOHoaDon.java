@@ -9,16 +9,20 @@ import jakarta.persistence.TypedQuery;
 import service.HoaDonService;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DAOHoaDon implements IDAOHoaDon {
+public class DAOHoaDon extends UnicastRemoteObject implements IDAOHoaDon {
 
     private EntityManager em = connectDB_1.getEntityManager();
 
+    public DAOHoaDon() throws RemoteException {
+    }
+
     @Override
-    public boolean themHoaDon(HoaDon hd) {
+    public boolean themHoaDon(HoaDon hd)throws RemoteException {
         try {
                 em.getTransaction().begin();
                 HoaDonService hoaDonService = new HoaDonService(em);
@@ -35,7 +39,7 @@ public class DAOHoaDon implements IDAOHoaDon {
     }
 
     @Override
-    public ArrayList<HoaDon> docHoaDonTheoNhanVien(String maNV) {
+    public ArrayList<HoaDon> docHoaDonTheoNhanVien(String maNV)throws RemoteException {
         try {
             TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd WHERE hd.nhanVien.maNV = :maNV", HoaDon.class);
             query.setParameter("maNV", maNV);
@@ -66,7 +70,7 @@ public class DAOHoaDon implements IDAOHoaDon {
 
 
     @Override
-    public ArrayList<HoaDon> docHoaDonTheoNgay(LocalDate ngay) {
+    public ArrayList<HoaDon> docHoaDonTheoNgay(LocalDate ngay)throws RemoteException {
         try {
             TypedQuery<HoaDon> query = em.createQuery(
                     "SELECT hd FROM HoaDon hd WHERE hd.ngayGioLapHD = :ngay", HoaDon.class);
@@ -81,7 +85,7 @@ public class DAOHoaDon implements IDAOHoaDon {
 
 
     @Override
-    public ArrayList<HoaDon> layDanhSachHoaDon() {
+    public ArrayList<HoaDon> layDanhSachHoaDon()throws RemoteException {
         try {
             TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd", HoaDon.class);
             List<HoaDon> resultList = query.getResultList();
@@ -94,7 +98,7 @@ public class DAOHoaDon implements IDAOHoaDon {
 
 
     @Override
-    public HoaDon getHoaDonCuoiCung() {
+    public HoaDon getHoaDonCuoiCung()throws RemoteException {
         try {
             TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd ORDER BY hd.ngayGioLapHD DESC", HoaDon.class);
             query.setMaxResults(1);
@@ -115,7 +119,7 @@ public class DAOHoaDon implements IDAOHoaDon {
 
 
     @Override
-    public HoaDon getHoaDon(String maHD) {
+    public HoaDon getHoaDon(String maHD)throws RemoteException {
         try {
             TypedQuery<HoaDon> query = em.createQuery("SELECT hd FROM HoaDon hd WHERE hd.maHD = :maHD", HoaDon.class);
             query.setParameter("maHD", maHD);
