@@ -4,10 +4,9 @@
  */
 package gui;
 
-import connectDB.connectDB_1;
-import control.DAOChuyenTau;
-import control.DAOGa;
-import control.DAOTau;
+import control.impl.DAOChuyenTau;
+import control.impl.DAOGa;
+import control.impl.DAOTau;
 import entity.ChuyenTau;
 import entity.Ga;
 import entity.NhanVien;
@@ -21,7 +20,6 @@ import gui.custom.CButton;
 import gui.custom.CTable;
 import gui.custom.CTextField;
 import gui.custom.CImage;
-import jakarta.persistence.EntityManager;
 import org.jdatepicker.impl.JDatePickerImpl;
 import utils.FormatDate;
 
@@ -33,6 +31,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -45,14 +44,15 @@ import java.util.List;
 /**
  * @author Huy
  */
-public class PnlChuyenTau extends JPanel {
+public class PnlChuyenTau extends JPanel  {
     /**
      * Constructor chứa thông tin nhân viên
      * @param nhanVien Nhân viên
      */
 
+    private DAOTau daoTau;
 
-    public PnlChuyenTau(NhanVien nhanVien) {
+    public PnlChuyenTau(NhanVien nhanVien)  throws RemoteException {
         this.nhanVien = nhanVien;
         setBackground(EColor.BG_COLOR.getColor());
         initComponents();
@@ -79,10 +79,15 @@ public class PnlChuyenTau extends JPanel {
      * Hàm đọc dữ liệu từ cơ sở dữ liệu
      */
 
-    public void readDataFromDB() {
-        listGa = DAOGa.getDsGa();
-        listTau = DAOTau.getDSTau();
-        listChuyen = DAOChuyenTau.getDanhSachChuyenTau();
+    private DAOChuyenTau daoChuyen;
+    public void readDataFromDB() throws RemoteException {
+        daoTau = new DAOTau();
+        DAOGa daoGa = new DAOGa();
+        listGa = daoGa.getDsGa();
+        listTau = daoTau.getDSTau();
+        daoChuyen = new DAOChuyenTau();
+        listChuyen = daoChuyen.getDanhSachChuyenTau();
+
 
         // Đổ dữ liệu ga vào combobox
         listGa.forEach(ga -> {
@@ -99,13 +104,39 @@ public class PnlChuyenTau extends JPanel {
             cboTimTheoMaTau.addItem(tau.getMaTau());
         });
 
-        // Đổ dữ liệu chuyến vào bảng
-        listChuyen.forEach(chuyen -> {
-            // Kiểm tra nếu ngày đến đã qua thì cập nhật trạng thái chuyến tàu
-            if (chuyen.getNgayGioDen().isBefore(LocalDateTime.now())) {
-                chuyen.setTrangThai(ETrangThaiChuyenTau.DA_DUNG.getTrangThai());
-                DAOChuyenTau.capNhatChuyenTau(chuyen);
-            }
+//        // Đổ dữ liệu chuyến vào bảng
+//        listChuyen.forEach(chuyen -> {
+//            // Kiểm tra nếu ngày đến đã qua thì cập nhật trạng thái chuyến tàu
+//            if (chuyen.getNgayGioDen().isBefore(LocalDateTime.now())) {
+//                chuyen.setTrangThai(ETrangThaiChuyenTau.DA_DUNG.getTrangThai());
+//                try {
+//                    daoChuyen = new DAOChuyenTau();
+//                } catch (RemoteException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                try {
+//                    daoChuyen.capNhatChuyenTau(chuyen);
+//                } catch (RemoteException e) {
+//                    throw new RuntimeException(e);
+//                }
+    //            }
+               DAOChuyenTau daoChuyen;
+               try {
+                daoChuyen = new DAOChuyenTau();
+                } catch (RemoteException e) {
+                throw new RuntimeException("Không thể tạo DAOChuyenTau", e);
+             }
+            // Đổ dữ liệu chuyến vào bảng
+           listChuyen.forEach(chuyen -> {
+                // Kiểm tra nếu ngày đến đã qua thì cập nhật trạng thái chuyến tàu
+                if (chuyen.getNgayGioDen().isBefore(LocalDateTime.now())) {
+                    chuyen.setTrangThai(ETrangThaiChuyenTau.DA_DUNG.getTrangThai());
+                    try {
+                        daoChuyen.capNhatChuyenTau(chuyen);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
 
             tblModelChuyenTau.addRow(new Object[]{
                     chuyen.getMaChuyen(),
@@ -347,7 +378,11 @@ public class PnlChuyenTau extends JPanel {
         btnThem.setIcon(new CImage("images/icons/plus.png", 16, 16));
         btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnThemActionPerformed(evt);
+                try {
+                    btnThemActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxChucNang.setBackground(EColor.BG_COLOR.getColor());
@@ -795,7 +830,9 @@ public class PnlChuyenTau extends JPanel {
      * Hàm xử lý sự kiện nút cập nhật
      * @param evt Sự kiện
      */
-    public void btnThemActionPerformed(ActionEvent evt) {
+    private DAOChuyenTau daoChuyenTau;
+
+    public void btnThemActionPerformed(ActionEvent evt) throws RemoteException {
         String maTau = cboTau.getSelectedItem().toString();
         String gaDi = cboGaDi.getSelectedItem().toString();
         String gaDen = cboGaDen.getSelectedItem().toString();
@@ -820,7 +857,7 @@ public class PnlChuyenTau extends JPanel {
         int maGaDi = listGa.stream().filter(g -> g.getTenGa().equals(gaDi)).findFirst().get().getMaGa();
         int maGaDen = listGa.stream().filter(g -> g.getTenGa().equals(gaDen)).findFirst().get().getMaGa();
 
-        if (DAOChuyenTau.getChuyenTauTheoMaTauMaGaDiMaGaDenNgayGioDiNgayGioDen(
+        if (daoChuyenTau.getChuyenTauTheoMaTauMaGaDiMaGaDenNgayGioDiNgayGioDen(
                 maTau, maGaDi, maGaDen, ngayGioDi, ngayGioDen) != null) {
             JOptionPane.showMessageDialog(this, "Chuyến tàu đã tồn tại", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -834,8 +871,9 @@ public class PnlChuyenTau extends JPanel {
         ChuyenTau chuyen = new ChuyenTau(maTau, tau, gaDiObj, gaDenObj, ngayGioDi, ngayGioDen, ETrangThaiChuyenTau.HOAT_DONG.getTrangThai());
 
         try {
+            DAOChuyenTau daoChuyen = new DAOChuyenTau();
             // Thêm chuyến tàu vào cơ sở dữ liệu
-            ChuyenTau chuyenTauMoi = DAOChuyenTau.themChuyenTau(chuyen);
+            ChuyenTau chuyenTauMoi = daoChuyen.themChuyenTau(chuyen);
             JOptionPane.showMessageDialog(this, "Thêm chuyến tàu thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             tblModelChuyenTau.addRow(new Object[]{
                     chuyenTauMoi.getMaChuyen(),
@@ -855,7 +893,7 @@ public class PnlChuyenTau extends JPanel {
     /**
      * Hàm cập nhật chuyến tàu
      */
-    public void capNhatChuyenTau() {
+    public void capNhatChuyenTau() throws RemoteException {
         int row = tblChuyenTau.getSelectedRow();
 
         if (row == -1) return;
@@ -891,9 +929,9 @@ public class PnlChuyenTau extends JPanel {
         String trangThai = cboTrangThai.getSelectedItem().toString();
 
         ChuyenTau chuyen = new ChuyenTau(maChuyen, macTau, tau, gaDiObj, gaDenObj, ngayGioDi, ngayGioDen, trangThai);
-
+        DAOChuyenTau daoChuyen = new DAOChuyenTau();
         // Thêm chuyến tàu vào cơ sở dữ liệu
-        if (DAOChuyenTau.capNhatChuyenTau(chuyen)) {
+        if (daoChuyen.capNhatChuyenTau(chuyen)) {
             JOptionPane.showMessageDialog(this, "Cập nhật chuyến tàu thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
 
             tblModelChuyenTau.setValueAt(maChuyen, row, 0);

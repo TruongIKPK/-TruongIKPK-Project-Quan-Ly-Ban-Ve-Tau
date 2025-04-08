@@ -1,15 +1,13 @@
-package control;
+package control.impl;
 
-import connectDB.ConnectDB;
 import connectDB.connectDB_1;
+import control.IDAOTau;
 import entity.Tau;
-import entity.Toa;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,11 +17,14 @@ import java.util.List;
  * @Tạo vào ngày: 10/15/2024
  * @Tác giả: Thai
  */
-public class DAOTau {
-    private static ArrayList<Tau> dsTau;
+public class DAOTau extends UnicastRemoteObject implements IDAOTau {
+    private  ArrayList<Tau> dsTau;
 
 
-    private static EntityManager em = connectDB_1.getEntityManager();
+    private  EntityManager em = connectDB_1.getEntityManager();
+
+    public DAOTau() throws RemoteException {
+    }
 
 //    // Thêm tàu
 //    public static boolean themTau(Tau tau) {
@@ -40,7 +41,8 @@ public class DAOTau {
 //    }
 
     // Thêm tàu
-    public static boolean themTau(Tau tau) {
+    @Override
+    public boolean themTau(Tau tau) throws RemoteException {
         try {
             em.getTransaction().begin();
             em.persist(tau);
@@ -69,7 +71,8 @@ public class DAOTau {
 
 
     // Câp nhật trạng thái tàu
-    public static boolean capNhatTrangThaiTau(String maTau, String trangThai) {
+    @Override
+    public boolean capNhatTrangThaiTau(String maTau, String trangThai)throws RemoteException {
         try {
             em.getTransaction().begin();
             String jpql = "UPDATE Tau t SET t.trangThai = :trangThai WHERE t.maTau = :maTau";
@@ -104,7 +107,8 @@ public class DAOTau {
 //    }
 
     // Cập nhật tàu
-    public static boolean capNhatTau(Tau tau) {
+    @Override
+    public boolean capNhatTau(Tau tau)  throws RemoteException{
         try {
             em.getTransaction().begin();
             String jpql = "UPDATE Tau t SET t.tenTau = :tenTau, t.trangThai = :trangThai WHERE t.maTau = :maTau";
@@ -156,7 +160,8 @@ public class DAOTau {
 //
 
     //Get danh sach tàu
-    public static ArrayList<Tau> getDSTau() {
+    @Override
+    public ArrayList<Tau> getDSTau() throws RemoteException {
         if (dsTau != null) {
             // Nếu tàu đã được khởi tạo thì trả về danh sách tàu
             return dsTau;
@@ -200,7 +205,8 @@ public class DAOTau {
 //}
 
     // Get tàu theo mã
-    public static Tau getTauTheoMa(String maTau) {
+    @Override
+    public Tau getTauTheoMa(String maTau)  throws RemoteException{
         try {
             String jpql = "SELECT t FROM Tau t WHERE t.maTau = :maTau";
             TypedQuery<Tau> query = em.createQuery(jpql, Tau.class);

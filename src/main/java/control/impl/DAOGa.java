@@ -1,13 +1,11 @@
-package control;
+package control.impl;
 
-import connectDB.ConnectDB;
 import connectDB.connectDB_1;
+import control.IDAOGa;
 import entity.Ga;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 import jakarta.persistence.EntityManager;
@@ -20,7 +18,9 @@ import jakarta.persistence.TypedQuery;
  * @Tạo vào ngày: 10/18/2024
  * @Tác giả: Huy
  */
-public class DAOGa {
+public class DAOGa extends UnicastRemoteObject implements IDAOGa {
+    public DAOGa() throws RemoteException {
+    }
 //     //Get danh sách ga
 //    public static ArrayList<Ga> getDsGa() {
 //        System.out.println("DAO: Get danh sách ga");
@@ -43,7 +43,8 @@ public class DAOGa {
 //    }\
 
     //Get danh sách ga
-    public static ArrayList<Ga> getDsGa() {
+    @Override
+    public ArrayList<Ga> getDsGa() throws RemoteException {
         System.out.println("DAO: Get danh sách ga");
         ArrayList<Ga> dsGa = new ArrayList<>();
         try {
@@ -62,7 +63,7 @@ public class DAOGa {
     }
 
 
-    private static EntityManager em = connectDB_1.getEntityManager();
+    private EntityManager em = connectDB_1.getEntityManager();
 
 
     // Get Ga theo mã ga
@@ -90,7 +91,8 @@ public class DAOGa {
 //    }
 
     // Get Ga theo mã ga
-    public static Ga getGaTheoMaGa(int maGa) {
+    @Override
+    public Ga getGaTheoMaGa(int maGa) throws RemoteException{
         try {
             String jpql = "SELECT g FROM Ga g WHERE g.maGa = :maGa";
             TypedQuery<Ga> query = em.createQuery(jpql, Ga.class);
@@ -119,7 +121,8 @@ public class DAOGa {
 //    }
 
     // them ga
-    public static boolean themGa(Ga ga) {
+    @Override
+    public boolean themGa(Ga ga) throws RemoteException{
         try {
             em.getTransaction().begin();
             em.persist(ga);
@@ -151,7 +154,8 @@ public class DAOGa {
 //
 
     // sua ga tra ve doi tuong ga
-    public static Ga suaGa(Ga ga) {
+    @Override
+    public Ga suaGa(Ga ga) throws RemoteException{
         try {
             em.getTransaction().begin();
             String jpql = "UPDATE Ga g SET g.tenGa = :tenGa WHERE g.maGa = :maGa";

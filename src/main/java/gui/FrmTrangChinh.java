@@ -297,7 +297,12 @@ public class FrmTrangChinh extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (pnlChuyenTau == null) {
-                    pnlChuyenTau = new PnlChuyenTau(nhanVien);
+//                    pnlChuyenTau = new PnlChuyenTau(nhanVien);
+                    try {
+                        pnlChuyenTau = new PnlChuyenTau(nhanVien);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
                 setPnlWithLoading(pnlChuyenTau);
             }

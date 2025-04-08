@@ -1,6 +1,6 @@
 package gui;
 
-import control.DAOChuyenTau;
+import control.impl.DAOChuyenTau;
 import control.impl.DAOVe;
 import entity.ChoNgoi;
 import entity.ChuyenTau;
@@ -72,9 +72,11 @@ public class JdDoiVe extends JDialog {
         docDuLieuLenField();
     }
 
-    private void docDuLieuLenField() {
+    private void docDuLieuLenField() throws RemoteException {
         // Đọc dữ liệu vé cũ
-        ChuyenTau chuyenTauVeCu = DAOChuyenTau.getChuyenTauTheoMa(veCu.getChuyenTau().getMaChuyen());
+//        ChuyenTau chuyenTauVeCu = DAOChuyenTau.getChuyenTauTheoMa(veCu.getChuyenTau().getMaChuyen());
+        DAOChuyenTau daoChuyenTau = new DAOChuyenTau();
+        ChuyenTau chuyenTauVeCu = daoChuyenTau.getChuyenTauTheoMa(veCu.getChuyenTau().getMaChuyen());
 
         if (chuyenTauVeCu == null) {
             JOptionPane.showMessageDialog(this, "Chuyến tàu không tồn tại!", "Thông báo", JOptionPane.WARNING_MESSAGE);

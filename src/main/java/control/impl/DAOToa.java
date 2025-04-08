@@ -1,16 +1,17 @@
-package control;
+package control.impl;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 
+import control.IDAOToa;
 import entity.ChoNgoi;
 import entity.LoaiToa;
 import entity.Tau;
 import entity.Toa;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import service.ToaService;
@@ -21,9 +22,9 @@ import service.ToaService;
  * @Tạo vào ngày: 10/15/2024
  * @Tác giả: Thai
  */
-public class DAOToa {
+public class DAOToa extends UnicastRemoteObject implements IDAOToa {
 
-    private static ArrayList<Toa> danhSachToa;
+    private  ArrayList<Toa> danhSachToa;
 
 //    /**
 //     * Lấy danh sách tất cả các toa.
@@ -57,11 +58,11 @@ public class DAOToa {
      */
 
     @PersistenceContext
-    private static EntityManager em1;
+    private  EntityManager em1;
 
     private ToaService toaService;
 
-    public DAOToa(EntityManager em) {
+    public DAOToa(EntityManager em) throws RemoteException {
         this.em1 = em;
     }
 
@@ -143,7 +144,8 @@ public class DAOToa {
      * @param maToa mã của toa cần xóa.
      * @return true nếu xóa thành công, ngược lại false.
      */
-    public static boolean xoaToa(String maToa) {
+    @Override
+    public boolean xoaToa(String maToa) throws RemoteException{
         try {
             em1.getTransaction().begin();
             Toa toa = em1.find(Toa.class, maToa);
@@ -189,7 +191,8 @@ public class DAOToa {
      * @param toa đối tượng toa chứa thông tin cần cập nhật.
      * @return đối tượng toa đã được sửa nếu thành công, ngược lại null.
      */
-    public static Toa suaToa(Toa toa) {
+    @Override
+    public Toa suaToa(Toa toa) throws RemoteException{
         try {
             em1.getTransaction().begin();
             Toa existingToa = em1.find(Toa.class, toa.getMaToa());
@@ -230,7 +233,8 @@ public class DAOToa {
      * @param maTau mã tàu cần lấy danh sách toa.
      * @return danh sách các toa của tàu.
      */
-    public static ArrayList<Toa> getToaTheoTau(String maTau) {
+    @Override
+    public ArrayList<Toa> getToaTheoTau(String maTau) throws RemoteException{
         ArrayList<Toa> dsToaTheoTau = new ArrayList<>();
         try {
             String jpql = "SELECT t FROM Toa t WHERE t.tau.maTau = :maTau";
@@ -271,7 +275,8 @@ public class DAOToa {
      * @param maLoaiToa mã loại toa cần lấy danh sách toa.
      * @return danh sách các toa thuộc loại toa đó.
      */
-    public static ArrayList<Toa> getToaTheoLoaiToa(String maLoaiToa) {
+    @Override
+    public ArrayList<Toa> getToaTheoLoaiToa(String maLoaiToa)throws RemoteException {
         ArrayList<Toa> dsToa = new ArrayList<>();
         try {
             String jpql = "SELECT t FROM Toa t WHERE t.loaiToa.maLT = :maLoaiToa";
@@ -312,7 +317,8 @@ public class DAOToa {
      * @param maToa mã toa cần tìm.
      * @return đối tượng toa nếu tìm thấy, ngược lại null.
      */
-    public static Toa getToaTheoMa(String maToa) {
+    @Override
+    public Toa getToaTheoMa(String maToa) throws RemoteException{
         try {
             String jpql = "SELECT t FROM Toa t WHERE t.maToa = :maToa";
             TypedQuery<Toa> query = em1.createQuery(jpql, Toa.class);
@@ -351,7 +357,8 @@ public class DAOToa {
      * @return đối tượng Toa.
      * @throws SQLException nếu xảy ra lỗi khi đọc dữ liệu từ ResultSet.
      */
-    private static Toa taoToaTuResultSet(ResultSet rs) throws SQLException {
+    @Override
+    public Toa taoToaTuResultSet(ResultSet rs) throws SQLException {
         String maToa = rs.getString("maToa");
         String maTau = rs.getString("maTau");
         String maLoaiToa = rs.getString("maLoaiToa");

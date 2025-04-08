@@ -1,13 +1,15 @@
-package control;
+package control.impl;
 
-import connectDB.ConnectDB;
 import connectDB.connectDB_1;
+import control.IDAOChuyenTau;
 import entity.ChuyenTau;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import service.ChuyenTauService;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,7 +23,7 @@ import java.util.List;
  * @Tác giả: Huy
  */
 
-public class DAOChuyenTau {
+public class DAOChuyenTau  extends UnicastRemoteObject implements IDAOChuyenTau {
     /**
      * Thêm một chuyến tàu vào cơ sở dữ liệu.
      *
@@ -71,9 +73,13 @@ public class DAOChuyenTau {
 //        return null;
 //    }
 
-    private static EntityManager em = connectDB_1.getEntityManager();
+    private  EntityManager em = connectDB_1.getEntityManager();
 
-    public static ChuyenTau themChuyenTau(ChuyenTau chuyenTau) {
+    public DAOChuyenTau() throws RemoteException {
+    }
+
+    @Override
+    public ChuyenTau themChuyenTau(ChuyenTau chuyenTau) throws RemoteException{
 //        EntityManager em = ConnectDB.getEntityManager(); // Giả sử bạn đã cấu hình EntityManager
 
         try {
@@ -141,7 +147,8 @@ public class DAOChuyenTau {
      *
      * @return Danh sách các chuyến tàu.
      */
-    public static ArrayList<ChuyenTau> getDanhSachChuyenTau() {
+    @Override
+    public ArrayList<ChuyenTau> getDanhSachChuyenTau()throws RemoteException {
         ArrayList<ChuyenTau> dsChuyenTau = new ArrayList<>();
         try {
             TypedQuery<ChuyenTau> query = em.createQuery("SELECT ct FROM ChuyenTau ct", ChuyenTau.class);
@@ -185,7 +192,8 @@ public class DAOChuyenTau {
      *
      * @return Danh sách chuyến tàu.
      */
-    public static ArrayList<ChuyenTau> getDanhSachChuyenTauTrongNgay() {
+    @Override
+    public ArrayList<ChuyenTau> getDanhSachChuyenTauTrongNgay() throws RemoteException{
         ArrayList<ChuyenTau> dsChuyenTau = new ArrayList<>();
         try {
             TypedQuery<ChuyenTau> query = em.createQuery(
@@ -231,7 +239,8 @@ public class DAOChuyenTau {
      *
      * @return Danh sách chuyến tàu.
      */
-    public static ArrayList<ChuyenTau> getDanhSachChuyenTauSapKhoiHanh() {
+    @Override
+    public ArrayList<ChuyenTau> getDanhSachChuyenTauSapKhoiHanh()throws RemoteException {
         ArrayList<ChuyenTau> dsChuyenTau = new ArrayList<>();
         try {
             TypedQuery<ChuyenTau> query = em.createQuery(
@@ -288,7 +297,8 @@ public class DAOChuyenTau {
      * @param maGaDen Mã ga đến.
      * @return Danh sách chuyến tàu.
      */
-    public static ArrayList<ChuyenTau> getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(LocalDate ngayDi, int maGaDi, int maGaDen) {
+    @Override
+    public ArrayList<ChuyenTau> getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(LocalDate ngayDi, int maGaDi, int maGaDen)throws RemoteException {
         ArrayList<ChuyenTau> dsChuyenTau = new ArrayList<>();
         try {
             // Sử dụng hàm CAST để chuyển đổi giá trị ngayGioDi sang kiểu DATE trong truy vấn JPQL
@@ -334,7 +344,8 @@ public class DAOChuyenTau {
 //        }
 //        return null;
 //    }
-    public static ChuyenTau getChuyenTauTheoMa(String maChuyen) {
+    @Override
+    public ChuyenTau getChuyenTauTheoMa(String maChuyen)throws RemoteException {
         ChuyenTau chuyenTau = null;
         try {
             TypedQuery<ChuyenTau> query = em.createQuery("SELECT ct FROM ChuyenTau ct WHERE ct.maChuyen = :maChuyen", ChuyenTau.class);
@@ -373,8 +384,8 @@ public class DAOChuyenTau {
 //        }
 //        return 0;
 //    }
-
-        public static int getTongSoLuongChoCuaChuyen(String maChuyen) {
+    @Override
+    public int getTongSoLuongChoCuaChuyen(String maChuyen) throws RemoteException{
             String jpql = "SELECT COUNT(cn) " +
                     "FROM ChuyenTau ct " +
                     "JOIN ct.tau t " +
@@ -420,7 +431,8 @@ public class DAOChuyenTau {
      * @param chuyenTau Chuyến tàu cần cập nhật.
      * @return true nếu cập nhật thành công, ngược lại false.
      */
-    public static boolean capNhatChuyenTau(ChuyenTau chuyenTau) {
+    @Override
+    public boolean capNhatChuyenTau(ChuyenTau chuyenTau) throws RemoteException{
         try {
             //tìm chuyến tàu theo mã chuyến
             ChuyenTau ct = em.find(ChuyenTau.class, chuyenTau.getMaChuyen());
@@ -490,7 +502,8 @@ public class DAOChuyenTau {
      * @param ngayGioDen Ngày giờ đến
      * @return Chuyến tàu tìm được.
     //     */
-    public static ChuyenTau getChuyenTauTheoMaTauMaGaDiMaGaDenNgayGioDiNgayGioDen(String maTau, int maGaDi, int maGaDen, LocalDateTime ngayGioDi, LocalDateTime ngayGioDen) {
+    @Override
+    public ChuyenTau getChuyenTauTheoMaTauMaGaDiMaGaDenNgayGioDiNgayGioDen(String maTau, int maGaDi, int maGaDen, LocalDateTime ngayGioDi, LocalDateTime ngayGioDen)throws RemoteException {
         try {
             // Sử dụng JPQL để lấy chuyến tàu
             TypedQuery<ChuyenTau> query = em.createQuery(

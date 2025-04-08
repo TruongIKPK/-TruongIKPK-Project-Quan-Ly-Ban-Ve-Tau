@@ -1,6 +1,9 @@
 package gui;
 
 import control.*;
+import control.impl.DAOChuyenTau;
+import control.impl.DAOGa;
+import control.impl.DAOLoaiToa;
 import control.impl.DAOVe;
 import entity.*;
 import enums.*;
@@ -695,13 +698,17 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Đọc dữ liệu từ cơ sở dữ liệu và cập nhật giao diện.
      */
-    public void readDataFromDB() {
+    private DAOLoaiToa daoLoaiToa;
+    public void readDataFromDB() throws RemoteException {
         // Khởi tạo danh sách
         listChuyenDi = new ArrayList<>();
         listChoNgoi = new ArrayList<>();
-        listGa = DAOGa.getDsGa();
+        DAOGa daoGa = new DAOGa();
+        listGa = daoGa.getDsGa();
         listVeDaBan = new ArrayList<>();
-        listLoaiToa = DAOLoaiToa.getDSLoaiToa();
+        daoLoaiToa = new DAOLoaiToa();
+        listLoaiToa = daoLoaiToa.getDSLoaiToa();
+
         listHoaDonTam = HoaDonTamHandler.getDanhSachHoaDonTam();
 
         // Thêm "Tất cả" vào combobox loại toa
@@ -769,13 +776,13 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
      * @param chuyenTau Thông tin chuyến tàu cần hiển thị.
      * @return JPanel chứa thông tin chuyến tàu.
      */
-    public JPanel getPnlChuyenTau(ChuyenTau chuyenTau) {
+    public JPanel getPnlChuyenTau(ChuyenTau chuyenTau) throws RemoteException {
         JPanel pnlChuyenTau = new JPanel();
         pnlChuyenTau.setLayout(new BoxLayout(pnlChuyenTau, BoxLayout.Y_AXIS));
         pnlChuyenTau.setBackground(EColor.BG_COLOR.getColor());
         pnlChuyenTau.setPreferredSize(new Dimension(250, 200));
-
-        long soLuongChoTrong = DAOChuyenTau.getTongSoLuongChoCuaChuyen(chuyenTau.getMaChuyen())
+        DAOChuyenTau dao = new DAOChuyenTau();
+        long soLuongChoTrong = dao.getTongSoLuongChoCuaChuyen(chuyenTau.getMaChuyen())
                 - listVeDaBan.stream().filter(ve -> ve.getChuyenTau().equals(chuyenTau)).count();
 
         // Tạo Box chứa mác tàu
@@ -1162,7 +1169,12 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
 
         // Duyệt qua tất cả chuyến đi và hiển thị từng chuyến tàu
         listChuyenDi.forEach(chuyenTau -> {
-            JPanel btnChuyenTau = getPnlChuyenTau(chuyenTau);
+            JPanel btnChuyenTau = null;
+            try {
+                btnChuyenTau = getPnlChuyenTau(chuyenTau);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
             pnlDanhSachChuyenTau.add(btnChuyenTau);
         });
 
@@ -1767,8 +1779,10 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
         lblDsChuyenTau.setText("Danh sách chuyến từ " + gaDi.getTenGa().replace("Ga Tàu", "") + " - " + gaDen.getTenGa().replace("Ga Tàu", ""));
         resetAll();
 
-        // Lấy danh sách chuyến tàu theo các trường
-        listChuyenDi = DAOChuyenTau.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayDi, gaDi.getMaGa(), gaDen.getMaGa());
+//        // Lấy danh sách chuyến tàu theo các trường
+//        listChuyenDi = DAOChuyenTau.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayDi, gaDi.getMaGa(), gaDen.getMaGa());
+        DAOChuyenTau daoChuyenTau = new DAOChuyenTau();
+        listChuyenDi = daoChuyenTau.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayDi, gaDi.getMaGa(), gaDen.getMaGa());
 
         if (listChuyenDi.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Không có chuyến tàu lượt đi");
@@ -1859,7 +1873,9 @@ public class PnlDoiVe extends JPanel implements ActionListener, KeyListener {
         }
 
         // Lấy chuyến tàu của vé cũ
-        ChuyenTau chuyenTau = DAOChuyenTau.getChuyenTauTheoMa(veCu.getChuyenTau().getMaChuyen());
+//        ChuyenTau chuyenTau = DAOChuyenTau.getChuyenTauTheoMa(veCu.getChuyenTau().getMaChuyen());
+        DAOChuyenTau daoChuyen = new DAOChuyenTau();
+        ChuyenTau chuyenTau = daoChuyen.getChuyenTauTheoMa(veCu.getChuyenTau().getMaChuyen());
 
         if (chuyenTau == null) {
             JOptionPane.showMessageDialog(null, "Không tìm thấy chuyến tàu");

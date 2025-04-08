@@ -1,15 +1,13 @@
-package control;
+package control.impl;
 
-import connectDB.ConnectDB;
 import connectDB.connectDB_1;
+import control.IDAOLoaiToa;
 import entity.LoaiToa;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import service.ToaService;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 /**
@@ -18,7 +16,7 @@ import java.util.ArrayList;
  * @Tạo vào ngày: 10/15/2024
  * @Tác giả: Thai
  */
-public class DAOLoaiToa {
+public class DAOLoaiToa extends UnicastRemoteObject implements IDAOLoaiToa {
     /*CREATE TABLE LoaiToa (
         maLoai VARCHAR(10) PRIMARY KEY,
         tenLoai NVARCHAR(50) NOT NULL
@@ -35,9 +33,14 @@ public class DAOLoaiToa {
 //        }
 //        return false;
 //    }
-    private static EntityManager em = connectDB_1.getEntityManager();
+    private EntityManager em = connectDB_1.getEntityManager();
+
+    public DAOLoaiToa() throws RemoteException {
+    }
+
     // Thêm loại toa
-    public static boolean themLoaiToa(LoaiToa loaiToa) {
+    @Override
+    public boolean themLoaiToa(LoaiToa loaiToa)throws RemoteException{
         try {
             em.getTransaction().begin();
             em.persist(loaiToa);
@@ -69,7 +72,8 @@ public class DAOLoaiToa {
 //
 //    }
 // Sửa loại toa
-public static LoaiToa suaLoaiToa(LoaiToa loaiToa) {
+@Override
+public LoaiToa suaLoaiToa(LoaiToa loaiToa) throws RemoteException {
     try {
         em.getTransaction().begin();
         LoaiToa updatedLoaiToa = em.merge(loaiToa);
@@ -98,7 +102,8 @@ public static LoaiToa suaLoaiToa(LoaiToa loaiToa) {
 
 
     //xoa loai toa
-    public static boolean xoaLoaiToa(String maLT) {
+    @Override
+    public boolean xoaLoaiToa(String maLT)throws RemoteException {
         try {
             em.getTransaction().begin();
             LoaiToa loaiToa = em.find(LoaiToa.class, maLT);
@@ -137,7 +142,8 @@ public static LoaiToa suaLoaiToa(LoaiToa loaiToa) {
 //    }
 
 //lay tat ca loaitoa
-    public static ArrayList<LoaiToa> getDSLoaiToa() {
+@Override
+public ArrayList<LoaiToa> getDSLoaiToa() throws RemoteException{
         ArrayList<LoaiToa> dsLoaiToa = new ArrayList<>();
         try {
             String jpql = "SELECT lt FROM LoaiToa lt ORDER BY lt.tenLT";
@@ -165,7 +171,8 @@ public static LoaiToa suaLoaiToa(LoaiToa loaiToa) {
 //    }
 //}
 // Get loại toa theo mã
-public static LoaiToa getLoaiToaTheoMa(String maLT) {
+@Override
+public LoaiToa getLoaiToaTheoMa(String maLT)throws RemoteException {
     try {
         String jpql = "SELECT lt FROM LoaiToa lt WHERE lt.maLT = :maLT";
         TypedQuery<LoaiToa> query = em.createQuery(jpql, LoaiToa.class);
