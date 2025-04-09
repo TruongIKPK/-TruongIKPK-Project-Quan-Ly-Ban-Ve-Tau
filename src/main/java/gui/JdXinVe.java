@@ -125,17 +125,16 @@ public class JdXinVe extends CDialog implements MouseListener {
         this.nguoiMuaVe = hoaDonTam.getKhachHang();
         this.daoHoaDon = new DAOHoaDon();
         this.daoVe = new DAOVe();
+        this.daoKhachHang = new DAOKhachHang();
+        this.daoKhuyenMai = new DAOKhuyenMai();
         this.listKhachHang = new ArrayList<>(hoaDonTam.getDanhSachVe().stream().map(Ve::getKhachHang).toList());
         this.chuyenChieuDi = hoaDonTam.getDanhSachVe().get(0).getChuyenTau();
         this.listChoNgoiChieuDi = new ArrayList<>(hoaDonTam.getDanhSachVe()
                 .stream().filter(ve -> ve.getChuyenTau().getGaDi().equals(chuyenChieuDi.getGaDi())).map(Ve::getChoNgoi).toList());
-        this.daoKhachHang = new DAOKhachHang();
-        this.daoKhuyenMai = new DAOKhuyenMai();
         // Kiểm tra có chuyến chiều về không
         boolean isChieuVe = hoaDonTam.getDanhSachVe()
                 .stream().filter(ve -> ve.getChuyenTau().getGaDi().equals(chuyenChieuDi.getGaDen())).count() > 0;
         if (isChieuVe) {
-            System.out.println("Co chieu ve");
             this.chuyenChieuVe = hoaDonTam.getDanhSachVe()
                     .stream().filter(ve -> ve.getChuyenTau().getGaDi().equals(chuyenChieuDi.getGaDen())).findFirst().get().getChuyenTau();
             this.listChoNgoiChieuVe = new ArrayList<>(hoaDonTam.getDanhSachVe()
@@ -158,7 +157,10 @@ public class JdXinVe extends CDialog implements MouseListener {
         this.pnlParent = pnlParent;
         this.chuyenChieuDi = chuyenChieuDi;
         this.listChoNgoiChieuDi = listChoNgoiChieuDi;
-
+        this.daoHoaDon = new DAOHoaDon();
+        this.daoVe = new DAOVe();
+        this.daoKhachHang = new DAOKhachHang();
+        this.daoKhuyenMai = new DAOKhuyenMai();
         init();
     }
 
@@ -179,7 +181,10 @@ public class JdXinVe extends CDialog implements MouseListener {
         this.chuyenChieuVe = chuyenChieuVe;
         this.listChoNgoiChieuDi = listChoNgoiChieuDi;
         this.listChoNgoiChieuVe = listChoNgoiChieuVe;
-
+        this.daoHoaDon = new DAOHoaDon();
+        this.daoVe = new DAOVe();
+        this.daoKhachHang = new DAOKhachHang();
+        this.daoKhuyenMai = new DAOKhuyenMai();
         init();
     }
 
@@ -857,7 +862,6 @@ public class JdXinVe extends CDialog implements MouseListener {
 
         if (listVe != null && !listVe.isEmpty()) {
             for (Ve ve : listVe) {
-                System.out.println("VE: " + ve);
                 // Lấy thông tin vé gắn lên bảng
                 boolean isVeChieuVe = ve.getChuyenTau().getGaDi().equals(chuyenChieuDi.getGaDen());
                 DefaultTableModel tblModel = isVeChieuVe ? tblModelVeXinChieuVe : tblModelVeXinChieuDi;
@@ -1319,7 +1323,6 @@ public class JdXinVe extends CDialog implements MouseListener {
         try {
             // Thêm hóa đơn
             daoHoaDon.themHoaDon(hoaDon);
-            System.out.println("---------------Thêm hóa đơn thành công------------------");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lưu hóa đơn thất bại", "Thông báo", JOptionPane.ERROR_MESSAGE);
             return;

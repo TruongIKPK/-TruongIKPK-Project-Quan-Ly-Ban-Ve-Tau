@@ -11,38 +11,10 @@ import java.util.ArrayList;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
-
-/**
- * @Dự án: tau-viet-express
- * @Class: DAOGa
- * @Tạo vào ngày: 10/18/2024
- * @Tác giả: Huy
- */
 public class DAOGa extends UnicastRemoteObject implements IDAOGa {
+    private EntityManager em = connectDB_1.getEntityManager();
     public DAOGa() throws RemoteException {
     }
-//     //Get danh sách ga
-//    public static ArrayList<Ga> getDsGa() {
-//        System.out.println("DAO: Get danh sách ga");
-//        ArrayList<Ga> dsGa = new ArrayList<>();
-//        try {
-//            Connection connection = ConnectDB.getConnection();
-//            String sql = "SELECT * FROM Ga";
-//            ResultSet rs = connection.createStatement().executeQuery(sql);
-//            while (rs.next()) {
-//                int maGa = rs.getInt("maGa");
-//                String tenGa = rs.getString("tenGa");
-//                Ga ga = new Ga(maGa, tenGa);
-//                dsGa.add(ga);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return dsGa;
-//    }\
-
-    //Get danh sách ga
     @Override
     public ArrayList<Ga> getDsGa() throws RemoteException {
         System.out.println("DAO: Get danh sách ga");
@@ -61,36 +33,6 @@ public class DAOGa extends UnicastRemoteObject implements IDAOGa {
 
         return dsGa;
     }
-
-
-    private EntityManager em = connectDB_1.getEntityManager();
-
-
-    // Get Ga theo mã ga
-//    public static Ga getGaTheoMaGa(int maGa) {
-//        Ga ga = null;
-//
-//        String sql = "SELECT * FROM Ga WHERE maGa = ?";
-//
-//        try (PreparedStatement ps = ConnectDB.getConnection().prepareStatement(sql)) {
-//
-//            ps.setInt(1, maGa);
-//
-//            ResultSet rs = ps.executeQuery();
-//            if (rs.next()) {
-//                String tenGa = rs.getString("tenGa");
-//                ga = new Ga(maGa, tenGa);
-//
-//                return ga;
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return ga;
-//    }
-
-    // Get Ga theo mã ga
     @Override
     public Ga getGaTheoMaGa(int maGa) throws RemoteException{
         try {
@@ -105,22 +47,6 @@ public class DAOGa extends UnicastRemoteObject implements IDAOGa {
         }
         return null;
     }
-
-
-//    // them ga
-//    public static boolean themGa(Ga ga) {
-//        String sql = "INSERT INTO Ga(maGa, tenGa) VALUES(?, ?)";
-//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-//            stmt.setInt(1, ga.getMaGa());
-//            stmt.setString(2, ga.getTenGa());
-//            return stmt.executeUpdate() > 0;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
-
-    // them ga
     @Override
     public boolean themGa(Ga ga) throws RemoteException{
         try {
@@ -136,24 +62,6 @@ public class DAOGa extends UnicastRemoteObject implements IDAOGa {
         }
         return false;
     }
-
-//    // sua ga tra ve doi tuong ga
-//    public static Ga suaGa(Ga ga) {
-//        String sql = "UPDATE Ga SET tenGa = ? WHERE maGa = ?";
-//        try (PreparedStatement stmt = ConnectDB.getConnection().prepareStatement(sql)) {
-//            stmt.setString(1, ga.getTenGa());
-//            stmt.setInt(2, ga.getMaGa());
-//            if (stmt.executeUpdate() > 0) {
-//                return ga;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-
-    // sua ga tra ve doi tuong ga
     @Override
     public Ga suaGa(Ga ga) throws RemoteException{
         try {

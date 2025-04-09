@@ -1,11 +1,8 @@
 package gui;
 
 import control.*;
-import control.impl.DAOChuyenTau;
-import control.impl.DAOGa;
-import control.impl.DAOLoaiToa;
+import control.impl.*;
 
-import control.impl.DAOVe;
 import entity.*;
 import enums.*;
 import gui.components.DatePicker;
@@ -28,15 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
-
-/**
- * @Dự án: tau-viet-express
- * @Class: PnlBanThuong
- * @Tạo vào ngày: 3/10/2024
- * @Tác giả: Huy
- */
 public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
-    private NhanVien nhanVien;
+    private final NhanVien nhanVien;
 
     private JPanel pnlLeft;
     private JPanel pnlCenter;
@@ -113,7 +103,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     private JDatePickerImpl ngayDiPicker;
     private JDatePickerImpl ngayVePicker;
 
-    private DAOVe daoVe;
+    private final DAOVe daoVe;
+    private final DAOGa daoGa;
+    private final DAOLoaiToa daoLoaiToa;
+    private final DAOChuyenTau daoChuyenTau;
+    private final DAOChoNgoi daoChoNgoi;
 
     /**
      * Khởi tạo giao diện Panel Bán vé.
@@ -124,7 +118,10 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         this.nhanVien = nhanVien;
         this.loaiVe = ELoaiVe.MOT_CHIEU.getValue();
         this.daoVe = new DAOVe();
-
+        this.daoGa = new DAOGa();
+        this.daoLoaiToa = new DAOLoaiToa();
+        this.daoChuyenTau = new DAOChuyenTau();
+        this.daoChoNgoi = new DAOChoNgoi();
         setLayout(new BorderLayout());
         setBackground(EColor.BG_COLOR.getColor());
 
@@ -189,7 +186,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         cboLoaiToa.setBackground(EColor.BG_COLOR.getColor());
         cboLoaiToa.addActionListener(e -> {
             hienThiDanhSachToa();
-            hienThiThongTinToa();
+            try {
+                hienThiThongTinToa();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         cboSapXepChuyen = new JComboBox<>(new String[]{
@@ -568,7 +569,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Thực hiện tìm kiếm chuyến tàu khi nhấn Enter
-                traCuuChuyenTau();
+                try {
+                    traCuuChuyenTau();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -578,7 +583,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Thực hiện tìm kiếm chuyến tàu khi nhấn Ctrl + F
-                traCuuChuyenTau();
+                try {
+                    traCuuChuyenTau();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -602,7 +611,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Thực hiện xin vé khi nhấn phím F1
-                xinVe();
+                try {
+                    xinVe();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -622,7 +635,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Thực hiện chọn nhanh theo loại toa khi nhấn phím F3
-                chonNhanhTheoLoaiToa();
+                try {
+                    chonNhanhTheoLoaiToa();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -631,7 +648,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         actionMap.put("f4Pressed", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                chonCaToa();
+                try {
+                    chonCaToa();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -653,7 +674,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         actionMap.put("f6Pressed", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boChonCaToa();
+                try {
+                    boChonCaToa();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -663,7 +688,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Chuyển đến chuyến tàu trước khi nhấn phím trái
-                chuyenTauTruoc();
+                try {
+                    chuyenTauTruoc();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -673,7 +702,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Chuyển đến chuyến tàu sau khi nhấn phím phải
-                chuyenTauSau();
+                try {
+                    chuyenTauSau();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -683,7 +716,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Trừ vé khi nhấn phím DEL
-                truVe();
+                try {
+                    truVe();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
     }
@@ -745,7 +782,8 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             public void mouseClicked(MouseEvent e) {
                 // Lấy dòng được chọn trong bảng
                 int row = tblHoaDonTam.getSelectedRow();
-                if (row == -1) return; // Nếu không có dòng nào được chọn thì thoát
+                if (row == -1) {
+                } // Nếu không có dòng nào được chọn thì thoát
 
                 // TODO: Hiển thị thông tin
             }
@@ -788,7 +826,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
      */
     public void getCacChuyenTauSapKhoiHanh() throws RemoteException {
         // Lấy danh sách các chuyến tàu sắp khởi hành
-        listChuyenDi = DAOChuyenTau.getDanhSachChuyenTauSapKhoiHanh();
+        listChuyenDi = daoChuyenTau.getDanhSachChuyenTauSapKhoiHanh();
         System.out.println("Số chuyến đi:*********************************************************** " + listChuyenDi);
         // Lặp qua từng chuyến tàu trong danh sách và lấy vé đã bán theo mã chuyến
         for (ChuyenTau chuyenTau : listChuyenDi) {
@@ -819,19 +857,16 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         timer.start();
     }
 
-    /**
-     * Đọc dữ liệu từ cơ sở dữ liệu và cập nhật giao diện.
-     */
-    public void readDataFromDB() {
+    public void readDataFromDB() throws RemoteException {
         // Khởi tạo danh sách
         listChuyenDi = new ArrayList<>();
         listChuyenVe = new ArrayList<>();
         listChoNgoiDaChonChieuDi = new ArrayList<>();
         listChoNgoiDaChonChieuVe = new ArrayList<>();
         listChoNgoi = new ArrayList<>();
-        listGa = DAOGa.getDsGa();
+        listGa = daoGa.getDsGa();
         listVeDaBan = new ArrayList<>();
-        listLoaiToa = DAOLoaiToa.getDSLoaiToa();
+        listLoaiToa = daoLoaiToa.getDSLoaiToa();
         listHoaDonTam = HoaDonTamHandler.getDanhSachHoaDonTam();
 
         // Thêm ga vào combobox Ga đi và Ga đến
@@ -920,7 +955,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
      * @param chuyenTau Thông tin chuyến tàu cần hiển thị.
      * @return JPanel chứa thông tin chuyến tàu.
      */
-    public JPanel getPnlChuyenTau(ChuyenTau chuyenTau) {
+    public JPanel getPnlChuyenTau(ChuyenTau chuyenTau) throws RemoteException {
         JPanel pnlChuyenTau = new JPanel();
         pnlChuyenTau.setLayout(new BoxLayout(pnlChuyenTau, BoxLayout.Y_AXIS));
         pnlChuyenTau.setBackground(EColor.BG_COLOR.getColor());
@@ -928,7 +963,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
 
 
-        long soLuongChoTrong = DAOChuyenTau.getTongSoLuongChoCuaChuyen(chuyenTau.getMaChuyen())
+        long soLuongChoTrong = daoChuyenTau.getTongSoLuongChoCuaChuyen(chuyenTau.getMaChuyen())
                 - listVeDaBan.stream().filter(ve -> ve.getChuyenTau().equals(chuyenTau)).count();
 
         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%SOLUONGCHOTRONG%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"+soLuongChoTrong);
@@ -1012,7 +1047,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
                         hienThiDanhSachChuyenTau("Chiều đi");
                         hienThiDanhSachToa();
-                        hienThiThongTinToa();
+                        try {
+                            hienThiThongTinToa();
+                        } catch (RemoteException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     } else {
                         // Nếu trùng chiều thì yêu cầu xác nhận trước khi chuyển chuyến
                         if (listChuyenDi.contains(chuyenTau)) {
@@ -1050,7 +1089,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
                         }
 
                         hienThiDanhSachToa();
-                        hienThiThongTinToa();
+                        try {
+                            hienThiThongTinToa();
+                        } catch (RemoteException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 } else {
                     // Nếu chưa chọn chuyến tàu, thực hiện hiển thị thông tin chuyến
@@ -1067,7 +1110,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
                     }
 
                     hienThiDanhSachToa();
-                    hienThiThongTinToa();
+                    try {
+                        hienThiThongTinToa();
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
@@ -1159,7 +1206,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             public void mouseClicked(MouseEvent e) {
                 toaDangChon = toa;
                 hienThiDanhSachToa();  // Hiển thị lại danh sách toa
-                hienThiThongTinToa();  // Hiển thị thông tin toa
+                try {
+                    hienThiThongTinToa();  // Hiển thị thông tin toa
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -1268,7 +1319,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
                     }
 
                     updateGioVe();
-                    hienThiDanhSachChoNgoi();
+                    try {
+                        hienThiDanhSachChoNgoi();
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
@@ -1332,7 +1387,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Giảm số lượng vé khả dụng.
      */
-    public void truVe() {
+    public void truVe() throws RemoteException {
         int[] rowsChieuDi = tblGioVeChieuDi.getSelectedRows();
         int[] rowsChieuVe = tblGioVeChieuVe.getSelectedRows();
 
@@ -1395,7 +1450,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Xóa toàn bộ dữ liệu trong bảng giờ vé.
      */
-    public void clearTblGioVe() {
+    public void clearTblGioVe() throws RemoteException {
         // Xóa tất cả các dòng trong bảng Chuyến đi và Chuyến về
         tblModelGioVeChieuDi.setRowCount(0);
         tblModelGioVeChieuVe.setRowCount(0);
@@ -1450,7 +1505,12 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
             // Duyệt qua tất cả chuyến đi và hiển thị từng chuyến tàu
             listChuyenDi.forEach(chuyenTau -> {
-                JPanel btnChuyenTau = getPnlChuyenTau(chuyenTau);
+                JPanel btnChuyenTau = null;
+                try {
+                    btnChuyenTau = getPnlChuyenTau(chuyenTau);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
                 pnlDanhSachChuyenTau.add(btnChuyenTau);
             });
 
@@ -1463,7 +1523,12 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
             // Duyệt qua tất cả chuyến về và hiển thị từng chuyến tàu
             listChuyenVe.forEach(chuyenTau -> {
-                JPanel btnChuyenTau = getPnlChuyenTau(chuyenTau);
+                JPanel btnChuyenTau = null;
+                try {
+                    btnChuyenTau = getPnlChuyenTau(chuyenTau);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
                 pnlDanhSachChuyenTau.add(btnChuyenTau);
             });
 
@@ -1596,7 +1661,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Hiển thị danh sách các chỗ ngồi trong toa.
      */
-    public void hienThiDanhSachChoNgoi() {
+    public void hienThiDanhSachChoNgoi() throws RemoteException {
         if (toaDangChon == null) {
             return;
         }
@@ -1607,7 +1672,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
                 new EmptyBorder(10, 10, 10, 10)
         ));
 
-        listChoNgoi = DAOChoNgoi.getDSChoNgoiTheoToa(toaDangChon.getMaToa());
+        listChoNgoi = daoChoNgoi.getDSChoNgoiTheoToa(toaDangChon.getMaToa());
 
         System.out.println("1---------------------------------------------------------"+listChoNgoi);
 
@@ -1746,7 +1811,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Hiển thị thông tin chi tiết của toa.
      */
-    public void hienThiThongTinToa() {
+    public void hienThiThongTinToa() throws RemoteException {
         // Xóa tất cả các thành phần hiện tại trong panel thông tin toa
         pnlThongTinToa.removeAll();
 
@@ -1900,7 +1965,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Chọn nhanh toa dựa trên loại toa (ví dụ: hạng thường, hạng sang).
      */
-    public void chonNhanhTheoLoaiToa() {
+    public void chonNhanhTheoLoaiToa() throws RemoteException {
         String tenLoaiToa = cboLoaiToa.getSelectedItem().toString();
 
         // Lọc toa dựa trên loại toa và tình trạng ghế ngồi
@@ -1988,13 +2053,15 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             tuDongChonChoNgoi(soLuongVe);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Số lượng vé không hợp lệ");
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
         }
     }
 
     /**
      * Xử lý chọn cả toa
      */
-    public void chonCaToa() {
+    public void chonCaToa() throws RemoteException {
         int confirm = JOptionPane.showConfirmDialog(null, "Bạn có muốn chọn cả toa không?", "Chọn cả toa",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (confirm == JOptionPane.YES_OPTION) {
@@ -2009,7 +2076,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
      * Xử lý chọn chỗ ngồi theo số lượng vé
      * @param soLuongVe Số lượng vé cần chọn
      */
-    public void tuDongChonChoNgoi(int soLuongVe) {
+    public void tuDongChonChoNgoi(int soLuongVe) throws RemoteException {
         // Map các danh sách vé của các hóa đơn tạm thành một danh sách
         ArrayList<Ve> listVeTam = new ArrayList<>();
         listHoaDonTam.forEach(hoaDonTam -> listVeTam.addAll(hoaDonTam.getDanhSachVe()));
@@ -2127,7 +2194,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Tra cứu thông tin chuyến tàu
      */
-    public void traCuuChuyenTau() {
+    public void traCuuChuyenTau() throws RemoteException {
         lblDsChuyenTau.setText("Danh sách chuyến tàu");
 
         // Xác nhận trước khi reset dữ liệu
@@ -2160,7 +2227,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         resetAll();
 
         // Lấy danh sách chuyến tàu theo các trường
-        listChuyenDi = DAOChuyenTau.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayDi, gaDi.getMaGa(), gaDen.getMaGa());
+        listChuyenDi = daoChuyenTau.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayDi, gaDi.getMaGa(), gaDen.getMaGa());
         System.out.println("DS Chuyến đi:---###############################################################################################################################################################33 " + listChuyenDi);
         if (listChuyenDi.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Không có chuyến tàu lượt đi");
@@ -2194,7 +2261,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             String ngayVeStr = ngayVePicker.getJFormattedTextField().getText();
             LocalDate ngayVe = LocalDate.parse(ngayVeStr, FormatDate.formatter);
 
-            listChuyenVe = DAOChuyenTau.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayVe, gaDen.getMaGa(), gaDi.getMaGa());
+            listChuyenVe = daoChuyenTau.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayVe, gaDen.getMaGa(), gaDi.getMaGa());
 
             if (listChuyenVe.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Không có chuyến tàu lượt về");
@@ -2279,7 +2346,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Xử lý logic khi xin vé
      */
-    public void xinVe() {
+    public void xinVe() throws RemoteException {
         // Kiểm tra số lượng vé chiều đi
         if (listChoNgoiDaChonChieuDi.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Chưa chọn vé");
@@ -2315,7 +2382,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /*
      * Xử lý chuyển chuyến tàu trước
      * */
-    public void chuyenTauTruoc() {
+    public void chuyenTauTruoc() throws RemoteException {
         // Kiểm tra giỏ vé, yêu cầu xóa vé nếu có vé chiều đi và chiều về
         if (!listChoNgoiDaChonChieuDi.isEmpty() && !listChoNgoiDaChonChieuVe.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Vui lòng xóa vé trước khi chuyển chuyến tàu");
@@ -2352,7 +2419,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Xử lý chuyển chuyến tàu sau
      */
-    public void chuyenTauSau() {
+    public void chuyenTauSau() throws RemoteException {
         // Kiểm tra chuyến đi có trong danh sách chuyến đi không
         if (listChuyenDi.contains(chuyenDangChon)) {
             int index = listChuyenDi.indexOf(chuyenDangChon);
@@ -2383,7 +2450,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Xử lý bỏ chọn cả toa
      */
-    public void boChonCaToa() {
+    public void boChonCaToa() throws RemoteException {
         // Kiểm tra nếu không có chỗ ngồi nào đã chọn cho chiều đi
         if (listChoNgoiDaChonChieuDi.isEmpty()) {
             return;
@@ -2424,7 +2491,11 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
         // Xử lý tra cứu chuyến tàu khi người dùng nhấn nút "Tra Cứu Chuyến Tàu"
         if (obj.equals(btnTraCuuChuyenTau)) {
-            traCuuChuyenTau();
+            try {
+                traCuuChuyenTau();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Xử lý chuyến tàu sắp chạy khi người dùng nhấn nút "Tra Chuyến Sắp Chạy"
@@ -2438,12 +2509,20 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
         // Chọn nhanh theo loại toa khi người dùng nhấn nút "Chọn Nhanh Theo Loại Toa"
         if (obj.equals(btnChonNhanhTheoLoaiToa)) {
-            chonNhanhTheoLoaiToa();
+            try {
+                chonNhanhTheoLoaiToa();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Xử lý xin vé khi người dùng nhấn nút "Xin Vé"
         if (obj.equals(btnXinVe)) {
-            xinVe();
+            try {
+                xinVe();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Xử lý tự động chọn chỗ khi người dùng nhấn nút "Tự Động Chọn Chỗ"
@@ -2453,17 +2532,29 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
         // Xử lý chọn cả toa
         if (obj.equals(btnChonCaToa)) {
-            chonCaToa();
+            try {
+                chonCaToa();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Xử lý bỏ chọn tất cả toa khi người dùng nhấn nút "Bỏ Chọn Cả Toa"
         if (obj.equals(btnBoChonCaToa)) {
-            boChonCaToa();
+            try {
+                boChonCaToa();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Trừ vé khi người dùng nhấn nút "Trừ Vé"
         if (obj.equals(btnTruVe)) {
-            truVe();
+            try {
+                truVe();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         // Chọn chiều đi khi người dùng nhấn nút "Chiều Đi"
