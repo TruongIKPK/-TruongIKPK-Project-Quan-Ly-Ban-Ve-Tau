@@ -1,6 +1,6 @@
 package gui;
 
-import control.DAONhanVien;
+import control.impl.DAONhanVien;
 import entity.NhanVien;
 import entity.TaiKhoan;
 import enums.EColor;
@@ -36,8 +36,10 @@ public class FrmTrangChinh extends JFrame {
     private JPanel pnlTopCenter;
     private JPanel pnlDangChon;
     private JPanel pnlLoading;
+    private DAONhanVien daoNhanVien;
 
     public FrmTrangChinh(TaiKhoan taiKhoan, NhanVien nhanVien) throws RemoteException {
+        this.daoNhanVien = new DAONhanVien();
         this.taiKhoan = taiKhoan;
         this.nhanVien = nhanVien;
         this.pnlDangChon = pnlBanVe;
@@ -71,12 +73,16 @@ public class FrmTrangChinh extends JFrame {
         // Hiển thị dialog đổi mật khẩu sau khi FrmTrangChinh đã hiển thị
         SwingUtilities.invokeLater(() -> {
             if (taiKhoan.getMatKhauHash().equals("$2a$10$hx.v7Xiy7I8Rpql8ONmMF.WZY3d6pfQmfpp2EgeXJajNJdUa9KVSa")) {
-                new DlgDoiMatKhau(taiKhoan).setVisible(true);
+                try {
+                    new DlgDoiMatKhau(taiKhoan).setVisible(true);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
 
-    private void initPnlTop() {
+    private void initPnlTop() throws RemoteException {
         pnlTop = new JPanel();
         pnlTop.setLayout(new BorderLayout());
         pnlTop.setBackground(EColor.TITLE_BAR_COLOR.getColor());
@@ -111,7 +117,7 @@ public class FrmTrangChinh extends JFrame {
 
         JLabel lblLogoNhanVien = new JLabel();
         // toi muon lay anh cua nhan vien do duoi db
-        lblLogoNhanVien.setIcon(new CImage(DAONhanVien.getDuongDanAnh(nhanVien.getMaNV()), 48, 48));
+        lblLogoNhanVien.setIcon(new CImage(daoNhanVien.getDuongDanAnh(nhanVien.getMaNV()), 48, 48));
         lblLogoNhanVien.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -136,7 +142,11 @@ public class FrmTrangChinh extends JFrame {
                         "Bạn có chắc chắn muốn đổi mật khẩu?", "Đổi mật khẩu",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                    new DlgDoiMatKhau(taiKhoan).setVisible(true);
+                    try {
+                        new DlgDoiMatKhau(taiKhoan).setVisible(true);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
@@ -151,7 +161,11 @@ public class FrmTrangChinh extends JFrame {
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                     dispose();
-                    new FrmDangNhap().setVisible(true);
+                    try {
+                        new FrmDangNhap().setVisible(true);
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
@@ -343,7 +357,11 @@ public class FrmTrangChinh extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (pnlNhanVien == null) {
-                    pnlNhanVien = new PnlNhanVien();
+                    try {
+                        pnlNhanVien = new PnlNhanVien();
+                    } catch (RemoteException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
                 setPnlWithLoading(pnlNhanVien);
             }

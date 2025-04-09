@@ -1,14 +1,13 @@
 package gui;
 
-import control.DAOTaiKhoan;
+import control.impl.DAOTaiKhoan;
 import entity.TaiKhoan;
 import org.mindrot.jbcrypt.BCrypt;
 import utils.Validation;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 public class DlgDoiMatKhau extends JDialog {
     private JPasswordField txtOldPassword;
@@ -17,8 +16,10 @@ public class DlgDoiMatKhau extends JDialog {
     private JButton btnChangePassword;
     private JButton btnCancel;
     private TaiKhoan taiKhoan;
+    private  DAOTaiKhoan daoTaiKhoan;
 
-    public DlgDoiMatKhau(TaiKhoan taiKhoan) {
+    public DlgDoiMatKhau(TaiKhoan taiKhoan) throws RemoteException {
+        this.daoTaiKhoan = new DAOTaiKhoan();
         setTitle("Đổi Mật Khẩu");
         setSize(400, 300);
         setLocationRelativeTo(null);
@@ -60,11 +61,17 @@ public class DlgDoiMatKhau extends JDialog {
         add(pnlButtons, BorderLayout.SOUTH);
 
         // Thêm sự kiện cho các nút
-        btnChangePassword.addActionListener(e -> changePassword());
+        btnChangePassword.addActionListener(e -> {
+            try {
+                changePassword();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         btnCancel.addActionListener(e -> dispose());
     }
 
-    private void changePassword() {
+    private void changePassword() throws RemoteException {
         String oldPassword = new String(txtOldPassword.getPassword());
         String newPassword = new String(txtNewPassword.getPassword());
         String confirmPassword = new String(txtConfirmPassword.getPassword());
@@ -101,7 +108,7 @@ public class DlgDoiMatKhau extends JDialog {
         return BCrypt.checkpw(oldPassword, taiKhoan.getMatKhauHash());
     }
 
-    private boolean updatePassword(String newPassword) {
+    private boolean updatePassword(String newPassword) throws RemoteException {
         // Kiểm tra tính hợp lệ của mật khẩu mới
         if (!Validation.password(newPassword)) {
             JOptionPane.showMessageDialog(this,
@@ -121,7 +128,7 @@ public class DlgDoiMatKhau extends JDialog {
         taiKhoan.setMatKhau(newPassword);
 
         // Cập nhật tài khoản trong cơ sở dữ liệu
-        if (DAOTaiKhoan.suaTaiKhoan(taiKhoan) != null) {
+        if (daoTaiKhoan.suaTaiKhoan(taiKhoan) != null) {
             System.out.println("Đổi mật khẩu thành công");
             return true;
         } else {
@@ -134,7 +141,11 @@ public class DlgDoiMatKhau extends JDialog {
         SwingUtilities.invokeLater(() -> {
             // Tạo đối tượng tài khoản để thử nghiệm
             TaiKhoan tk = new TaiKhoan("Abc1234.", BCrypt.hashpw("Abc1234.", BCrypt.gensalt()));
-            new DlgDoiMatKhau(tk).setVisible(true);
+            try {
+                new DlgDoiMatKhau(tk).setVisible(true);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 }

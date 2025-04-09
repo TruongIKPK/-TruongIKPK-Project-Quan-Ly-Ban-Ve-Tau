@@ -9,6 +9,8 @@ import service.ChoNgoiService;
 import service.KhuyenMaiService;
 import service.NhanVienService;
 import service.ToaService;
+
+import java.rmi.RemoteException;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +21,7 @@ public class Runner {
     private static ToaService toaService;
     private static ChoNgoiService persistChoNgoi;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
         System.out.println("Hello");
         connectDB_1.connect();
         em = connectDB_1.getEntityManager();

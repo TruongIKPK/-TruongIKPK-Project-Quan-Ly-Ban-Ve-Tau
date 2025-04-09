@@ -1,7 +1,7 @@
 package gui;
 
-import control.DAONhanVien;
-import control.DAOTaiKhoan;
+import control.impl.DAONhanVien;
+import control.impl.DAOTaiKhoan;
 import entity.NhanVien;
 import entity.TaiKhoan;
 import enums.EColor;
@@ -22,8 +22,13 @@ public class FrmDangNhap extends JFrame {
     private JLabel lblBg;
     private AbstractButton btnDangNhap;
     private final String LOGIN_FILE = "/last_logins.txt"; // File lưu tài khoản
+    private DAONhanVien daoNhanVien;
+    private DAOTaiKhoan daoTaiKhoan;
 
-    public FrmDangNhap() {
+
+    public FrmDangNhap() throws RemoteException {
+        this.daoTaiKhoan = new DAOTaiKhoan();
+        this.daoNhanVien = new DAONhanVien();
         setTitle("Đăng nhập");
         // Sử dụng JLayeredPane để đặt nền và panel đăng nhập
         JLayeredPane layeredPane = new JLayeredPane();
@@ -157,7 +162,11 @@ public class FrmDangNhap extends JFrame {
                 if (maTK.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Vui lòng nhập tên tài khoản!");
                 } else {
-                    handleForgotPassword(maTK);
+                    try {
+                        handleForgotPassword(maTK);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
@@ -174,9 +183,9 @@ public class FrmDangNhap extends JFrame {
                 protected Void doInBackground() throws Exception {
                     String maTK = cmbMaTK.getSelectedItem().toString();
                     String matKhau = new String(txtPass.getPassword());
-                    TaiKhoan tk = DAOTaiKhoan.login(maTK, matKhau);
+                    TaiKhoan tk = daoTaiKhoan.login(maTK, matKhau);
                     if (tk != null) {
-                        NhanVien nv = DAONhanVien.getNhanVien(tk.getMaTK());
+                        NhanVien nv = daoNhanVien.getNhanVien(tk.getMaTK());
                         if (nv != null) {
                             // Đăng nhập thành công
                             SwingUtilities.invokeLater(() -> {
@@ -286,14 +295,14 @@ public class FrmDangNhap extends JFrame {
         return logins;
     }
 
-    private void handleForgotPassword(String maTK) {
+    private void handleForgotPassword(String maTK) throws RemoteException {
         // Generate a 6-digit OTP
         int otp = (int) (Math.random() * 900000) + 100000;
 
 
 
         // Get the user's email or phone number from the database
-        TaiKhoan tk = DAOTaiKhoan.getTaiKhoanTheoMa(maTK);
+        TaiKhoan tk = daoTaiKhoan.getTaiKhoanTheoMa(maTK);
         if (tk == null) {
             JOptionPane.showMessageDialog(this, "Không tìm thấy tài khoản này.");
             return;
@@ -308,7 +317,12 @@ public class FrmDangNhap extends JFrame {
         // Email button action
         JButton btnEmail = new JButton("Gửi mã qua Email");
         btnEmail.addActionListener(e -> {
-            String exampleEmail = DAONhanVien.getNhanVien(tk.getMaTK()).getEmail();
+            String exampleEmail = null;
+            try {
+                exampleEmail = daoNhanVien.getNhanVien(tk.getMaTK()).getEmail();
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
             if (exampleEmail != null) {
                 // Obfuscate email (show only the first 4 characters)
                 String emailHide = exampleEmail.substring(0, 4) + "******";
@@ -440,9 +454,19 @@ public class FrmDangNhap extends JFrame {
             }
 
             // Update password in the database
-            TaiKhoan tk = DAOTaiKhoan.getTaiKhoanTheoMa(maTK);
+            TaiKhoan tk = null;
+            try {
+                tk = daoTaiKhoan.getTaiKhoanTheoMa(maTK);
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
             tk.setMatKhau(newPassword);
-            TaiKhoan tkNew = DAOTaiKhoan.suaTaiKhoan(tk);
+            TaiKhoan tkNew = null;
+            try {
+                tkNew = daoTaiKhoan.suaTaiKhoan(tk);
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
 
             if (tkNew != null) {
                 JOptionPane.showMessageDialog(otpDialog, "Mật khẩu đã được thay đổi thành công.");

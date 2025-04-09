@@ -4,7 +4,7 @@
  */
 package gui;
 
-import control.DAONhanVien;
+import control.impl.DAONhanVien;
 import entity.CaLam;
 import entity.ChucVu;
 import entity.NhanVien;
@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -35,18 +36,19 @@ public class PnlNhanVien extends JPanel {
     private JPanel pnlCaLam;
     private CButton btnReset;
     private NhanVien selectedNhanVien;
-
+    private DAONhanVien daoNhanVien;
     /**
      * Creates new form PnlChuyenTau
      */
 
-    public PnlNhanVien() {
+    public PnlNhanVien() throws RemoteException {
+        daoNhanVien = new DAONhanVien();
         setBackground(EColor.BG_COLOR.getColor());
         initComponents();
         readDataFromDb();
     }
 
-    private void readDataFromDb() {
+    private void readDataFromDb() throws RemoteException {
 
 
         // Đổ dữ liệu khuyến mãi vào bảng
@@ -301,7 +303,11 @@ public class PnlNhanVien extends JPanel {
         btnThem.setPreferredSize(new Dimension(130, 30));
         btnThem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnThemActionPerformed(evt);
+                try {
+                    btnThemActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxChucNang.add(btnThem);
@@ -311,7 +317,11 @@ public class PnlNhanVien extends JPanel {
         btnCapNhat.setPreferredSize(new Dimension(130, 30));
         btnCapNhat.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnCapNhatActionPerformed(evt);
+                try {
+                    btnCapNhatActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         boxChucNang.add(btnCapNhat);
@@ -351,7 +361,11 @@ public class PnlNhanVien extends JPanel {
         btnTim.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnTimActionPerformed(e);
+                try {
+                    btnTimActionPerformed(e);
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         pnlTraCuu.add(btnTim);
@@ -363,7 +377,11 @@ public class PnlNhanVien extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 txtTimMaNhanVien.setText("");
-                updateModel();
+                try {
+                    updateModel();
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         pnlTraCuu.add(btnReset);
@@ -542,10 +560,10 @@ public class PnlNhanVien extends JPanel {
         return nv;
     }
 
-    private void updateModel() {
+    private void updateModel() throws RemoteException {
         tblModelNhanVien.setRowCount(0);
         // lấy dữ liệu từ database
-        listNhanVien = DAONhanVien.layDanhSachNhanVien();
+        listNhanVien = daoNhanVien.layDanhSachNhanVien();
         // thêm dữ liệu vào bảng
         for (NhanVien nv : listNhanVien) {
             tblModelNhanVien.addRow(new Object[]{
@@ -618,13 +636,13 @@ public class PnlNhanVien extends JPanel {
         }
     }
 
-    private void btnCapNhatActionPerformed(ActionEvent evt) {
+    private void btnCapNhatActionPerformed(ActionEvent evt) throws RemoteException {
         // TODO add your handling code here:
       NhanVien nv = getNhanVienFromInput();
 //        System.out.println("nv" + nv);
 //        String maCV = nv.getChucVu().getTenCV().equalsIgnoreCase("Nhân viên") ? "NV" : "QL";
 //        nv.setChucVu(new ChucVu(maCV, nv.getChucVu().getTenCV()));
-        NhanVien nv2 = DAONhanVien.suaNhanVien(nv);
+        NhanVien nv2 = daoNhanVien.suaNhanVien(nv);
         System.out.println("nv2" + nv2);
         if (nv2 != null) {
             JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công");
@@ -634,14 +652,14 @@ public class PnlNhanVien extends JPanel {
         }
     }
 
-    private void btnThemActionPerformed(ActionEvent evt) {
+    private void btnThemActionPerformed(ActionEvent evt) throws RemoteException {
         // TODO add your handling code here:
         if (!validateInput()) {
             return;
         }
         NhanVien nv = getNhanVienFromInput();
         nv.setMaNV("");
-        if (DAONhanVien.themNhanVien(nv)) {
+        if (daoNhanVien.themNhanVien(nv)) {
             JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công");
             updateModel();
         } else {
@@ -650,14 +668,14 @@ public class PnlNhanVien extends JPanel {
     }
 
     // btn tim
-    private void btnTimActionPerformed(ActionEvent evt) {
+    private void btnTimActionPerformed(ActionEvent evt) throws RemoteException {
         // TODO add your handling code here:
         String timKiem = txtTimMaNhanVien.getText();
         if (timKiem.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập mã nhân viên");
             return;
         }
-        NhanVien nv = DAONhanVien.getNhanVien(timKiem);
+        NhanVien nv = daoNhanVien.getNhanVien(timKiem);
         if (nv == null) {
             JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên");
             return;
