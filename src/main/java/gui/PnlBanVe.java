@@ -4,6 +4,7 @@ import control.*;
 import control.impl.DAOChuyenTau;
 import control.impl.DAOGa;
 import control.impl.DAOLoaiToa;
+
 import control.impl.DAOVe;
 import entity.*;
 import enums.*;
@@ -567,11 +568,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Thực hiện tìm kiếm chuyến tàu khi nhấn Enter
-                try {
-                    traCuuChuyenTau();
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
+                traCuuChuyenTau();
             }
         });
 
@@ -581,11 +578,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Thực hiện tìm kiếm chuyến tàu khi nhấn Ctrl + F
-                try {
-                    traCuuChuyenTau();
-                } catch (RemoteException ex) {
-                    throw new RuntimeException(ex);
-                }
+                traCuuChuyenTau();
             }
         });
 
@@ -795,8 +788,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
      */
     public void getCacChuyenTauSapKhoiHanh() throws RemoteException {
         // Lấy danh sách các chuyến tàu sắp khởi hành
-        DAOChuyenTau daoChuyen = new DAOChuyenTau(); // nếu chưa có
-        listChuyenDi = daoChuyen.getDanhSachChuyenTauSapKhoiHanh();
+        listChuyenDi = DAOChuyenTau.getDanhSachChuyenTauSapKhoiHanh();
         System.out.println("Số chuyến đi:*********************************************************** " + listChuyenDi);
         // Lặp qua từng chuyến tàu trong danh sách và lấy vé đã bán theo mã chuyến
         for (ChuyenTau chuyenTau : listChuyenDi) {
@@ -826,24 +818,20 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
         );
         timer.start();
     }
-    private DAOLoaiToa daoLoaiToa;
 
     /**
      * Đọc dữ liệu từ cơ sở dữ liệu và cập nhật giao diện.
      */
-    public void readDataFromDB() throws RemoteException {
+    public void readDataFromDB() {
         // Khởi tạo danh sách
         listChuyenDi = new ArrayList<>();
         listChuyenVe = new ArrayList<>();
         listChoNgoiDaChonChieuDi = new ArrayList<>();
         listChoNgoiDaChonChieuVe = new ArrayList<>();
         listChoNgoi = new ArrayList<>();
-        DAOGa daoGa = new DAOGa();
-        listGa = daoGa.getDsGa();
+        listGa = DAOGa.getDsGa();
         listVeDaBan = new ArrayList<>();
-        daoLoaiToa = new DAOLoaiToa();
-        listLoaiToa = daoLoaiToa.getDSLoaiToa();
-
+        listLoaiToa = DAOLoaiToa.getDSLoaiToa();
         listHoaDonTam = HoaDonTamHandler.getDanhSachHoaDonTam();
 
         // Thêm ga vào combobox Ga đi và Ga đến
@@ -932,16 +920,15 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
      * @param chuyenTau Thông tin chuyến tàu cần hiển thị.
      * @return JPanel chứa thông tin chuyến tàu.
      */
-    public JPanel getPnlChuyenTau(ChuyenTau chuyenTau) throws RemoteException {
+    public JPanel getPnlChuyenTau(ChuyenTau chuyenTau) {
         JPanel pnlChuyenTau = new JPanel();
         pnlChuyenTau.setLayout(new BoxLayout(pnlChuyenTau, BoxLayout.Y_AXIS));
         pnlChuyenTau.setBackground(EColor.BG_COLOR.getColor());
         pnlChuyenTau.setPreferredSize(new Dimension(250, 200));
 
-        DAOChuyenTau daoChuyen = new DAOChuyenTau(); // hoặc dùng biến toàn cục nếu có rồi
 
 
-        long soLuongChoTrong = daoChuyen.getTongSoLuongChoCuaChuyen(chuyenTau.getMaChuyen())
+        long soLuongChoTrong = DAOChuyenTau.getTongSoLuongChoCuaChuyen(chuyenTau.getMaChuyen())
                 - listVeDaBan.stream().filter(ve -> ve.getChuyenTau().equals(chuyenTau)).count();
 
         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%SOLUONGCHOTRONG%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"+soLuongChoTrong);
@@ -1463,12 +1450,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
             // Duyệt qua tất cả chuyến đi và hiển thị từng chuyến tàu
             listChuyenDi.forEach(chuyenTau -> {
-                JPanel btnChuyenTau = null;
-                try {
-                    btnChuyenTau = getPnlChuyenTau(chuyenTau);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
+                JPanel btnChuyenTau = getPnlChuyenTau(chuyenTau);
                 pnlDanhSachChuyenTau.add(btnChuyenTau);
             });
 
@@ -1481,12 +1463,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
             // Duyệt qua tất cả chuyến về và hiển thị từng chuyến tàu
             listChuyenVe.forEach(chuyenTau -> {
-                JPanel btnChuyenTau = null;
-                try {
-                    btnChuyenTau = getPnlChuyenTau(chuyenTau);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
+                JPanel btnChuyenTau = getPnlChuyenTau(chuyenTau);
                 pnlDanhSachChuyenTau.add(btnChuyenTau);
             });
 
@@ -2150,7 +2127,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
     /**
      * Tra cứu thông tin chuyến tàu
      */
-    public void traCuuChuyenTau() throws RemoteException {
+    public void traCuuChuyenTau() {
         lblDsChuyenTau.setText("Danh sách chuyến tàu");
 
         // Xác nhận trước khi reset dữ liệu
@@ -2181,9 +2158,9 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
         lblDsChuyenTau.setText("Danh sách chuyến từ " + gaDi.getTenGa().replace("Ga Tàu", "") + " - " + gaDen.getTenGa().replace("Ga Tàu", ""));
         resetAll();
-        DAOChuyenTau daoChuyen = new DAOChuyenTau();
+
         // Lấy danh sách chuyến tàu theo các trường
-        listChuyenDi = daoChuyen.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayDi, gaDi.getMaGa(), gaDen.getMaGa());
+        listChuyenDi = DAOChuyenTau.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayDi, gaDi.getMaGa(), gaDen.getMaGa());
         System.out.println("DS Chuyến đi:---###############################################################################################################################################################33 " + listChuyenDi);
         if (listChuyenDi.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Không có chuyến tàu lượt đi");
@@ -2217,7 +2194,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
             String ngayVeStr = ngayVePicker.getJFormattedTextField().getText();
             LocalDate ngayVe = LocalDate.parse(ngayVeStr, FormatDate.formatter);
 
-            listChuyenVe = daoChuyen.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayVe, gaDen.getMaGa(), gaDi.getMaGa());
+            listChuyenVe = DAOChuyenTau.getDanhSachChuyenTauTheoNgaymaGaDimaGaDen(ngayVe, gaDen.getMaGa(), gaDi.getMaGa());
 
             if (listChuyenVe.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Không có chuyến tàu lượt về");
@@ -2447,11 +2424,7 @@ public class PnlBanVe extends JPanel implements ActionListener, KeyListener {
 
         // Xử lý tra cứu chuyến tàu khi người dùng nhấn nút "Tra Cứu Chuyến Tàu"
         if (obj.equals(btnTraCuuChuyenTau)) {
-            try {
-                traCuuChuyenTau();
-            } catch (RemoteException ex) {
-                throw new RuntimeException(ex);
-            }
+            traCuuChuyenTau();
         }
 
         // Xử lý chuyến tàu sắp chạy khi người dùng nhấn nút "Tra Chuyến Sắp Chạy"

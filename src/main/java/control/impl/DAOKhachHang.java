@@ -20,6 +20,7 @@ public class DAOKhachHang extends UnicastRemoteObject implements IDAOKhachHang {
     public DAOKhachHang() throws RemoteException {
     }
 
+
     @Override
     public  boolean themKhachHang(KhachHang kh)throws RemoteException {
         EntityTransaction transaction = em.getTransaction();
