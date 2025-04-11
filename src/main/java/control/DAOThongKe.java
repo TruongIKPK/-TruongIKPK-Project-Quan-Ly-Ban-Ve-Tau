@@ -10,12 +10,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
-/**
- * @Dự án: tau-viet-express
- * @Class: DAOThongKe
- * @Tạo vào ngày: 10/21/2024
- * @Tác giả: Thai
- */
 public class DAOThongKe {
 
     // Thống kê tổng số nhân viên

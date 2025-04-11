@@ -28,8 +28,8 @@ public class ChoNgoi implements Serializable {
     @Column(name = "trangThai", nullable = false)
     private ETrangThaiChoNgoi trangThai;
 
-    @OneToOne(mappedBy = "choNgoi")
-    private Ve ve;
+    @OneToMany(mappedBy = "choNgoi")
+    private Set<Ve> ve;
 
     public ChoNgoi() {
         super();
@@ -57,7 +57,7 @@ public class ChoNgoi implements Serializable {
         this.trangThai = ETrangThaiChoNgoi.CON_TRONG;
     }
 
-    public ChoNgoi(String maCho, LoaiCho loaiCho, Toa toa, Ve ve) {
+    public ChoNgoi(String maCho, LoaiCho loaiCho, Toa toa, Set<Ve> ve) {
 
         this.maCho = maCho;
         this.loaiCho = loaiCho;
@@ -134,7 +134,7 @@ public class ChoNgoi implements Serializable {
                 '}';
     }
 
-    public Ve getVe() {
+    public Set<Ve> getVe() {
         return ve;
     }
 }

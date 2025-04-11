@@ -125,7 +125,8 @@ public class DlgDoiMatKhau extends JDialog {
         }
 
         // set mật khẩu mới và cập nhật vào tài khoản
-        taiKhoan.setMatKhau(newPassword);
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        taiKhoan.setMatKhau(hashedPassword);
 
         // Cập nhật tài khoản trong cơ sở dữ liệu
         if (daoTaiKhoan.suaTaiKhoan(taiKhoan) != null) {

@@ -26,7 +26,7 @@ public class DAONhanVien extends UnicastRemoteObject implements IDAONhanVien {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-
+            nv.setDuongDanAnh("images/employees/nv-3.jpg");
             NhanVienService nhanVienService = new NhanVienService(em);
             nhanVienService.persistNhanVien(nv);
 

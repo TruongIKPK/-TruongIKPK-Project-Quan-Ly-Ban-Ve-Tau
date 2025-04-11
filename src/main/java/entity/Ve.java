@@ -35,7 +35,8 @@ public class Ve implements Serializable {
     @JoinColumn(name = "maKM", nullable = true, columnDefinition = "varchar(15)")
     private KhuyenMai khuyenMai;
 
-    @OneToOne
+//    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "maCho", nullable = false,columnDefinition = "varchar(20)")
     private ChoNgoi choNgoi;
 

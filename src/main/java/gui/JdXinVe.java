@@ -1261,7 +1261,6 @@ public class JdXinVe extends CDialog implements MouseListener {
             } else {
                 veChieuDi = new Ve(new HoaDon(hoaDon.getMaHD()), new LoaiVe("LV1"), LocalDateTime.now(), listChoNgoiChieuDi.get(i), chuyenChieuDi, khachHang, 10, khuyenMaiObj, ETrangThaiVe.DA_BAN.name());
             }
-
             try {
                 boolean themVeChieuDiCoKhuyenMai = daoVe.themVeCoKhuyenMai(veChieuDi);
                 boolean themVeChieuVeCoKhuyenMai = veChieuVe == null ? true : daoVe.themVeCoKhuyenMai(veChieuVe);
@@ -1335,7 +1334,7 @@ public class JdXinVe extends CDialog implements MouseListener {
 
         // Lưu thông tin các vé
         luuThongTinVe();
-
+        System.out.println("Mã nèeeeeeeeeeeeeeeeee"+hoaDon.getMaHD());
         // Cập nhật danh sách vé
         listVe = daoVe.layDSVeDaBanTheoMaHD(hoaDon.getMaHD());
         hoaDon.setDanhSachVe(listVe);

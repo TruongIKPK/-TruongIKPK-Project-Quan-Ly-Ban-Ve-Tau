@@ -4,10 +4,7 @@ import connectDB.connectDB_1;
 import control.IDAOTaiKhoan;
 import entity.TaiKhoan;
 import enums.ETrangThaiTaiKhoan;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.rmi.RemoteException;
@@ -85,8 +82,11 @@ public class DAOTaiKhoan extends UnicastRemoteObject implements IDAOTaiKhoan {
     //sua tai khoan
     @Override
     public TaiKhoan suaTaiKhoan(TaiKhoan tk) throws RemoteException {
+        System.out.println("Tai khoan laaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: " + tk);
+        EntityTransaction transaction = em.getTransaction();
         String jpql = "UPDATE TaiKhoan tk SET tk.matKhau = :matKhau, tk.trangThai = :trangThai WHERE tk.maTK = :maTK";
         try {
+            transaction.begin();
             // Tạo query với JPQL
             Query query = em.createQuery(jpql);
             query.setParameter("matKhau", tk.getMatKhauHash());
@@ -95,7 +95,7 @@ public class DAOTaiKhoan extends UnicastRemoteObject implements IDAOTaiKhoan {
 
             // Thực hiện truy vấn và kiểm tra số lượng bản ghi bị ảnh hưởng
             int result = query.executeUpdate();
-
+            transaction.commit();
             // Nếu có bản ghi nào bị ảnh hưởng, trả về true
             if (result > 0) {
                 return tk;
